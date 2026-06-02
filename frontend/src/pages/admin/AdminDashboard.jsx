@@ -218,7 +218,7 @@ const AdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat, i) => (
-          <div key={i} className="card flex flex-col justify-between h-32 hover:scale-[1.02] transition-transform duration-350 animate-slide-up" style={{ animationDelay: `${i * 75}ms` }}>
+          <div key={i} className="card flex flex-col justify-between min-h-[9rem] h-auto p-4 hover:scale-[1.02] transition-transform duration-350 animate-slide-up" style={{ animationDelay: `${i * 75}ms` }}>
             <div className="flex justify-between items-start">
               <div className={`p-2 rounded-lg ${stat.bg}`}>
                 {stat.icon}
@@ -227,9 +227,9 @@ const AdminDashboard = () => {
                 {stat.trend}
               </span>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-[#C4F8FF]">{stat.value}</div>
-              <div className="text-xs font-bold text-[#C4F8FF]/60 mt-1 uppercase tracking-wider">{stat.title}</div>
+            <div className="mt-4">
+              <div className="text-2xl font-black text-[#C4F8FF] leading-none">{stat.value}</div>
+              <div className="text-[10px] font-black text-[#C4F8FF]/60 mt-1.5 uppercase tracking-wider leading-tight">{stat.title}</div>
             </div>
           </div>
         ))}

@@ -708,55 +708,55 @@ const CitizenDashboard = () => {
       {/* Tracked Receipt Modal */}
       {showTrackedReceipt && trackedItem && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl max-w-lg w-full border border-[#C4F8FF]/15 relative flex flex-col max-h-[90vh]">
-            <div className="p-4 border-b border-[#C4F8FF]/15 bg-[#0F4B70]/30 flex justify-between items-center print:hidden">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#C4F8FF]/70">Official Receipt Preview</span>
+          <div className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-lg w-full border border-slate-200 relative flex flex-col max-h-[90vh] text-slate-800 animate-fade-in">
+            <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center print:hidden">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Official Receipt Preview</span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => window.print()}
-                  className="bg-[#0F4B70] border border-[#C4F8FF]/20 hover:bg-[#0a344f] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+                  className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 border border-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
                 >
                   <LucideIcons.FileText size={14} /> Print Receipt
                 </button>
                 <button 
                   onClick={() => setShowTrackedReceipt(false)}
-                  className="bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/15 hover:bg-[#0F4B70]/30 text-[#C4F8FF]/80 px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                  className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all"
                 >
                   Close
                 </button>
               </div>
             </div>
 
-            <div className="p-8 space-y-6 overflow-y-auto flex-1 bg-[#0F4B70]/20 backdrop-blur-sm printable-receipt text-[#C4F8FF]">
-              <div className="flex justify-between items-start border-b-2 border-[#C4F8FF]/20 pb-6">
+            <div className="p-8 space-y-6 overflow-y-auto flex-1 bg-white printable-receipt text-slate-850">
+              <div className="flex justify-between items-start border-b-2 border-slate-300 pb-6">
                 <div>
-                  <h2 className="text-xl font-extrabold uppercase tracking-tight text-[#C4F8FF]">Gram Panchayat Portal</h2>
-                  <p className="text-xs text-[#C4F8FF]/70 font-bold uppercase tracking-wider">Government of India / Local Administration Board</p>
-                  <p className="text-xs text-[#C4F8FF]/60 mt-0.5">Village Ward: {trackedItem.user?.village || 'Panchayat Area'}</p>
+                  <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900">Gram Panchayat Portal</h2>
+                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Government of India / Local Administration Board</p>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium">Village Ward: {trackedItem.user?.village || 'Panchayat Area'}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-extrabold bg-[#C4F8FF]/20 text-[#C4F8FF] px-3 py-1 rounded border border-[#C4F8FF]/30 uppercase tracking-widest font-mono">
+                  <span className="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-3 py-1 rounded border border-slate-250 uppercase tracking-widest font-mono">
                     {trackedItem.type === 'complaint' ? 'REGISTRATION' : 'SUBMISSION'}
                   </span>
-                  <p className="text-xs font-mono font-bold text-[#C4F8FF]/70 mt-2">Date: {trackedItem.createdAt ? new Date(trackedItem.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
+                  <p className="text-xs font-mono font-bold text-slate-500 mt-2">Date: {trackedItem.createdAt ? new Date(trackedItem.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
                 </div>
               </div>
 
               {trackedItem.type === 'complaint' ? (
                 // Complaint Receipt
                 <div className="space-y-6">
-                  <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/15 rounded-2xl p-5 text-xs space-y-2">
-                    <p className="font-bold text-[#C4F8FF]">Complaint ID: <span className="font-mono text-[#C4F8FF] font-bold">{trackedItem.complaintId}</span></p>
-                    <p className="text-[#C4F8FF]/80">Category: <span className="font-bold text-[#C4F8FF]">{trackedItem.category}</span></p>
-                    <p className="text-[#C4F8FF]/80">Location: <span className="font-bold text-[#C4F8FF]">{trackedItem.location}</span></p>
-                    <p className="text-[#C4F8FF]/80">Priority: <span className="font-bold text-[#C4F8FF]">{trackedItem.priority || 'Medium'}</span></p>
-                    <p className="text-[#C4F8FF]/80">Reporter: <span className="font-bold text-[#C4F8FF]">{trackedItem.user?.name || userName}</span></p>
-                    <p className="text-[#C4F8FF]/80">Status: <span className="font-bold text-[#C4F8FF] font-bold uppercase">{trackedItem.status}</span></p>
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs space-y-2 text-slate-700">
+                    <p className="font-bold text-slate-900">Complaint ID: <span className="font-mono text-slate-900 font-bold">{trackedItem.complaintId}</span></p>
+                    <p className="text-slate-700">Category: <span className="font-bold text-slate-800">{trackedItem.category}</span></p>
+                    <p className="text-slate-700">Location: <span className="font-bold text-slate-800">{trackedItem.location}</span></p>
+                    <p className="text-slate-700">Priority: <span className="font-bold text-slate-800">{trackedItem.priority || 'Medium'}</span></p>
+                    <p className="text-slate-700">Reporter: <span className="font-bold text-slate-800">{trackedItem.user?.name || userName}</span></p>
+                    <p className="text-slate-700">Status: <span className="font-bold text-slate-900 uppercase">{trackedItem.status}</span></p>
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="font-extrabold text-xs uppercase tracking-wider text-[#C4F8FF]/60">Grievance Description</h4>
-                    <p className="text-sm text-[#C4F8FF]/80 leading-relaxed bg-[#0F4B70]/30 p-4 rounded-xl border border-[#C4F8FF]/20 whitespace-pre-wrap">
+                    <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-500">Grievance Description</h4>
+                    <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-205 whitespace-pre-wrap">
                       {trackedItem.description}
                     </p>
                   </div>
@@ -764,27 +764,27 @@ const CitizenDashboard = () => {
               ) : (
                 // Scheme Receipt
                 <div className="space-y-6">
-                  <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/15 rounded-2xl p-5 text-xs space-y-2">
-                    <p className="font-bold text-[#C4F8FF]">Application ID: <span className="font-mono text-[#C4F8FF] font-bold">{trackedItem.applicationId}</span></p>
-                    <p className="text-[#C4F8FF]/80">Scheme Applied: <span className="font-bold text-[#C4F8FF]">{trackedItem.schemeName}</span></p>
-                    <p className="text-[#C4F8FF]/80">Applicant: <span className="font-bold text-[#C4F8FF]">{trackedItem.applicantName}</span></p>
-                    <p className="text-[#C4F8FF]/80">Age: <span className="font-bold text-[#C4F8FF]">{trackedItem.age}</span></p>
-                    <p className="text-[#C4F8FF]/80">Masked ID Number: <span className="font-bold text-[#C4F8FF]">XXXX-XXXX-{trackedItem.idNumber?.slice(-4) || 'XXXX'}</span></p>
-                    <p className="text-[#C4F8FF]/80">Relationship: <span className="font-bold text-[#C4F8FF]">{trackedItem.relationship || 'Self'}</span></p>
-                    <p className="text-[#C4F8FF]/80">Status: <span className="font-bold text-[#C4F8FF] font-bold uppercase">{trackedItem.status}</span></p>
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs space-y-2 text-slate-700">
+                    <p className="font-bold text-slate-900">Application ID: <span className="font-mono text-slate-900 font-bold">{trackedItem.applicationId}</span></p>
+                    <p className="text-slate-700">Scheme Applied: <span className="font-bold text-slate-800">{trackedItem.schemeName}</span></p>
+                    <p className="text-slate-700">Applicant: <span className="font-bold text-slate-800">{trackedItem.applicantName}</span></p>
+                    <p className="text-slate-700">Age: <span className="font-bold text-slate-800">{trackedItem.age}</span></p>
+                    <p className="text-slate-700">Masked ID Number: <span className="font-bold text-slate-800">XXXX-XXXX-{trackedItem.idNumber?.slice(-4) || 'XXXX'}</span></p>
+                    <p className="text-slate-700">Relationship: <span className="font-bold text-slate-800">{trackedItem.relationship || 'Self'}</span></p>
+                    <p className="text-slate-700">Status: <span className="font-bold text-slate-900 uppercase">{trackedItem.status}</span></p>
                   </div>
                 </div>
               )}
 
-              <div className="pt-8 border-t border-[#C4F8FF]/15 flex justify-between items-center text-xs">
+              <div className="pt-8 border-t border-slate-300 flex justify-between items-center text-xs">
                 <div>
-                  <p className="text-[10px] text-[#C4F8FF]/60 font-extrabold uppercase">Verification</p>
-                  <p className="font-bold text-[#C4F8FF] mt-1">Gram Panchayat Comptroller Office</p>
-                  <p className="text-[#C4F8FF]/60 mt-0.5">Digitally signed & cataloged through GramSuvidha node registry.</p>
+                  <p className="text-[10px] text-slate-500 font-extrabold uppercase">Verification</p>
+                  <p className="font-bold text-slate-800 mt-1">Gram Panchayat Comptroller Office</p>
+                  <p className="text-slate-500 mt-0.5">Digitally signed & cataloged through GramSuvidha node registry.</p>
                 </div>
                 
                 <div className="text-center relative">
-                  <div className="border-4 border-dashed border-blue-500/50 text-blue-400 rounded-full w-24 h-24 flex items-center justify-center font-black text-xs uppercase transform rotate-12 flex-shrink-0 animate-scale-in">
+                  <div className="border-4 border-dashed border-slate-400 text-slate-600 rounded-full w-24 h-24 flex items-center justify-center font-black text-xs uppercase transform rotate-12 flex-shrink-0">
                     <div className="text-center">
                       <p>SUBMITTED</p>
                       <p className="text-[8px] font-bold">DIGITAL NODE</p>

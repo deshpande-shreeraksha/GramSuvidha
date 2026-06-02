@@ -130,11 +130,11 @@ const CitizenMeetings = () => {
                       </div>
                     </div>
 
-                    <div className="bg-[#0F4B70]/80/5 rounded-2xl p-5 border border-primary/10 space-y-2">
-                      <h4 className="text-xs font-black text-[#C4F8FF] uppercase tracking-wider flex items-center gap-1.5">
-                        <Calendar size={14} /> 5. Target Developments Before Next council assembly
+                    <div className="space-y-2">
+                      <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
+                        <Calendar size={14} className="text-[#C4F8FF]" /> 5. Target Developments Before Next Council Assembly
                       </h4>
-                      <p className="text-[#C4F8FF] text-xs font-bold leading-relaxed whitespace-pre-wrap">
+                      <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
                         {m.developmentBeforeNext}
                       </p>
                     </div>

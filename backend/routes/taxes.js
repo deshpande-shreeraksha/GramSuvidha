@@ -13,35 +13,7 @@ router.get('/', protect, async (req, res) => {
       const properties = await PropertyTax.find({}).populate('user', 'name email phone village');
       res.json(properties);
     } else {
-      let properties = await PropertyTax.find({ user: req.user._id });
-      if (properties.length === 0) {
-        // Dynamically initialize 2 mock properties for this citizen
-        const prop1 = await PropertyTax.create({
-          user: req.user._id,
-          propertyId: 'PRP-' + Math.floor(100000 + Math.random() * 900000),
-          ownerName: req.user.name || 'Citizen Owner',
-          village: req.user.village || 'Panchayat Area',
-          propertyType: 'Residential',
-          constructionType: 'Pucca',
-          builtUpArea: 1200,
-          taxAmount: 3750, // 1200 * 2.0 * 1.25 + 25% cess = 3750
-          taxYear: '2026-2027',
-          paymentStatus: 'Unpaid'
-        });
-        const prop2 = await PropertyTax.create({
-          user: req.user._id,
-          propertyId: 'PRP-' + Math.floor(100000 + Math.random() * 900000),
-          ownerName: req.user.name || 'Citizen Owner',
-          village: req.user.village || 'Panchayat Area',
-          propertyType: 'Vacant',
-          constructionType: 'None',
-          builtUpArea: 5000,
-          taxAmount: 3125, // 5000 * 0.5 * 1.0 + 25% cess = 3125
-          taxYear: '2026-2027',
-          paymentStatus: 'Unpaid'
-        });
-        properties = [prop1, prop2];
-      }
+      const properties = await PropertyTax.find({ user: req.user._id });
       res.json(properties);
     }
   } catch (error) {

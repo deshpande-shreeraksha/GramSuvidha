@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Activity, UserCircle, ShieldCheck, Key, ArrowLeft, Mail, Lock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -19,12 +19,35 @@ const SignUp = () => {
     village: '',
     villageId: '',
   });
+  const [villages, setVillages] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState('fill_form'); // 'fill_form' | 'verify_otp'
   const [otp, setOtp] = useState('');
   const [resending, setResending] = useState(false);
   const [otpMessage, setOtpMessage] = useState('');
+
+  useEffect(() => {
+    const fetchVillages = async () => {
+      try {
+        const res = await fetch('/api/auth/villages');
+        if (res.ok) {
+          const data = await res.json();
+          setVillages(data);
+          if (data.length > 0 && !formData.village) {
+            setFormData(prev => ({
+              ...prev,
+              village: data[0].name,
+              villageId: data[0].id
+            }));
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching villages:', err);
+      }
+    };
+    fetchVillages();
+  }, []);
 
   const validatePassword = (password) => {
     // > 6 characters, numbers, special characters, underscore, one capital letter
@@ -424,15 +447,26 @@ const SignUp = () => {
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
                           {t('village') || 'Village'}
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="village"
                           required
                           value={formData.village}
-                          onChange={handleChange}
-                          className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all"
-                          placeholder="Your village name"
-                        />
+                          onChange={(e) => {
+                            const selectedName = e.target.value;
+                            const selectedObj = villages.find(v => v.name === selectedName);
+                            setFormData(prev => ({
+                              ...prev,
+                              village: selectedName,
+                              villageId: selectedObj ? selectedObj.id : ''
+                            }));
+                          }}
+                          className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all [&>option]:bg-[#061926] [&>option]:text-[#C4F8FF]"
+                        >
+                          <option value="" disabled>Select Village</option>
+                          {villages.map((v, i) => (
+                            <option key={i} value={v.name}>{v.name} ({v.id})</option>
+                          ))}
+                        </select>
                       </div>
                     )}
 

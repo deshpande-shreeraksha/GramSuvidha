@@ -349,13 +349,15 @@ router.put('/profile', protect, async (req, res) => {
     user.age = req.body.age !== undefined ? req.body.age : user.age;
     user.gender = req.body.gender !== undefined ? req.body.gender : user.gender;
     
-    // Regional fields
-    user.village = req.body.village !== undefined ? req.body.village : user.village;
-    user.taluk = req.body.taluk !== undefined ? req.body.taluk : user.taluk;
-    user.district = req.body.district !== undefined ? req.body.district : user.district;
-    user.state = req.body.state !== undefined ? req.body.state : user.state;
-    user.country = req.body.country !== undefined ? req.body.country : user.country;
-    user.pincode = req.body.pincode !== undefined ? req.body.pincode : user.pincode;
+    // Regional fields - Locked for citizen
+    if (req.user.role !== 'citizen') {
+      user.village = req.body.village !== undefined ? req.body.village : user.village;
+      user.taluk = req.body.taluk !== undefined ? req.body.taluk : user.taluk;
+      user.district = req.body.district !== undefined ? req.body.district : user.district;
+      user.state = req.body.state !== undefined ? req.body.state : user.state;
+      user.country = req.body.country !== undefined ? req.body.country : user.country;
+      user.pincode = req.body.pincode !== undefined ? req.body.pincode : user.pincode;
+    }
 
     await user.save();
 
@@ -476,6 +478,68 @@ router.put('/workers/:id/status', protect, adminOnly, async (req, res) => {
     worker.isActive = isActive;
     await worker.save();
     res.json({ message: `Worker status marked as ${isActive ? 'Active' : 'Inactive'}`, worker });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+// @route   GET /api/auth/villages
+// @desc    Get all unique villages of registered admins
+router.get('/villages', async (req, res) => {
+  try {
+    const admins = await Admin.find({ village: { $ne: '' } }).select('village villageId');
+    const villages = [];
+    const seen = new Set();
+    
+    for (const admin of admins) {
+      if (admin.village && !seen.has(admin.village.trim())) {
+        seen.add(admin.village.trim());
+        villages.push({ name: admin.village, id: admin.villageId });
+      }
+    }
+    
+    // Fallback defaults if no admins registered yet
+    const defaults = [
+      { name: 'Bengeri', id: 'VIL-583217' },
+      { name: 'Sai Nagar', id: 'VIL-580020' },
+      { name: 'Old Hubli', id: 'VIL-580024' },
+      { name: 'Keshwapur', id: 'VIL-580023' }
+    ];
+    for (const d of defaults) {
+      if (!seen.has(d.name)) {
+        villages.push(d);
+      }
+    }
+    res.json(villages);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+// @route   GET /api/auth/my-admin
+// @desc    Get assigned admin details for the citizen
+router.get('/my-admin', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'citizen') {
+      return res.status(400).json({ message: 'Only citizens have assigned admins' });
+    }
+    
+    let admin = null;
+    if (req.user.village) {
+      admin = await Admin.findOne({ village: req.user.village }).select('name phone email');
+    }
+    if (!admin && req.user.villageId) {
+      admin = await Admin.findOne({ villageId: req.user.villageId }).select('name phone email');
+    }
+    
+    if (!admin) {
+      return res.json({
+        name: 'Panchayat Chief Officer',
+        phone: '1800-345-6789 (Panchayat Helpline)',
+        email: 'support@panchayat.gov.in'
+      });
+    }
+    res.json(admin);
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }

@@ -724,75 +724,75 @@ const Schemes = () => {
       {/* Official Receipt Printable Modal */}
       {selectedReceipt && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl shadow-xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto border border-slate-200 text-slate-800 animate-fade-in">
             <button 
               onClick={() => setSelectedReceipt(null)} 
-              className="absolute top-4 right-4 text-[#C4F8FF]/60 hover:text-[#C4F8FF]/80 text-2xl font-bold focus:outline-none"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold focus:outline-none"
             >
               &times;
             </button>
 
             {/* Printable Frame */}
-            <div ref={printRef} className="border-2 border-[#C4F8FF]/30 rounded-xl p-6 bg-[#0F4B70]/20 backdrop-blur-sm relative">
+            <div ref={printRef} className="border-2 border-slate-350 rounded-xl p-6 bg-white relative">
               {/* Watermark */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none">
-                <ShieldCheck size={280} className="text-[#C4F8FF] rotate-12" />
+              <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] select-none pointer-events-none">
+                <ShieldCheck size={280} className="text-slate-500 rotate-12" />
               </div>
 
-              <div className="text-center border-b pb-4 mb-4">
-                <h2 className="text-lg font-black text-[#C4F8FF] tracking-wider">GRAM PANCHAYAT SEVA</h2>
-                <p className="text-[10px] text-[#C4F8FF]/60 uppercase tracking-widest font-bold">Government of India / local governance node</p>
-                <div className="w-8 h-1 bg-[#0F4B70]/80 mx-auto mt-2 rounded"></div>
+              <div className="text-center border-b border-slate-200 pb-4 mb-4">
+                <h2 className="text-lg font-black text-slate-900 tracking-wider">GRAM PANCHAYAT SEVA</h2>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Government of India / local governance node</p>
+                <div className="w-8 h-1 bg-slate-500 mx-auto mt-2 rounded"></div>
               </div>
 
-              <div className="flex justify-between items-center text-xs text-[#C4F8FF]/60 mb-4 bg-[#0F4B70]/30 p-2 rounded-lg border border-[#C4F8FF]/20">
+              <div className="flex justify-between items-center text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg border border-slate-200">
                 <span>Receipt Date: {new Date().toLocaleDateString('en-IN')}</span>
-                <span className="font-mono font-bold text-[#C4F8FF]/80">Ref: {selectedReceipt.applicationId}</span>
+                <span className="font-mono font-bold text-slate-700">Ref: {selectedReceipt.applicationId}</span>
               </div>
 
-              <h3 className="text-center text-sm font-bold text-[#C4F8FF] mb-4 bg-[#C4F8FF]/10 text-[#C4F8FF] py-1.5 rounded uppercase tracking-wider">
+              <h3 className="text-center text-sm font-bold text-slate-900 mb-4 bg-slate-100 border border-slate-200 py-1.5 rounded uppercase tracking-wider">
                 Proof of Scheme Submission
               </h3>
 
-              <div className="space-y-3 text-xs text-[#C4F8FF]/80">
-                <div className="flex justify-between border-b border-[#C4F8FF]/20 pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">Scheme Requested</span>
-                  <span className="font-extrabold text-[#C4F8FF] text-right max-w-[240px]">{selectedReceipt.schemeName}</span>
+              <div className="space-y-3 text-xs text-slate-700">
+                <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                  <span className="font-medium text-slate-500">Scheme Requested</span>
+                  <span className="font-extrabold text-slate-900 text-right max-w-[240px]">{selectedReceipt.schemeName}</span>
                 </div>
-                <div className="flex justify-between border-b border-[#C4F8FF]/20 pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">Beneficiary Name</span>
-                  <span className="font-extrabold text-[#C4F8FF]">{selectedReceipt.applicantName}</span>
+                <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                  <span className="font-medium text-slate-500">Beneficiary Name</span>
+                  <span className="font-extrabold text-slate-900">{selectedReceipt.applicantName}</span>
                 </div>
-                <div className="flex justify-between border-b border-[#C4F8FF]/20 pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">Relationship Type</span>
-                  <span className="font-extrabold text-[#C4F8FF] capitalize">{selectedReceipt.relationship}</span>
+                <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                  <span className="font-medium text-slate-500">Relationship Type</span>
+                  <span className="font-extrabold text-slate-900 capitalize">{selectedReceipt.relationship}</span>
                 </div>
-                <div className="flex justify-between border-b border-[#C4F8FF]/20 pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">ID Verification Lock</span>
-                  <span className="font-mono font-bold text-[#C4F8FF]">
+                <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                  <span className="font-medium text-slate-500">ID Verification Lock</span>
+                  <span className="font-mono font-bold text-slate-900">
                     XXXX-XXXX-{selectedReceipt.idNumber ? selectedReceipt.idNumber.slice(-4) : 'XXXX'}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-[#C4F8FF]/20 pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">Date Logged</span>
-                  <span className="font-bold text-[#C4F8FF]">
+                <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                  <span className="font-medium text-slate-500">Date Logged</span>
+                  <span className="font-bold text-slate-900">
                     {selectedReceipt.createdAt ? new Date(selectedReceipt.createdAt).toLocaleString('en-IN') : 'Just now'}
                   </span>
                 </div>
                 <div className="flex justify-between pb-1.5">
-                  <span className="font-medium text-[#C4F8FF]/60">Status</span>
-                  <span className="font-black text-[#C4F8FF] capitalize">{selectedReceipt.status === 'Application Submitted' ? 'Pending Audit' : selectedReceipt.status}</span>
+                  <span className="font-medium text-slate-500">Status</span>
+                  <span className="font-black text-slate-900 capitalize">{selectedReceipt.status === 'Application Submitted' ? 'Pending Audit' : selectedReceipt.status}</span>
                 </div>
               </div>
 
-              <div className="mt-8 pt-8 border-t border-dashed border-[#C4F8FF]/15 flex justify-between items-end text-[9px] text-[#C4F8FF]/60">
+              <div className="mt-8 pt-8 border-t border-dashed border-slate-300 flex justify-between items-end text-[9px] text-slate-500">
                 <div>
-                  <p className="font-bold text-[#C4F8FF]/70">Security Hash Identifier</p>
+                  <p className="font-bold text-slate-600">Security Hash Identifier</p>
                   <p className="font-mono select-all">GS-APP-${selectedReceipt._id ? selectedReceipt._id.slice(-8) : 'HASH'}</p>
                 </div>
                 <div className="text-right">
                   <div className="w-20 h-px bg-slate-400 mx-auto mb-1"></div>
-                  <p className="font-bold">Authorized Signatory</p>
+                  <p className="font-bold text-slate-800">Authorized Signatory</p>
                   <p>Gram Panchayat Officer</p>
                 </div>
               </div>
@@ -801,13 +801,13 @@ const Schemes = () => {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={handlePrint}
-                className="flex-1 py-3 bg-[#0F4B70]/80 text-white rounded-xl font-bold shadow-md hover:bg-[#C4F8FF]/10-dark transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-slate-850 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 bg-slate-800"
               >
                 <Printer size={16} /> Print Receipt
               </button>
               <button
                 onClick={() => setSelectedReceipt(null)}
-                className="flex-1 py-3 border border-[#C4F8FF]/15 text-[#C4F8FF]/80 rounded-xl font-semibold hover:bg-[#0F4B70]/30 transition-colors"
+                className="flex-1 py-3 border border-slate-300 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 transition-colors"
               >
                 Close
               </button>

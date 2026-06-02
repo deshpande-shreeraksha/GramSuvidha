@@ -273,7 +273,7 @@ const Taxes = () => {
             </h3>
             <p className="text-xs text-[#C4F8FF]/70 mb-6">Uses legal unit area computation parameters under Panchayati Raj mandates.</p>
 
-            <form onSubmit={handleRegisterProperty} className="space-y-6">
+            <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase mb-2">Asset/Property Category</label>
@@ -365,35 +365,18 @@ const Taxes = () => {
 
                   <div className="flex flex-col justify-between">
                     <div>
-                      <h4 className="font-extrabold text-sm text-[#C4F8FF] mb-2 uppercase tracking-wider">Tax Seeding</h4>
+                      <h4 className="font-extrabold text-sm text-[#C4F8FF] mb-2 uppercase tracking-wider">Tax Seeding Info</h4>
                       <p className="text-xs text-[#C4F8FF]/80 leading-relaxed">
-                        Assess and register this asset directly to your citizen profile. Once registered, you will be able to make immediate simulated payments and generate digital receipts.
+                        This calculator estimates annual property tax due according to active Panchayat bylaws.
                       </p>
-                    </div>
-
-                    <div className="pt-4 md:pt-0">
-                      <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase mb-2">Registered Owner Name</label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="e.g. Ramesh Patil"
-                          value={calcOwner}
-                          onChange={(e) => setCalcOwner(e.target.value)}
-                          className="w-full border border-[#C4F8FF]/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-[#0F4B70]/20 backdrop-blur-sm font-medium text-[#C4F8FF]"
-                        />
-                        <button
-                          type="submit"
-                          disabled={isRegisteringProperty}
-                          className="bg-[#0F4B70] hover:bg-[#0a344f] border border-[#C4F8FF]/20 text-[#C4F8FF] px-4 rounded-lg font-bold text-xs whitespace-nowrap transition-colors disabled:opacity-50"
-                        >
-                          {isRegisteringProperty ? 'Adding...' : 'Register Asset'}
-                        </button>
-                      </div>
+                      <p className="text-xs text-[#C4F8FF]/70 mt-3 leading-relaxed">
+                        Official tax bills and properties are registered on your profile by the Panchayat Administrator. Citizens cannot register properties directly.
+                      </p>
                     </div>
                   </div>
                 </div>
               )}
-            </form>
+            </div>
           </div>
         </div>
 
@@ -613,21 +596,21 @@ const Taxes = () => {
       {/* DETAILED TAX RECEIPT PRINT VIEW (MODAL) */}
       {selectedReceipt && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl max-w-2xl w-full border border-[#C4F8FF]/15 relative flex flex-col max-h-[95vh]">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-2xl w-full border border-slate-200 relative flex flex-col max-h-[95vh]">
             
             {/* Modal Actions */}
-            <div className="p-4 border-b border-[#C4F8FF]/15 bg-[#0F4B70]/30 flex justify-between items-center print:hidden">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#C4F8FF]/70">Official Document Preview</span>
+            <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center print:hidden">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Official Document Preview</span>
               <div className="flex gap-2">
                 <button 
                   onClick={executeBrowserPrint}
-                  className="bg-[#0F4B70] hover:bg-[#0a344f] border border-[#C4F8FF]/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+                  className="bg-slate-800 hover:bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
                 >
                   <FileText size={14} /> Print / Export PDF
                 </button>
                 <button 
                   onClick={() => setSelectedReceipt(null)}
-                  className="bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/15 hover:bg-[#0F4B70]/30 text-[#C4F8FF]/80 px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                  className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all"
                 >
                   Close
                 </button>
@@ -635,65 +618,65 @@ const Taxes = () => {
             </div>
 
             {/* PRINTABLE RECEIPT LAYOUT */}
-            <div className="p-8 space-y-6 overflow-y-auto flex-1 bg-[#0F4B70]/20 backdrop-blur-sm printable-receipt text-[#C4F8FF]">
+            <div className="p-8 space-y-6 overflow-y-auto flex-1 bg-white printable-receipt text-slate-800">
               
               {/* Receipt Header */}
-              <div className="flex justify-between items-start border-b-2 border-[#C4F8FF]/20 pb-6">
+              <div className="flex justify-between items-start border-b-2 border-slate-300 pb-6">
                 <div className="flex gap-4 items-center">
-                  <div className="w-16 h-16 rounded-xl border-2 border-[#C4F8FF]/20 flex items-center justify-center text-[#C4F8FF] font-extrabold text-2xl">
+                  <div className="w-16 h-16 rounded-xl border-2 border-slate-300 flex items-center justify-center text-slate-800 font-extrabold text-2xl">
                     🌾
                   </div>
                   <div>
-                    <h2 className="text-xl font-extrabold uppercase tracking-tight text-[#C4F8FF]">Gram Panchayat Digital Portal</h2>
-                    <p className="text-xs text-[#C4F8FF]/70 font-bold uppercase tracking-wider">Government of India / State Panchayati Raj Department</p>
-                    <p className="text-xs text-[#C4F8FF]/60 mt-0.5">Village Ward: {selectedReceipt.village || 'Panchayat Area'}</p>
+                    <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900">Gram Panchayat Digital Portal</h2>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Government of India / State Panchayati Raj Department</p>
+                    <p className="text-xs text-slate-500 mt-0.5 font-medium">Village Ward: {selectedReceipt.village || 'Panchayat Area'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-extrabold bg-green-550/10 text-green-400 px-3 py-1 rounded border border-green-500/20 uppercase tracking-widest">
+                  <span className="text-[10px] font-extrabold bg-green-50 text-green-700 px-3 py-1 rounded border border-green-300 uppercase tracking-widest">
                     TAX RECEIPT
                   </span>
-                  <p className="text-xs font-mono font-bold text-[#C4F8FF]/70 mt-2">FY: {selectedReceipt.taxYear}</p>
+                  <p className="text-xs font-mono font-bold text-slate-500 mt-2">FY: {selectedReceipt.taxYear}</p>
                 </div>
               </div>
 
               {/* Owner and assessment information */}
-              <div className="grid grid-cols-2 gap-6 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/15 rounded-2xl p-5">
+              <div className="grid grid-cols-2 gap-6 text-xs bg-slate-50 border border-slate-200 rounded-2xl p-5 text-slate-700">
                 <div className="space-y-1.5">
-                  <p className="font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Property Details</p>
-                  <p className="font-bold text-[#C4F8FF]">Assessment No: <span className="font-mono text-[#C4F8FF]">{selectedReceipt.propertyId}</span></p>
-                  <p className="text-[#C4F8FF]/80">Property Type: <span className="font-bold text-[#C4F8FF]">{selectedReceipt.propertyType}</span></p>
+                  <p className="font-bold text-slate-400 uppercase tracking-wider">Property Details</p>
+                  <p className="font-bold text-slate-900">Assessment No: <span className="font-mono text-slate-900">{selectedReceipt.propertyId}</span></p>
+                  <p className="text-slate-700">Property Type: <span className="font-bold text-slate-800">{selectedReceipt.propertyType}</span></p>
                   {selectedReceipt.propertyType !== 'Vacant' && (
-                    <p className="text-[#C4F8FF]/80">Construction Class: <span className="font-bold text-[#C4F8FF]">{selectedReceipt.constructionType}</span></p>
+                    <p className="text-slate-700">Construction Class: <span className="font-bold text-slate-800">{selectedReceipt.constructionType}</span></p>
                   )}
-                  <p className="text-[#C4F8FF]/80">Plinth / Built Area: <span className="font-bold text-[#C4F8FF]">{selectedReceipt.builtUpArea} sq. ft.</span></p>
+                  <p className="text-slate-700">Plinth / Built Area: <span className="font-bold text-slate-800">{selectedReceipt.builtUpArea} sq. ft.</span></p>
                 </div>
 
                 <div className="space-y-1.5 text-right sm:text-left">
-                  <p className="font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Taxpayer Details</p>
-                  <p className="font-bold text-[#C4F8FF]">Owner: {selectedReceipt.ownerName}</p>
-                  <p className="text-[#C4F8FF]/80">Status: <span className="font-extrabold text-green-400 uppercase">Paid & Cleared</span></p>
-                  <p className="text-[#C4F8FF]/80">Receipt Date: {selectedReceipt.paidAt ? new Date(selectedReceipt.paidAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
-                  <p className="text-[#C4F8FF]/80">Txn Ref: <span className="font-mono font-semibold text-[#C4F8FF]">{selectedReceipt.transactionId || 'TXN-N/A'}</span></p>
+                  <p className="font-bold text-slate-400 uppercase tracking-wider">Taxpayer Details</p>
+                  <p className="font-bold text-slate-900">Owner: {selectedReceipt.ownerName}</p>
+                  <p className="text-slate-700">Status: <span className="font-extrabold text-green-600 uppercase">Paid & Cleared</span></p>
+                  <p className="text-slate-700">Receipt Date: {selectedReceipt.paidAt ? new Date(selectedReceipt.paidAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
+                  <p className="text-slate-700">Txn Ref: <span className="font-mono font-semibold text-slate-900">{selectedReceipt.transactionId || 'TXN-N/A'}</span></p>
                 </div>
               </div>
 
               {/* Detailed Bill Breakdown */}
               <div className="space-y-4">
-                <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#C4F8FF] border-b border-[#C4F8FF]/15 pb-2">Financial Breakdown</h4>
+                <h4 className="font-extrabold text-sm uppercase tracking-wider text-slate-950 border-b border-slate-350 pb-2">Financial Breakdown</h4>
                 
                 {/* Calculations for breakdown */}
                 {(() => {
                   const breakdown = calculatePanchayatTax(selectedReceipt.propertyType, selectedReceipt.constructionType, selectedReceipt.builtUpArea);
                   return (
-                    <table className="w-full text-sm text-[#C4F8FF]">
+                    <table className="w-full text-sm text-slate-800">
                       <thead>
-                        <tr className="border-b border-[#C4F8FF]/15 text-xs font-bold text-[#C4F8FF]/60 uppercase text-left pb-2">
+                        <tr className="border-b border-slate-300 text-xs font-bold text-slate-500 uppercase text-left pb-2">
                           <th className="pb-2">Tax Description Component</th>
                           <th className="pb-2 text-right">Amount (₹)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#C4F8FF]/10">
+                      <tbody className="divide-y divide-slate-200">
                         <tr className="py-2.5">
                           <td className="py-2.5">Property Base Building / Land Valuation Tax (Annual)</td>
                           <td className="py-2.5 text-right">₹{breakdown.subtotal}</td>
@@ -710,9 +693,9 @@ const Taxes = () => {
                           <td className="py-2.5">Panchayat Drinking Water Supply Cess (5%)</td>
                           <td className="py-2.5 text-right">₹{breakdown.waterCess}</td>
                         </tr>
-                        <tr className="border-t border-[#C4F8FF]/20 font-extrabold text-base text-[#C4F8FF] bg-[#0F4B70]/30">
+                        <tr className="border-t border-slate-400 font-extrabold text-base text-slate-950 bg-slate-50">
                           <td className="py-3 px-3 uppercase tracking-wider">Total Certified Payment</td>
-                          <td className="py-3 px-3 text-right text-[#C4F8FF]">₹{selectedReceipt.taxAmount}</td>
+                          <td className="py-3 px-3 text-right text-slate-950">₹{selectedReceipt.taxAmount}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -721,16 +704,16 @@ const Taxes = () => {
               </div>
 
               {/* Receipt Footer stamp */}
-              <div className="pt-8 border-t border-[#C4F8FF]/15 flex justify-between items-center text-xs">
+              <div className="pt-8 border-t border-slate-300 flex justify-between items-center text-xs">
                 <div>
-                  <p className="text-[10px] text-[#C4F8FF]/60 font-extrabold uppercase">Audit Clearance</p>
-                  <p className="font-bold text-[#C4F8FF] mt-1">Gram Panchayat Comptroller Office</p>
-                  <p className="text-[#C4F8FF]/60 mt-0.5">Digitally verified through GramSuvidha node registry.</p>
+                  <p className="text-[10px] text-slate-500 font-extrabold uppercase">Audit Clearance</p>
+                  <p className="font-bold text-slate-800 mt-1">Gram Panchayat Comptroller Office</p>
+                  <p className="text-slate-500 mt-0.5">Digitally verified through GramSuvidha node registry.</p>
                 </div>
                 
                 <div className="text-center relative">
                   {/* Mock rubber stamp */}
-                  <div className="border-4 border-dashed border-green-500/50 text-green-400 rounded-full w-24 h-24 flex items-center justify-center font-black text-xs uppercase transform rotate-12 flex-shrink-0 animate-scale-in">
+                  <div className="border-4 border-dashed border-green-600/80 text-green-700 rounded-full w-24 h-24 flex items-center justify-center font-black text-xs uppercase transform rotate-12 flex-shrink-0">
                     <div className="text-center">
                       <p>PAID</p>
                       <p className="text-[8px] font-bold">PANCHAYAT</p>

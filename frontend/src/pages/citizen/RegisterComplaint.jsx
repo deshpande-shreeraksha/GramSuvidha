@@ -14,6 +14,7 @@ const RegisterComplaint = () => {
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('Bengeri, Vishweshwara Nagar, Hubli, Hubballi Urban Taluka, Dharwad, Karnataka, 580020, India');
   const [coordinates, setCoordinates] = useState(null);
+  const [locationMode, setLocationMode] = useState('gps'); // 'gps' | 'manual'
   const [loading, setLoading] = useState(false);
   const [fetchingLocation, setFetchingLocation] = useState(false);
   const [message, setMessage] = useState('');
@@ -26,6 +27,38 @@ const RegisterComplaint = () => {
       setCategory(locationState.state.category);
     }
   }, [locationState]);
+
+  // Geocode address manually using Nominatim forward geocoding
+  const resolveManualAddress = async () => {
+    if (!address.trim()) {
+      setError('Please type an address first.');
+      return;
+    }
+    setFetchingLocation(true);
+    setError('');
+    setMessage('');
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&accept-language=en`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const { lat, lon, display_name } = data[0];
+          setCoordinates({ lat: parseFloat(lat), lon: parseFloat(lon) });
+          setAddress(display_name);
+          setMessage('Address located successfully on map!');
+          setTimeout(() => setMessage(''), 3000);
+        } else {
+          setError('Could not find this address on the map. Please refine the text.');
+        }
+      } else {
+        setError('Error reaching address lookup service.');
+      }
+    } catch (err) {
+      setError('Network error searching address.');
+    } finally {
+      setFetchingLocation(false);
+    }
+  };
 
   // Geolocation Fetching utilizing OSM Nominatim Reverse Geocoder
   const fetchLiveLocation = () => {
@@ -268,32 +301,59 @@ const RegisterComplaint = () => {
           <div className="flex rounded-lg overflow-hidden border border-[#C4F8FF]/15 p-1 bg-[#0F4B70]/40">
             <button 
               type="button" 
-              onClick={fetchLiveLocation}
-              className="flex-1 py-2 text-sm font-bold bg-[#0F4B70]/20 backdrop-blur-sm rounded-md shadow-sm text-[#C4F8FF] flex justify-center items-center gap-2"
+              onClick={() => { setLocationMode('gps'); fetchLiveLocation(); }}
+              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all flex justify-center items-center gap-2 ${
+                locationMode === 'gps' ? 'bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] shadow-sm' : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
+              }`}
             >
-              <Navigation size={16} className={fetchingLocation ? "animate-spin text-[#C4F8FF]" : ""} /> Auto GPS Detect
+              <Navigation size={16} className={fetchingLocation && locationMode === 'gps' ? "animate-spin text-[#C4F8FF]" : ""} /> Auto GPS Detect
             </button>
-            <button type="button" className="flex-1 py-2 text-sm font-bold text-[#C4F8FF]/70 hover:text-[#C4F8FF] flex justify-center items-center gap-2">
+            <button 
+              type="button" 
+              onClick={() => setLocationMode('manual')}
+              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all flex justify-center items-center gap-2 ${
+                locationMode === 'manual' ? 'bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] shadow-sm' : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
+              }`}
+            >
               <MapPin size={16} /> Manual Input
             </button>
           </div>
 
-          <button 
-            type="button" 
-            onClick={fetchLiveLocation}
-            disabled={fetchingLocation}
-            className="w-full py-3 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#0a344f] transition-all disabled:opacity-55"
-          >
-            {fetchingLocation ? (
-              <>
-                <Loader2 size={16} className="animate-spin" /> Geocoding Live Coordinates...
-              </>
-            ) : (
-              <>
-                <Navigation size={16} /> Auto-Detect My Live Location
-              </>
-            )}
-          </button>
+          {locationMode === 'gps' ? (
+            <button 
+              type="button" 
+              onClick={fetchLiveLocation}
+              disabled={fetchingLocation}
+              className="w-full py-3 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#0a344f] transition-all disabled:opacity-55"
+            >
+              {fetchingLocation ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Geocoding Live Coordinates...
+                </>
+              ) : (
+                <>
+                  <Navigation size={16} /> Auto-Detect My Live Location
+                </>
+              )}
+            </button>
+          ) : (
+            <button 
+              type="button" 
+              onClick={resolveManualAddress}
+              disabled={fetchingLocation}
+              className="w-full py-3 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#0a344f] transition-all disabled:opacity-55"
+            >
+              {fetchingLocation ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Searching Address...
+                </>
+              ) : (
+                <>
+                  <MapPin size={16} /> Search & Pin Address on Map
+                </>
+              )}
+            </button>
+          )}
 
           <div className="relative h-48 rounded-xl overflow-hidden border border-[#C4F8FF]/15 bg-[#0F4B70]/40 flex items-center justify-center">
             {coordinates ? (
@@ -330,12 +390,23 @@ const RegisterComplaint = () => {
 
           <div>
             <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Final Verified Address</label>
-            <input 
-              type="text" 
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm"
-            />
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Type your address manually here..."
+                className="flex-grow border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm"
+              />
+              <button
+                type="button"
+                onClick={resolveManualAddress}
+                disabled={fetchingLocation}
+                className="px-4 py-2 bg-[#0F4B70]/40 text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold text-xs hover:bg-[#0F4B70]/60 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <MapPin size={14} /> Locate
+              </button>
+            </div>
           </div>
         </div>
 

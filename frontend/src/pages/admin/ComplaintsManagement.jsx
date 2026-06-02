@@ -329,7 +329,7 @@ const ComplaintsManagement = () => {
               <h3 className="font-bold text-[#C4F8FF]">Complaint Details - {selectedComplaint.id}</h3>
               <button onClick={() => setSelectedComplaint(null)} className="text-[#C4F8FF]/60 hover:text-[#C4F8FF]/80 font-bold">✕</button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
               <div>
                 <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Category</label>
                 <p className="font-semibold text-[#C4F8FF] text-sm mt-1">{selectedComplaint.category}</p>

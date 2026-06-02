@@ -206,7 +206,7 @@ const AdminHome = () => {
                   </div>
                   <button 
                     onClick={() => navigate(action.path)}
-                    className="w-full py-2 bg-[#0F4B70]/30 hover:bg-[#C4F8FF]/10 hover:text-white text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-[#0F4B70]/20 hover:bg-[#0F4B70]/40 border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/30 text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5"
                   >
                     {action.actionText} <ArrowRight size={12} />
                   </button>
