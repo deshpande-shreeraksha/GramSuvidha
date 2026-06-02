@@ -18,12 +18,22 @@ module.exports = async (req, res) => {
     // Remove host to prevent SSL/hostname mismatch errors on Render
     delete headers.host;
 
-    const response = await fetch(targetUrl, {
-      method: req.method,
-      headers,
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? req : undefined,
-      duplex: 'half' // required when body is a readable stream in fetch
-    });
+    const response = await (async () => {
+      const fetchOptions = {
+        method: req.method,
+        headers
+      };
+
+      if (req.method !== 'GET' && req.method !== 'HEAD') {
+        const chunks = [];
+        for await (const chunk of req) {
+          chunks.push(chunk);
+        }
+        fetchOptions.body = Buffer.concat(chunks);
+      }
+
+      return fetch(targetUrl, fetchOptions);
+    })();
 
     // Copy all response headers to the client
     response.headers.forEach((value, key) => {
