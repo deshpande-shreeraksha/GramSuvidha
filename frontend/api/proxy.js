@@ -1,7 +1,7 @@
-// Vercel Serverless Function Proxy
-// Forwards all request methods, headers, and streams (including image uploads) to BACKEND_URL
+// Vercel Serverless Function Proxy (ES Module syntax)
+// Forwards all request methods, headers, and streams to BACKEND_URL
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   const backendUrl = process.env.BACKEND_URL;
   if (!backendUrl) {
     return res.status(500).json({ 
@@ -49,9 +49,9 @@ module.exports = async (req, res) => {
     console.error('Vercel dynamic proxy error:', error);
     res.status(500).json({ error: 'Dynamic proxy failed', message: error.message });
   }
-};
+}
 
-module.exports.config = {
+export const config = {
   api: {
     bodyParser: false, // Disable body parsing so binary files (profile photos) stream through unchanged
   },
