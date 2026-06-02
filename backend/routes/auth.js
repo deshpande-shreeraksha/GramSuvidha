@@ -201,7 +201,7 @@ router.post('/register', async (req, res) => {
             </ul>
           `}
           <p style="text-align: center; margin-top: 30px;">
-            <a href="http://localhost:5173/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Log In to Portal</a>
+            <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Log In to Portal</a>
           </p>
           <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
           <p style="font-size: 11px; text-align: center; color: #94a3b8;">
@@ -443,7 +443,7 @@ router.post('/workers', async (req, res) => {
             <li>Uploading images as proof of resolution for citizen validation.</li>
           </ul>
           <p style="text-align: center; margin-top: 30px;">
-            <a href="http://localhost:5173/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Access Field Worker Portal</a>
+            <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Access Field Worker Portal</a>
           </p>
           <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
           <p style="font-size: 11px; text-align: center; color: #94a3b8;">

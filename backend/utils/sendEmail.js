@@ -7,6 +7,42 @@ if (dns.setDefaultResultOrder) {
 }
 
 const sendEmail = async (toEmail, subject, htmlContent) => {
+  // If BREVO_API_KEY is configured, use the HTTP API (avoids SMTP IP blocking entirely)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      console.log(`Attempting to send email via Brevo HTTP API to ${toEmail}...`);
+      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': process.env.BREVO_API_KEY,
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { 
+            name: "GramSuvidha", 
+            email: process.env.SENDER_EMAIL || process.env.SMTP_USER || "gramsuvidha.ai@gmail.com"
+          },
+          to: [{ email: toEmail }],
+          subject: subject,
+          htmlContent: htmlContent
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`Email successfully sent via Brevo API to ${toEmail}. Message ID: ${data.messageId}`);
+        return true;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || response.statusText);
+      }
+    } catch (error) {
+      console.error(`Failed to send email via Brevo API to ${toEmail}:`, error.message);
+      console.log('Falling back to SMTP configuration...');
+    }
+  }
+
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = process.env.SMTP_PORT || 587;
   const smtpUser = process.env.SMTP_USER;
@@ -35,6 +71,8 @@ const sendEmail = async (toEmail, subject, htmlContent) => {
       console.warn(`DNS lookup failed for ${smtpHost}, falling back to default:`, dnsErr.message);
     }
 
+    const senderEmail = process.env.SENDER_EMAIL || smtpUser;
+
     const transporter = nodemailer.createTransport({
       host: resolvedHost,
       port: parseInt(smtpPort),
@@ -50,7 +88,7 @@ const sendEmail = async (toEmail, subject, htmlContent) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"GramSuvidha" <${smtpUser}>`,
+      from: `"GramSuvidha" <${senderEmail}>`,
       to: toEmail,
       subject: subject,
       html: htmlContent
