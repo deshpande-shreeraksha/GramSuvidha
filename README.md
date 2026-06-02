@@ -190,4 +190,3 @@ node clear_db.js
 
 *   **Shreeraksha R Deshpande** - [@deshpande-shreeraksha](https://github.com/deshpande-shreeraksha)
 *   **Ashwini Rati** - [@ashwini-rati](https://github.com/Ashwinirati)
-*   **K Vishnu** - [@vkampli1818](https://github.com/vkampli1818)
