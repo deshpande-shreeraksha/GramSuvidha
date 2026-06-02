@@ -35,9 +35,19 @@ export default async function handler(req, res) {
       return fetch(targetUrl, fetchOptions);
     })();
 
-    // Copy all response headers to the client
+    // Copy response headers, excluding hop-by-hop and content headers that mismatch decompressed data
+    const excludedHeaders = [
+      'content-encoding',
+      'content-length',
+      'transfer-encoding',
+      'connection',
+      'keep-alive'
+    ];
+
     response.headers.forEach((value, key) => {
-      res.setHeader(key, value);
+      if (!excludedHeaders.includes(key.toLowerCase())) {
+        res.setHeader(key, value);
+      }
     });
 
     res.status(response.status);
