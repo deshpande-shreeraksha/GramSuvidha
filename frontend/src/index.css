@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#061926] text-[#C4F8FF] font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 px-4 py-2 rounded-lg font-medium hover:bg-[#0a344f] transition-colors shadow-sm;
+  }
+  .btn-secondary {
+    @apply bg-[#0F4B70]/20 text-[#C4F8FF] border border-[#C4F8FF]/15 px-4 py-2 rounded-lg font-medium hover:bg-[#0F4B70]/40 transition-colors shadow-sm;
+  }
+  .card {
+    @apply bg-[#0F4B70]/20 backdrop-blur-sm rounded-xl border border-[#C4F8FF]/15 p-6 text-[#C4F8FF];
+  }
+}
+
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(196, 248, 255, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(196, 248, 255, 0.4);
+}
+
+/* Global dropdown styling to match the premium dark theme */
+select {
+  color: #C4F8FF !important;
+}
+
+select option {
+  background-color: #061926 !important;
+  color: #C4F8FF !important;
+}
+
+/* Global input, select, and textarea glassmorphism styling */
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  background-color: rgba(15, 75, 112, 0.3) !important;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(196, 248, 255, 0.15) !important;
+  border-radius: 0.75rem !important; /* rounded-xl */
+  color: #C4F8FF !important;
+  font-weight: 500;
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.875rem !important; /* text-sm */
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #C4F8FF !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px rgba(196, 248, 255, 0.5) !important;
+}
+
+/* Disabled styling */
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: rgba(15, 75, 112, 0.15) !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
