@@ -4,7 +4,7 @@ import { UserPlus, Activity, UserCircle, ShieldCheck, Key, ArrowLeft, Mail, Lock
 import { useLanguage } from '../context/LanguageContext';
 
 const SignUp = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
