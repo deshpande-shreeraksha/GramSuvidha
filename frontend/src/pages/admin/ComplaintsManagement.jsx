@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, AlertTriangle, Droplets, Trash2, Zap, MoreVertical, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const mockComplaints = [
   {
@@ -39,6 +40,7 @@ const getCategoryStyles = (category) => {
 };
 
 const ComplaintsManagement = () => {
+  const { t } = useLanguage();
   const [complaints, setComplaints] = useState([]);
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -145,11 +147,11 @@ const ComplaintsManagement = () => {
         fetchComplaintsAndWorkers();
         setSelectedComplaint(null);
       } else {
-        alert('Failed to update complaint');
+        alert(t('Failed to update complaint'));
       }
     } catch (err) {
       console.error(err);
-      alert('Network error');
+      alert(t('Network error'));
     }
   };
 
@@ -179,11 +181,11 @@ const ComplaintsManagement = () => {
         fetchComplaintsAndWorkers();
         setSelectedComplaint(null);
       } else {
-        alert('Failed to update status');
+        alert(t('Failed to update status'));
       }
     } catch (err) {
       console.error(err);
-      alert('Network error');
+      alert(t('Network error'));
     }
   };
 
@@ -192,19 +194,19 @@ const ComplaintsManagement = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#C4F8FF] flex items-center gap-3">
-            Complaints
+            {t('Complaints')}
             <span className="text-xs font-bold bg-green-500/10 text-green-400 px-3 py-1 rounded-full border border-green-500/20 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> {workers.length || 28} Workers Active
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> {workers.length || 28} {t('Workers Active')}
             </span>
           </h1>
-          <p className="text-[#C4F8FF]/70 mt-1">Detailed review and resolution of civic reports.</p>
+          <p className="text-[#C4F8FF]/70 mt-1">{t('Detailed review and resolution of civic reports.')}</p>
         </div>
       </div>
 
       <div className="card overflow-hidden">
         <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <h3 className="font-bold text-lg text-[#C4F8FF]">Civic Complaints</h3>
+            <h3 className="font-bold text-lg text-[#C4F8FF]">{t('Civic Complaints')}</h3>
             {/* Status Tabs */}
             <div className="flex bg-[#0F4B70]/40 p-1 rounded-xl border border-[#C4F8FF]/15 text-xs">
               {['All', 'Pending', 'In Progress', 'Resolved', 'Rejected'].map(status => (
@@ -217,7 +219,7 @@ const ComplaintsManagement = () => {
                       : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
                   }`}
                 >
-                  {status}
+                  {t(status)}
                 </button>
               ))}
             </div>
@@ -228,7 +230,7 @@ const ComplaintsManagement = () => {
               <Search size={16} className="text-[#C4F8FF]/60" />
               <input 
                 type="text" 
-                placeholder="Search by ID or details..." 
+                placeholder={t('Search by ID or details...')} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent border-none outline-none text-sm w-full" 
@@ -239,83 +241,83 @@ const ComplaintsManagement = () => {
         
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="py-12 text-center text-[#C4F8FF]/70">Loading complaints...</div>
+            <div className="py-12 text-center text-[#C4F8FF]/70">{t('Loading complaints...')}</div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider border-b border-[#C4F8FF]/15 bg-[#0F4B70]/20">
                   <th className="py-3 pl-6 w-12"></th>
-                  <th className="py-3 w-1/3">Complaint Details</th>
-                  <th className="py-3">Status</th>
-                  <th className="py-3">Assigned Force</th>
-                  <th className="py-3">Incident Location</th>
-                  <th className="py-3 text-center">Actions</th>
+                  <th className="py-3 w-1/3">{t('Complaint Details')}</th>
+                  <th className="py-3">{t('Status')}</th>
+                  <th className="py-3">{t('Assigned Force')}</th>
+                  <th className="py-3">{t('Incident Location')}</th>
+                  <th className="py-3 text-center">{t('Actions')}</th>
                 </tr>
               </thead>
-                <tbody className="text-sm">
-                  {(() => {
-                    const filtered = complaints.filter(c => {
-                      const matchesSearch = c.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                            c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                            c.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                            c.category.toLowerCase().includes(searchQuery.toLowerCase());
-                      const matchesStatus = filterStatus === 'All' || c.status === filterStatus;
-                      return matchesSearch && matchesStatus;
-                    });
-                    if (filtered.length === 0) {
-                      return (
-                        <tr>
-                          <td colSpan="6" className="py-8 text-center text-[#C4F8FF]/60">No complaints found matching current search and filters.</td>
-                        </tr>
-                      );
-                    }
-                    return filtered.map((complaint, i) => (
-                      <tr key={complaint._id || i} className="border-b border-[#C4F8FF]/20 hover:bg-[#0F4B70]/30 transition-colors">
-                        <td className="py-4 pl-6">
-                          <div className={`w-10 h-10 rounded-xl ${complaint.bg || 'bg-[#0F4B70]/40'} flex items-center justify-center`}>
-                            {complaint.icon || <AlertTriangle size={20} className="text-[#C4F8FF]/70" />}
-                          </div>
-                        </td>
-                        <td className="py-4 pr-4">
-                          <div className="font-bold text-[#C4F8FF] text-xs mb-1">{complaint.category}</div>
-                          <div className="text-[#C4F8FF]/80 line-clamp-1">{complaint.title}</div>
-                          <div className="text-xs text-[#C4F8FF]/60 mt-1 uppercase">ID: {complaint.id}</div>
-                        </td>
-                        <td className="py-4">
-                          <span className={`text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
-                            complaint.status === 'Resolved' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                            complaint.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                            complaint.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                            complaint.status === 'In Progress' ? 'bg-[#C4F8FF]/10 text-[#C4F8FF] border border-[#C4F8FF]/20' :
-                            'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                          }`}>
-                            {complaint.status === 'Pending' ? 'Awaiting Review' : complaint.status}
-                          </span>
-                        </td>
-                        <td className="py-4">
-                          {complaint.assigned && complaint.assigned !== '-' ? (
-                            <span className="text-xs font-bold text-[#C4F8FF] uppercase tracking-wider bg-[#0F4B70]/10 px-2 py-1 rounded-md border border-[#C4F8FF]/10">
-                              {complaint.assigned}
-                            </span>
-                          ) : (
-                            <span className="text-[#C4F8FF]/70">-</span>
-                          )}
-                        </td>
-                        <td className="py-4">
-                          <div className="text-[#C4F8FF]/80 flex items-center gap-1.5 text-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                            {complaint.location}
-                          </div>
-                        </td>
-                        <td className="py-4 text-center">
-                          <button onClick={() => handleOpenModal(complaint)} className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/15 rounded-md text-xs font-bold text-[#C4F8FF]/80 hover:bg-[#0F4B70]/30 shadow-sm">
-                            <Eye size={14} /> View
-                          </button>
-                        </td>
+              <tbody className="text-sm">
+                {(() => {
+                  const filtered = complaints.filter(c => {
+                    const matchesSearch = c.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                          c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                          c.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                          c.category.toLowerCase().includes(searchQuery.toLowerCase());
+                    const matchesStatus = filterStatus === 'All' || c.status === filterStatus;
+                    return matchesSearch && matchesStatus;
+                  });
+                  if (filtered.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan="6" className="py-8 text-center text-[#C4F8FF]/60">{t('No complaints found matching current search and filters.')}</td>
                       </tr>
-                    ));
-                  })()}
-                </tbody>
+                    );
+                  }
+                  return filtered.map((complaint, i) => (
+                    <tr key={complaint._id || i} className="border-b border-[#C4F8FF]/20 hover:bg-[#0F4B70]/30 transition-colors">
+                      <td className="py-4 pl-6">
+                        <div className={`w-10 h-10 rounded-xl ${complaint.bg || 'bg-[#0F4B70]/40'} flex items-center justify-center`}>
+                          {complaint.icon || <AlertTriangle size={20} className="text-[#C4F8FF]/70" />}
+                        </div>
+                      </td>
+                      <td className="py-4 pr-4">
+                        <div className="font-bold text-[#C4F8FF] text-xs mb-1">{t(complaint.category)}</div>
+                        <div className="text-[#C4F8FF]/80 line-clamp-1">{complaint.title}</div>
+                        <div className="text-xs text-[#C4F8FF]/60 mt-1 uppercase">{t('ID:')} {complaint.id}</div>
+                      </td>
+                      <td className="py-4">
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
+                          complaint.status === 'Resolved' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                          complaint.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                          complaint.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                          complaint.status === 'In Progress' ? 'bg-[#C4F8FF]/10 text-[#C4F8FF] border border-[#C4F8FF]/20' :
+                          'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                        }`}>
+                          {complaint.status === 'Pending' ? t('Awaiting Review') : t(complaint.status)}
+                        </span>
+                      </td>
+                      <td className="py-4">
+                        {complaint.assigned && complaint.assigned !== '-' ? (
+                          <span className="text-xs font-bold text-[#C4F8FF] uppercase tracking-wider bg-[#0F4B70]/10 px-2 py-1 rounded-md border border-[#C4F8FF]/10">
+                            {complaint.assigned}
+                          </span>
+                        ) : (
+                          <span className="text-[#C4F8FF]/70">—</span>
+                        )}
+                      </td>
+                      <td className="py-4">
+                        <div className="text-[#C4F8FF]/80 flex items-center gap-1.5 text-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                          {complaint.location}
+                        </div>
+                      </td>
+                      <td className="py-4 text-center">
+                        <button onClick={() => handleOpenModal(complaint)} className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/15 rounded-md text-xs font-bold text-[#C4F8FF]/80 hover:bg-[#0F4B70]/30 shadow-sm">
+                          <Eye size={14} /> {t('View')}
+                        </button>
+                      </td>
+                    </tr>
+                  ));
+                })()}
+              </tbody>
             </table>
           )}
         </div>
@@ -326,27 +328,27 @@ const ComplaintsManagement = () => {
         <div className="fixed inset-0 bg-[#0F4B70]/30 backdrop-blur-md/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl max-w-lg w-full shadow-xl border border-[#C4F8FF]/15 overflow-hidden">
             <div className="px-6 py-4 bg-[#0F4B70]/30 border-b border-[#C4F8FF]/20 flex justify-between items-center">
-              <h3 className="font-bold text-[#C4F8FF]">Complaint Details - {selectedComplaint.id}</h3>
+              <h3 className="font-bold text-[#C4F8FF]">{t('Complaint Details')} — {selectedComplaint.id}</h3>
               <button onClick={() => setSelectedComplaint(null)} className="text-[#C4F8FF]/60 hover:text-[#C4F8FF]/80 font-bold">✕</button>
             </div>
             <div className="p-6 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
               <div>
-                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Category</label>
-                <p className="font-semibold text-[#C4F8FF] text-sm mt-1">{selectedComplaint.category}</p>
+                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Category')}</label>
+                <p className="font-semibold text-[#C4F8FF] text-sm mt-1">{t(selectedComplaint.category)}</p>
               </div>
               <div>
-                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Citizen Details</label>
+                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Citizen Details')}</label>
                 <p className="font-medium text-[#C4F8FF] text-sm mt-1">
-                  Name: {selectedComplaint.user?.name || 'Anonymous citizen'}<br/>
-                  Phone: {selectedComplaint.user?.phone || 'N/A'}
+                  {t('Name:')} {selectedComplaint.user?.name || t('Anonymous citizen')}<br/>
+                  {t('Phone:')} {selectedComplaint.user?.phone || t('N/A')}
                 </p>
               </div>
               <div>
-                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Description</label>
+                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Description')}</label>
                 <p className="text-[#C4F8FF]/80 text-sm mt-1 whitespace-pre-wrap">{selectedComplaint.title}</p>
               </div>
               <div>
-                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Location</label>
+                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Location')}</label>
                 <p className="text-[#C4F8FF]/80 text-sm mt-1">{selectedComplaint.location}</p>
                 {selectedComplaint.latitude && selectedComplaint.longitude && (
                   <div className="rounded-xl overflow-hidden border border-[#C4F8FF]/15 h-44 w-full mt-2">
@@ -365,7 +367,7 @@ const ComplaintsManagement = () => {
               </div>
 
               <div className="pt-4 border-t border-[#C4F8FF]/20">
-                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider mb-2 block">Visual Evidence & Attachments</label>
+                <label className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider mb-2 block">{t('Visual Evidence & Attachments')}</label>
                 {selectedComplaint.documents && selectedComplaint.documents.length > 0 ? (
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     {selectedComplaint.documents.map((doc, idx) => {
@@ -380,7 +382,7 @@ const ComplaintsManagement = () => {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
                               />
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">
-                                View Full Image
+                                {t('View Full Image')}
                               </div>
                             </a>
                           ) : (
@@ -396,7 +398,7 @@ const ComplaintsManagement = () => {
                               rel="noreferrer" 
                               className="text-[#C4F8FF] text-[10px] font-bold hover:underline"
                             >
-                              Open
+                              {t('Open')}
                             </a>
                           </div>
                         </div>
@@ -404,33 +406,33 @@ const ComplaintsManagement = () => {
                     })}
                   </div>
                 ) : (
-                  <p className="text-xs text-[#C4F8FF]/60 italic mt-1">No attachments provided.</p>
+                  <p className="text-xs text-[#C4F8FF]/60 italic mt-1">{t('No attachments provided.')}</p>
                 )}
               </div>
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#C4F8FF]/20">
                 <div>
-                  <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Update Status</label>
+                  <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Update Status')}</label>
                   <select
                     value={modalStatus}
                     onChange={(e) => setModalStatus(e.target.value)}
                     className="w-full border border-[#C4F8FF]/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF]"
                   >
-                    <option value="Pending">Awaiting Review</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Resolved">Resolved</option>
+                    <option value="Pending">{t('Awaiting Review')}</option>
+                    <option value="Approved">{t('Approved')}</option>
+                    <option value="Rejected">{t('Rejected')}</option>
+                    <option value="In Progress">{t('In Progress')}</option>
+                    <option value="Resolved">{t('Resolved')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Assign Worker</label>
+                  <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Assign Worker')}</label>
                   <select
                     value={modalAssigned}
                     onChange={(e) => setModalAssigned(e.target.value)}
                     className="w-full border border-[#C4F8FF]/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF]"
                   >
-                    <option value="-">None</option>
+                    <option value="-">{t('None')}</option>
                     {workers.map(w => (
                       <option key={w._id} value={w.name}>{w.name}</option>
                     ))}
@@ -441,7 +443,7 @@ const ComplaintsManagement = () => {
               {modalStatus === 'Resolved' && (
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#C4F8FF]/20 animate-fade-in">
                   <div>
-                    <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Resolution Cost (₹)</label>
+                    <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Resolution Cost (₹)')}</label>
                     <input 
                       type="number"
                       value={modalResolutionCost}
@@ -450,10 +452,10 @@ const ComplaintsManagement = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Cost Description</label>
+                    <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Cost Description')}</label>
                     <input 
                       type="text"
-                      placeholder="e.g. pipeline material & labor"
+                      placeholder={t('e.g. pipeline material & labor')}
                       value={modalResolutionCostDescription}
                       onChange={(e) => setModalResolutionCostDescription(e.target.value)}
                       className="w-full border border-[#C4F8FF]/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-[#0F4B70]/20 backdrop-blur-sm font-medium text-[#C4F8FF]"
@@ -469,7 +471,7 @@ const ComplaintsManagement = () => {
                     onClick={() => handleQuickUpdateStatus('Approved')} 
                     className="px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg font-bold text-xs hover:bg-emerald-500/20 transition-colors flex items-center gap-1.5"
                   >
-                    <CheckCircle size={14} /> Approve
+                    <CheckCircle size={14} /> {t('Approve')}
                   </button>
                 )}
                 {selectedComplaint.status !== 'Rejected' && (
@@ -477,13 +479,13 @@ const ComplaintsManagement = () => {
                     onClick={() => handleQuickUpdateStatus('Rejected')} 
                     className="px-4 py-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg font-bold text-xs hover:bg-rose-500/20 transition-colors flex items-center gap-1.5"
                   >
-                    <XCircle size={14} /> Reject
+                    <XCircle size={14} /> {t('Reject')}
                   </button>
                 )}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setSelectedComplaint(null)} className="px-4 py-2 text-xs font-semibold text-[#C4F8FF]/70 hover:text-[#C4F8FF]">Close</button>
-                <button onClick={handleUpdateComplaint} className="px-4 py-2 bg-[#0F4B70] text-white border border-[#C4F8FF]/20 rounded-lg font-bold text-xs hover:bg-[#0a344f] shadow-sm transition-colors">Save Changes</button>
+                <button onClick={() => setSelectedComplaint(null)} className="px-4 py-2 text-xs font-semibold text-[#C4F8FF]/70 hover:text-[#C4F8FF]">{t('Close')}</button>
+                <button onClick={handleUpdateComplaint} className="px-4 py-2 bg-[#0F4B70] text-white border border-[#C4F8FF]/20 rounded-lg font-bold text-xs hover:bg-[#0a344f] shadow-sm transition-colors">{t('Save Changes')}</button>
               </div>
             </div>
           </div>

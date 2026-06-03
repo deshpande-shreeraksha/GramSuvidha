@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, FileText, ChevronDown, ChevronUp, UserCheck, ShieldAlert, Award } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const CitizenMeetings = () => {
+  const { t } = useLanguage();
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedMeetingId, setExpandedMeetingId] = useState(null);
@@ -37,24 +39,24 @@ const CitizenMeetings = () => {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 text-[#C4F8FF]">
       <div>
         <h1 className="text-3xl font-extrabold text-[#C4F8FF] tracking-tight flex items-center gap-3">
           <Calendar className="text-[#C4F8FF] animate-pulse" size={32} />
-          Gram Sabha Meetings & Minutes
+          {t('Gram Sabha Meetings & Minutes')}
         </h1>
         <p className="text-[#C4F8FF]/70 mt-1 text-sm">
-          Keep track of general body discussions, citizen questions, board resolutions, and ongoing infrastructure timelines.
+          {t('Keep track of general body discussions, citizen questions, board resolutions, and ongoing infrastructure timelines.')}
         </p>
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-[#C4F8FF]/60 font-bold">Retrieving meeting logs...</div>
+        <div className="py-20 text-center text-[#C4F8FF]/60 font-bold">{t('Retrieving meeting logs...')}</div>
       ) : meetings.length === 0 ? (
         <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-12 text-center border border-[#C4F8FF]/15 rounded-2xl">
           <FileText size={40} className="text-slate-350 mx-auto mb-3" />
-          <p className="text-[#C4F8FF]/85 font-bold">No meeting minutes registered by the Panchayat administration yet.</p>
-          <p className="text-[#C4F8FF]/60 text-xs mt-1">Grievances and discussions are logged after each council assembly.</p>
+          <p className="text-[#C4F8FF]/85 font-bold">{t('No meeting minutes registered by the Panchayat administration yet.')}</p>
+          <p className="text-[#C4F8FF]/60 text-xs mt-1">{t('Grievances and discussions are logged after each council assembly.')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -93,19 +95,19 @@ const CitizenMeetings = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
-                          <UserCheck size={14} className="text-[#C4F8FF]" /> 1. Topics & Details Discussed
+                          <UserCheck size={14} className="text-[#C4F8FF]" /> {t('1. Topics & Details Discussed')}
                         </h4>
                         <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
-                          {m.detailsDiscussed}
+                          {t(m.detailsDiscussed)}
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
-                          <ShieldAlert size={14} className="text-[#C4F8FF]" /> 2. Grievances Raised by Citizens
+                          <ShieldAlert size={14} className="text-[#C4F8FF]" /> {t('2. Grievances Raised by Citizens')}
                         </h4>
                         <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
-                          {m.questionsRaised}
+                          {t(m.questionsRaised)}
                         </p>
                       </div>
                     </div>
@@ -113,29 +115,29 @@ const CitizenMeetings = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
-                          <Award size={14} className="text-green-400" /> 3. Solutions & Board Resolutions
+                          <Award size={14} className="text-green-400" /> {t('3. Solutions & Board Resolutions')}
                         </h4>
                         <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
-                          {m.solutionsProvided}
+                          {t(m.solutionsProvided)}
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
-                          <FileText size={14} className="text-[#C4F8FF]" /> 4. Immediate Actions Needed
+                          <FileText size={14} className="text-[#C4F8FF]" /> {t('4. Immediate Actions Needed')}
                         </h4>
                         <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
-                          {m.actionsNeeded}
+                          {t(m.actionsNeeded)}
                         </p>
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <h4 className="text-xs font-black text-[#C4F8FF]/60 uppercase tracking-wider flex items-center gap-1.5">
-                        <Calendar size={14} className="text-[#C4F8FF]" /> 5. Target Developments Before Next Council Assembly
+                        <Calendar size={14} className="text-[#C4F8FF]" /> {t('5. Target Developments Before Next Council Assembly')}
                       </h4>
                       <p className="text-[#C4F8FF]/85 text-xs bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
-                        {m.developmentBeforeNext}
+                        {t(m.developmentBeforeNext)}
                       </p>
                     </div>
                   </div>

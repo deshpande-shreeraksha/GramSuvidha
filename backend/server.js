@@ -51,6 +51,18 @@ const connectDB = async () => {
     const conn = await mongoose.connect(dbUri);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     await seedWorkers();
+    
+    // Migrate existing users to have default language set if missing
+    try {
+      const { Citizen, Admin, Worker, User } = require('./models/User');
+      const citResult = await Citizen.updateMany({ language: { $exists: false } }, { $set: { language: 'en' } });
+      const admResult = await Admin.updateMany({ language: { $exists: false } }, { $set: { language: 'en' } });
+      const wrkResult = await Worker.updateMany({ language: { $exists: false } }, { $set: { language: 'en' } });
+      const usrResult = await User.updateMany({ language: { $exists: false } }, { $set: { language: 'en' } });
+      console.log(`Panchayat database language migration complete. Citizens: ${citResult.modifiedCount}, Admins: ${admResult.modifiedCount}, Workers: ${wrkResult.modifiedCount}, Users: ${usrResult.modifiedCount}`);
+    } catch (migErr) {
+      console.error('Failed to run user language migration:', migErr.message);
+    }
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
     console.log('Please make sure you have a MongoDB instance running locally, or have added your MONGO_URI to the .env file in the backend folder.');
@@ -69,6 +81,8 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/budget', require('./routes/budget'));
 app.use('/api/taxes', require('./routes/taxes'));
 app.use('/api/meetings', require('./routes/meetings'));
+app.use('/api/broadcasts', require('./routes/broadcasts'));
+app.use('/api/chatbot', require('./routes/chatbot'));
 
 
 // Basic route for testing

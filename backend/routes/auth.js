@@ -45,7 +45,7 @@ const generateToken = (id) => {
 // @desc    Generate and send email verification OTP with a warm greeting
 router.post('/send-otp', async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, lang } = req.body;
     if (!email) {
       return res.status(400).json({ message: 'Email address is required' });
     }
@@ -62,22 +62,53 @@ router.post('/send-otp', async (req, res) => {
     console.log(`[OTP Verification] Code for ${email} (${name || 'User'}): ${generatedOtp}`);
     console.log(`==================================================\n`);
 
-    // Prepare and send the email
-    const subject = 'Verify Your Email - GramSuvidha Smart Portal';
+    const targetLang = lang || 'en';
+    let subject = 'Verify Your Email - GramSuvidha Smart Portal';
+    let welcomeTitle = 'Welcome to GramSuvidha!';
+    let welcomeSubtitle = 'Smart Rural Administration Portal';
+    let greeting = `Hello <strong>${name || 'User'}</strong>,`;
+    let mainMessage = 'We are excited to welcome you to our digital panchayat platform! To complete your registration and secure your account, please verify your email address.';
+    let footerMessage = 'This OTP is valid for 5 minutes. If you did not request this, you can safely ignore this email.';
+    let whyUsTitle = 'Why GramSuvidha?';
+    let whyUsText = 'Instant complaint filing, automated scheme applications, direct status updates, and multilingual AI translation.';
+    let copyrightText = 'GramSuvidha Inc. &copy; ' + new Date().getFullYear() + ' - Digital Rural Administration Initiative.';
+
+    if (targetLang === 'kn') {
+      subject = 'ನಿಮ್ಮ ಇಮೇಲ್ ಪರಿಶೀಲಿಸಿ - ಗ್ರಾಮಸುವಿಧಾ ಸ್ಮಾರ್ಟ್ ಪೋರ್ಟಲ್';
+      welcomeTitle = 'ಗ್ರಾಮಸುವಿಧಾಗೆ ಸ್ವಾಗತ!';
+      welcomeSubtitle = 'ಸ್ಮಾರ್ಟ್ ಗ್ರಾಮೀಣ ಆಡಳಿತ ಪೋರ್ಟಲ್';
+      greeting = `ನಮಸ್ಕಾರ <strong>${name || 'ಬಳಕೆದಾರರೇ'}</strong>,`;
+      mainMessage = 'ನಮ್ಮ ಡಿಜಿಟಲ್ ಪಂಚಾಯತ್ ವೇದಿಕೆಗೆ ನಿಮ್ಮನ್ನು ಸ್ವಾಗತಿಸಲು ನಾವು ಉತ್ಸುಕರಾಗಿದ್ದೇವೆ! ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ಮತ್ತು ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸುರಕ್ಷಿತಗೊಳಿಸಲು, ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.';
+      footerMessage = 'ಈ ಒಟಿಪಿ 5 ನಿಮಿಷಗಳವರೆಗೆ ಮಾತ್ರ ಮಾನ್ಯವಾಗಿರುತ್ತದೆ. ನೀವು ಇದನ್ನು ವಿನಂತಿಸದಿದ್ದರೆ, ದಯವಿಟ್ಟು ಈ ಇಮೇಲ್ ಅನ್ನು ನಿರ್ಲಕ್ಷಿಸಿ.';
+      whyUsTitle = 'ಗ್ರಾಮಸುವಿಧಾ ಏಕೆ?';
+      whyUsText = 'ತ್ವರಿತ ದೂರು ಸಲ್ಲಿಕೆ, ಸ್ವಯಂಚಾಲಿತ ಯೋಜನೆ ಅರ್ಜಿಗಳು, ನೇರ ಸ್ಥಿತಿ ನವೀಕರಣಗಳು ಮತ್ತು ಬಹುಭಾಷಾ AI ಅನುವಾದ.';
+      copyrightText = 'ಗ್ರಾಮಸುವಿಧಾ ಸಂಸ್ಥೆ &copy; ' + new Date().getFullYear() + ' - ಡಿಜಿಟಲ್ ಗ್ರಾಮೀಣ ಆಡಳಿತ ಉಪಕ್ರಮ.';
+    } else if (targetLang === 'hi') {
+      subject = 'अपना ईमेल सत्यापित करें - ग्रामसुविधा स्मार्ट पोर्टल';
+      welcomeTitle = 'ग्रामसुविधा में आपका स्वागत है!';
+      welcomeSubtitle = 'स्मार्ट ग्रामीण प्रशासन पोर्टल';
+      greeting = `नमस्कार <strong>${name || 'उपयोगकर्ता'}</strong>,`;
+      mainMessage = 'हम अपने डिजिटल पंचायत मंच पर आपका स्वागत करने के लिए उत्साहित हैं! अपना पंजीकरण पूरा करने और अपने खाते को सुरक्षित करने के लिए, कृपया अपना ईमेल पता सत्यापित करें।';
+      footerMessage = 'यह ओटीपी 5 मिनट के लिए मान्य है। यदि आपने इसका अनुरोध नहीं किया है, तो आप सुरक्षित रूप से इस ईमेल को अनदेखा कर सकते हैं।';
+      whyUsTitle = 'ग्रामसुविधा क्यों?';
+      whyUsText = 'त्वरित शिकायत दर्ज करना, स्वचालित योजना आवेदन, प्रत्यक्ष स्थिति अपडेट और बहुभाषी एआई अनुवाद।';
+      copyrightText = 'ग्रामसुविधा इंक. &copy; ' + new Date().getFullYear() + ' - डिजिटल ग्रामीण प्रशासन पहल।';
+    }
+
     const htmlContent = `
       <div style="font-family: sans-serif; max-width: 500px; margin: auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <div style="text-align: center; margin-bottom: 25px;">
           <div style="display: inline-block; padding: 10px; background-color: #eff6ff; border-radius: 50%; margin-bottom: 10px;">
             <span style="font-size: 32px;">👋</span>
           </div>
-          <h2 style="color: #1e3a8a; margin: 0; font-size: 24px; font-weight: 700;">Welcome to GramSuvidha!</h2>
-          <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">Smart Rural Administration Portal</p>
+          <h2 style="color: #1e3a8a; margin: 0; font-size: 24px; font-weight: 700;">${welcomeTitle}</h2>
+          <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">${welcomeSubtitle}</p>
         </div>
         
         <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 25px;">
           <p style="margin: 0 0 15px 0; color: #334155; font-size: 15px; line-height: 1.5;">
-            Hello <strong>${name || 'User'}</strong>,<br>
-            We are excited to welcome you to our digital panchayat platform! To complete your registration and secure your account, please verify your email address.
+            ${greeting}<br>
+            ${mainMessage}
           </p>
           
           <div style="display: inline-block; letter-spacing: 6px; font-size: 32px; font-weight: 800; color: #2563eb; background-color: #e0f2fe; padding: 12px 30px; border-radius: 8px; margin: 10px 0;">
@@ -85,17 +116,17 @@ router.post('/send-otp', async (req, res) => {
           </div>
           
           <p style="margin: 15px 0 0 0; color: #64748b; font-size: 12px;">
-            This OTP is valid for 5 minutes. If you did not request this, you can safely ignore this email.
+            ${footerMessage}
           </p>
         </div>
         
         <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
-          <p style="color: #475569; font-size: 13px; margin: 0 0 5px 0; font-weight: 500;">Why GramSuvidha?</p>
+          <p style="color: #475569; font-size: 13px; margin: 0 0 5px 0; font-weight: 500;">${whyUsTitle}</p>
           <p style="color: #64748b; font-size: 12px; margin: 0 0 15px 0; line-height: 1.4;">
-            Instant complaint filing, automated scheme applications, direct status updates, and multilingual AI translation.
+            ${whyUsText}
           </p>
           <p style="font-size: 11px; color: #94a3b8; margin: 0;">
-            GramSuvidha Inc. &copy; ${new Date().getFullYear()} - Digital Rural Administration Initiative.
+            ${copyrightText}
           </p>
         </div>
       </div>
@@ -223,6 +254,7 @@ router.post('/register', async (req, res) => {
         role: user.role,
         villageId: user.villageId,
         village: user.village,
+        language: user.language,
         token: generateToken(user._id),
       });
     } else {
@@ -255,6 +287,7 @@ router.post('/login', async (req, res) => {
         role: user.role,
         villageId: user.villageId,
         village: user.village,
+        language: user.language,
         token: generateToken(user._id),
       });
     } else {
@@ -348,6 +381,7 @@ router.put('/profile', protect, async (req, res) => {
     user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
     user.age = req.body.age !== undefined ? req.body.age : user.age;
     user.gender = req.body.gender !== undefined ? req.body.gender : user.gender;
+    user.language = req.body.language !== undefined ? req.body.language : user.language;
     
     // Regional fields - Locked for citizen
     if (req.user.role !== 'citizen') {
@@ -378,7 +412,8 @@ router.put('/profile', protect, async (req, res) => {
         district: user.district,
         state: user.state,
         country: user.country,
-        pincode: user.pincode
+        pincode: user.pincode,
+        language: user.language
       }
     });
   } catch (error) {

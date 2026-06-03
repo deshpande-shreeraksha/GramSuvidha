@@ -1,24 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const Chatbot = () => {
+  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'bot',
-      text: 'Namaste! I am Suvidha AI, your digital village assistant. How can I help you today?',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // Initialize greeting message on load or language changes
+  useEffect(() => {
+    const greetingText = language === 'kn'
+      ? 'ನಮಸ್ತೆ! ನಾನು ಸುವಿಧಾ ಎಐ, ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಗ್ರಾಮ ಸಹಾಯಕ. ಇವತ್ತು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?'
+      : language === 'hi'
+      ? 'नमस्ते! मैं सुविधा एआई हूं, आपका डिजिटल ग्राम सहायक। आज मैं आपकी क्या सहायता कर सकता हूँ?'
+      : 'Namaste! I am Suvidha AI, your digital village assistant. How can I help you today?';
+      
+    setMessages([
+      {
+        id: 1,
+        sender: 'bot',
+        text: greetingText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+    ]);
+  }, [language]);
+
   const suggestions = [
-    'How do I file a complaint?',
-    'What schemes can I apply for?',
-    'How does complaint tracking work?',
+    language === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸುವುದು ಹೇಗೆ?' : language === 'hi' ? 'शिकायत कैसे दर्ज करें?' : 'How do I file a complaint?',
+    language === 'kn' ? 'ನಾನು ಯಾವ ಯೋಜನೆಗಳಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು?' : language === 'hi' ? 'मैं किन योजनाओं के लिए आवेदन कर सकता हूँ?' : 'What schemes can I apply for?',
+    language === 'kn' ? 'ಬಜೆಟ್ ಹಂಚಿಕೆಗಳು ಯಾವುವು?' : language === 'hi' ? 'बजट आवंटन क्या हैं?' : 'What are the budget allocations?',
   ];
 
   const scrollToBottom = () => {
@@ -44,34 +57,44 @@ const Chatbot = () => {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI response delay
-    setTimeout(() => {
-      let botResponse = '';
-      const query = text.toLowerCase();
-
-      if (query.includes('complaint') || query.includes('file') || query.includes('report')) {
-        botResponse = 'To file a complaint: \n1. Log in or Register a citizen account.\n2. Click "Report a Complaint" in the menu or sidebar.\n3. Fill in the title, description, category, and pin location.\n4. Upload a photo of the issue for verification.\nOur Panchayat admins will verify it and assign a field worker within 24 hours.';
-      } else if (query.includes('scheme') || query.includes('yojana') || query.includes('apply')) {
-        botResponse = 'You can browse active rural development schemes under the "Schemes" section. We support various programs including Jal Jeevan Mission, Pradhan Mantri Awas Yojana, and local infrastructure projects. You can apply directly through the schemes dashboard.';
-      } else if (query.includes('track') || query.includes('status') || query.includes('progress')) {
-        botResponse = 'Once you file a complaint, it is updated dynamically. Go to your dashboard to view its status:\n- Pending: Under review by Panchayat admin\n- Assigned: Field agent is dispatched\n- Resolved: Issue rectified with completion proof uploaded.';
-      } else if (query.includes('hello') || query.includes('hi') || query.includes('hey') || query.includes('namaste')) {
-        botResponse = 'Hello! I can guide you on registering complaints, checking scheme eligibility, and tracking civic issues. What would you like to know?';
-      } else {
-        botResponse = 'I apologize, I am still learning. You can easily file a complaint, track civic issues, or apply for schemes using the navigation bar. Let me know if you need assistance with registration!';
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
+      const response = await fetch('/api/chatbot/query', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ message: text, lang: language })
+      });
+
+      const data = await response.json();
+      
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           sender: 'bot',
-          text: botResponse,
+          text: data.text || 'I apologize, I could not retrieve an answer at this time.',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          sender: 'bot',
+          text: 'Network error. Please try again later.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   return (
@@ -102,7 +125,7 @@ const Chatbot = () => {
                 </h3>
                 <span className="text-[10px] text-[#C4F8FF]/80 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-[#C4F8FF] rounded-full animate-ping"></span>
-                  Online Assistant
+                  {t('Online Assistant')}
                 </span>
               </div>
             </div>
@@ -197,7 +220,7 @@ const Chatbot = () => {
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Ask Suvidha AI..."
+              placeholder={t('Ask Suvidha AI...')}
               className="flex-1 text-xs border border-[#C4F8FF]/20 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/50"
             />
             <button

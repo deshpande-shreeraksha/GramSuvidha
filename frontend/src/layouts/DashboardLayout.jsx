@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Outlet, useNavigate, Navigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Outlet, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { Menu, Bell, LogOut, Check, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const DashboardLayout = ({ role }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -9,6 +10,33 @@ const DashboardLayout = ({ role }) => {
   const [notifications, setNotifications] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
+  const location = useLocation();
+  const { t, language } = useLanguage();
+
+  const notificationsRef = useRef(null);
+  const bellRef = useRef(null);
+
+  // Close sidebars and notifications on route change
+  useEffect(() => {
+    setShowNotifications(false);
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Close notifications on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target) &&
+        bellRef.current &&
+        !bellRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -99,16 +127,51 @@ const DashboardLayout = ({ role }) => {
             <div className="hidden md:flex flex-col text-xs text-[#C4F8FF]/70 font-bold bg-[#0F4B70]/50 border border-[#C4F8FF]/20 rounded-xl px-3.5 py-1.5 shadow-sm">
               <span className="text-[#C4F8FF] flex items-center gap-1.5 font-mono">
                 <span className="w-1.5 h-1.5 bg-[#C4F8FF] rounded-full animate-ping" />
-                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                {(() => {
+                  const getLocale = (lang) => {
+                    if (lang === 'kn') return 'kn-IN';
+                    if (lang === 'hi') return 'hi-IN';
+                    return 'en-IN';
+                  };
+                  const activeLocale = getLocale(language);
+                  const formatArabicNumberString = (str) => {
+                    if (typeof str !== 'string') return str;
+                    const mapping = {
+                      '೦': '0', '೧': '1', '೨': '2', '೩': '3', '೪': '4', '೫': '5', '೬': '6', '೭': '7', '೮': '8', '೯': '9',
+                      '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'
+                    };
+                    return str.split('').map(char => mapping[char] || char).join('');
+                  };
+                  const timeStr = currentTime.toLocaleTimeString(activeLocale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                  return formatArabicNumberString(timeStr);
+                })()}
               </span>
               <span className="text-[9px] text-[#C4F8FF]/50 font-semibold mt-0.5">
-                {currentTime.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+                {(() => {
+                  const getLocale = (lang) => {
+                    if (lang === 'kn') return 'kn-IN';
+                    if (lang === 'hi') return 'hi-IN';
+                    return 'en-IN';
+                  };
+                  const activeLocale = getLocale(language);
+                  const formatArabicNumberString = (str) => {
+                    if (typeof str !== 'string') return str;
+                    const mapping = {
+                      '೦': '0', '೧': '1', '೨': '2', '೩': '3', '೪': '4', '೫': '5', '೬': '6', '೭': '7', '೮': '8', '೯': '9',
+                      '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'
+                    };
+                    return str.split('').map(char => mapping[char] || char).join('');
+                  };
+                  const dateStr = currentTime.toLocaleDateString(activeLocale, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                  return formatArabicNumberString(dateStr);
+                })()}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4 relative">
             <button
+              ref={bellRef}
               className="relative p-2 text-[#C4F8FF]/70 hover:bg-[#C4F8FF]/10 rounded-full transition-colors"
               onClick={() => setShowNotifications((prev) => !prev)}
               aria-label="Notifications"
@@ -122,15 +185,17 @@ const DashboardLayout = ({ role }) => {
             </button>
 
             {showNotifications && (
-              <div className="fixed top-16 left-4 right-4 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-3 sm:w-80 bg-[#07253b]/95 backdrop-blur-md border border-[#C4F8FF]/20 rounded-2xl shadow-2xl shadow-black/50 z-50 overflow-hidden text-[#C4F8FF]">
+              <div 
+                ref={notificationsRef}
+                className="fixed top-16 left-4 right-4 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-3 sm:w-80 bg-[#07253b]/95 backdrop-blur-md border border-[#C4F8FF]/20 rounded-2xl shadow-2xl shadow-black/50 z-50 overflow-hidden text-[#C4F8FF]">
                 <div className="px-4 py-3 border-b border-[#C4F8FF]/20 bg-[#0F4B70]/40">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-sm font-bold text-[#C4F8FF] tracking-wide">Live Community Alerts</h3>
+                    <h3 className="text-sm font-bold text-[#C4F8FF] tracking-wide">{t('Live Community Alerts')}</h3>
                     <button
                       className="text-xs text-[#C4F8FF]/60 hover:text-white font-bold transition-colors"
                       onClick={() => setShowNotifications(false)}
                     >
-                      Close
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -151,9 +216,9 @@ const DashboardLayout = ({ role }) => {
                               <button 
                                 onClick={() => handleMarkAsRead(note._id)}
                                 className="text-[10px] text-[#C4F8FF] hover:text-white font-extrabold flex items-center gap-0.5 border border-[#C4F8FF]/30 bg-[#0F4B70]/40 hover:bg-[#0F4B70]/60 rounded px-1.5 py-0.5 transition-colors"
-                                title="Mark as read"
+                                title={t('Mark as read')}
                               >
-                                <Check size={10} /> Read
+                                <Check size={10} /> {t('Read')}
                               </button>
                             )}
                           </div>
@@ -161,11 +226,11 @@ const DashboardLayout = ({ role }) => {
                         </div>
                         <div className="flex items-center justify-between mt-1">
                           <span className="text-[9px] text-[#C4F8FF]/50 font-bold uppercase">
-                            {note.createdAt ? new Date(note.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now'}
+                            {note.createdAt ? new Date(note.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : t('Just now')}
                           </span>
                           {note.read && (
                             <span className="text-[8px] text-green-400 font-extrabold flex items-center gap-0.5 uppercase">
-                              <CheckCircle2 size={10} /> Acknowledged
+                              <CheckCircle2 size={10} /> {t('Acknowledged')}
                             </span>
                           )}
                         </div>
@@ -173,7 +238,7 @@ const DashboardLayout = ({ role }) => {
                     ))
                   ) : (
                     <div className="px-4 py-8 text-center text-xs text-[#C4F8FF]/50 font-semibold bg-[#061926]/10">
-                      No notifications yet
+                      {t('No notifications yet')}
                     </div>
                   )}
                 </div>
@@ -191,7 +256,7 @@ const DashboardLayout = ({ role }) => {
               }}
             >
               <LogOut size={18} />
-              <span className="hidden sm:inline">Logout</span>
+              <span className="hidden sm:inline">{t('Logout')}</span>
             </button>
           </div>
         </header>

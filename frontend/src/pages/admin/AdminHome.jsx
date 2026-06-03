@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, DollarSign, FileText, Users, CreditCard, ArrowRight, ShieldAlert, PlusCircle } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const AdminHome = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const storedUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
   const adminName = storedUser.name || 'Panchayat Administrator';
 
@@ -83,32 +85,32 @@ const AdminHome = () => {
 
   const quickActions = [
     {
-      title: 'Log Council Meeting',
-      desc: 'Log dates, topics discussed, citizen queries, solutions, and email minutes.',
+      title: t('Log Council Meeting'),
+      desc: t('Log dates, topics discussed, citizen queries, solutions, and email minutes.'),
       icon: <Calendar className="text-[#C4F8FF]" size={22} />,
       path: '/admin/meetings',
-      actionText: 'Open Logger'
+      actionText: t('Open Logger')
     },
     {
-      title: 'Configure Annual Budget',
-      desc: 'Set total budget, allocate itemized sector funds, and trigger citizen email notifications.',
+      title: t('Configure Annual Budget'),
+      desc: t('Set total budget, allocate itemized sector funds, and trigger citizen email notifications.'),
       icon: <DollarSign className="text-[#C4F8FF]" size={22} />,
       path: '/admin/budget',
-      actionText: 'Allocate Budget'
+      actionText: t('Allocate Budget')
     },
     {
-      title: 'Manage Complaints',
-      desc: 'Dispatch field workers, audit resolution status, and manage resolution ledgers.',
+      title: t('Manage Complaints'),
+      desc: t('Dispatch field workers, audit resolution status, and manage resolution ledgers.'),
       icon: <FileText className="text-[#C4F8FF]" size={22} />,
       path: '/admin/complaints',
-      actionText: 'Review Queue'
+      actionText: t('Review Queue')
     },
     {
-      title: 'Property Tax Assessments',
-      desc: 'Calculate local property taxes, register assessments, and audit ledger balances.',
+      title: t('Property Tax Assessments'),
+      desc: t('Calculate local property taxes, register assessments, and audit ledger balances.'),
       icon: <CreditCard className="text-[#C4F8FF]" size={22} />,
       path: '/admin/taxes',
-      actionText: 'Assign Assessment'
+      actionText: t('Assign Assessment')
     }
   ];
 
@@ -119,13 +121,13 @@ const AdminHome = () => {
         <div className="relative z-10 space-y-3 max-w-3xl">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#C4F8FF]/10 text-[#C4F8FF] border border-[#C4F8FF]/30">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C4F8FF] animate-pulse"></span>
-            Administrative Command Portal
+            {t('Administrative Command Portal')}
           </span>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-            Gram Panchayat Administrator Dashboard
+            {t('Gram Panchayat Administrator Dashboard')}
           </h1>
           <p className="text-xs md:text-sm text-[#C4F8FF]/70 leading-relaxed">
-            Hello, <strong className="text-white font-bold">{adminName}</strong>. Use this board to track pending grievances, assign public works, configure annual budgets, and publish minutes.
+            {t('Hello, ')}<strong className="text-white font-bold">{adminName}</strong>{t('. Use this board to track pending grievances, assign public works, configure annual budgets, and publish minutes.')}
           </p>
         </div>
       </div>
@@ -137,7 +139,7 @@ const AdminHome = () => {
             <ShieldAlert size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Pending Grievances</span>
+            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Pending Grievances')}</span>
             <span className="text-2xl font-black text-[#C4F8FF]">{stats.pendingComplaints}</span>
           </div>
         </div>
@@ -147,8 +149,8 @@ const AdminHome = () => {
             <Users size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Active Field Force</span>
-            <span className="text-2xl font-black text-[#C4F8FF]">{stats.activeWorkers} Workers</span>
+            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Active Field Force')}</span>
+            <span className="text-2xl font-black text-[#C4F8FF]">{stats.activeWorkers} {t('Workers')}</span>
           </div>
         </div>
 
@@ -157,9 +159,9 @@ const AdminHome = () => {
             <Users size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Registered Citizens</span>
+            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Registered Citizens')}</span>
             <span className="text-2xl font-black text-[#C4F8FF]">{stats.citizenCount}</span>
-            <span className="text-[9px] text-[#C4F8FF]/50 font-bold block mt-0.5 uppercase">ID: {storedUser.villageId || 'N/A'}</span>
+            <span className="text-[9px] text-[#C4F8FF]/50 font-bold block mt-0.5 uppercase">{t('ID:')} {storedUser.villageId || t('N/A')}</span>
           </div>
         </div>
 
@@ -168,8 +170,8 @@ const AdminHome = () => {
             <Calendar size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Meetings Concluded</span>
-            <span className="text-2xl font-black text-[#C4F8FF]">{stats.totalMeetings} sessions</span>
+            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Meetings Concluded')}</span>
+            <span className="text-2xl font-black text-[#C4F8FF]">{stats.totalMeetings} {t('sessions')}</span>
           </div>
         </div>
 
@@ -178,8 +180,8 @@ const AdminHome = () => {
             <CreditCard size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Unpaid Taxes Ledger</span>
-            <span className="text-2xl font-black text-[#C4F8FF]">{stats.unpaidTaxes} Properties</span>
+            <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Unpaid Taxes Ledger')}</span>
+            <span className="text-2xl font-black text-[#C4F8FF]">{stats.unpaidTaxes} {t('Properties')}</span>
           </div>
         </div>
       </div>
@@ -189,8 +191,8 @@ const AdminHome = () => {
         {/* Quick Actions Panel (2 Cols) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm">
-            <h3 className="font-extrabold text-lg text-[#C4F8FF] mb-2">Administrative Shortcuts</h3>
-            <p className="text-xs text-[#C4F8FF]/60 mb-6">Quick links to perform administrative operations across the Panchayat modules.</p>
+            <h3 className="font-extrabold text-lg text-[#C4F8FF] mb-2">{t('Administrative Shortcuts')}</h3>
+            <p className="text-xs text-[#C4F8FF]/60 mb-6">{t('Quick links to perform administrative operations across the Panchayat modules.')}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {quickActions.map((action, idx) => (
@@ -220,30 +222,28 @@ const AdminHome = () => {
         <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="font-extrabold text-base text-[#C4F8FF] mb-1 flex items-center gap-2">
-              <ShieldAlert className="text-[#C4F8FF]" size={18} /> Active Grievances Queue
+              <ShieldAlert className="text-[#C4F8FF]" size={18} /> {t('Active Grievances Queue')}
             </h3>
-            <p className="text-[11px] text-[#C4F8FF]/60 mb-4">Latest unresolved citizen complaints requiring worker assignment.</p>
+            <p className="text-[11px] text-[#C4F8FF]/60 mb-4">{t('Latest unresolved citizen complaints requiring worker assignment.')}</p>
 
             <div className="space-y-3">
               {loading ? (
-                <div className="py-6 text-center text-xs text-[#C4F8FF]/60 font-semibold">Checking queue...</div>
+                <div className="py-6 text-center text-xs text-[#C4F8FF]/60 font-semibold">{t('Checking queue...')}</div>
               ) : recentComplaints.length === 0 ? (
-                <div className="py-6 text-center text-xs text-[#C4F8FF]/60 italic">No unresolved complaints. Good job!</div>
+                <div className="py-6 text-center text-xs text-[#C4F8FF]/60 italic">{t('No unresolved complaints. Good job!')}</div>
               ) : (
                 recentComplaints.map(c => (
                   <div key={c._id} className="p-3 border border-[#C4F8FF]/20 bg-[#0F4B70]/20 rounded-xl space-y-1.5">
                     <div className="flex justify-between items-center">
                       <span className="text-[9px] font-black text-[#C4F8FF]/60 font-mono uppercase bg-[#0F4B70]/40 px-2 py-0.5 rounded">
-                        {c.id}
+                        {c.id || c.complaintId}
                       </span>
-                      <span className={`text-[8px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                        c.status === 'Pending' ? 'bg-[#C4F8FF]/20 text-[#C4F8FF]' : 'bg-[#C4F8FF]/20 text-[#C4F8FF]'
-                      }`}>
+                      <span className={`text-[8px] font-bold px-2 py-0.5 rounded-full uppercase bg-[#C4F8FF]/20 text-[#C4F8FF]`}>
                         {c.status}
                       </span>
                     </div>
                     <p className="text-xs font-extrabold text-[#C4F8FF] line-clamp-1">{c.category}</p>
-                    <p className="text-[11px] text-[#C4F8FF]/70 line-clamp-2 leading-normal">{c.title}</p>
+                    <p className="text-[11px] text-[#C4F8FF]/70 line-clamp-2 leading-normal">{c.description || c.title}</p>
                   </div>
                 ))
               )}
@@ -254,7 +254,7 @@ const AdminHome = () => {
             onClick={() => navigate('/admin/complaints')}
             className="w-full mt-4 py-2 border border-[#C4F8FF]/15 hover:bg-[#0F4B70]/30 text-[#C4F8FF]/80 hover:text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1"
           >
-            Open Full Ledger <ArrowRight size={12} />
+            {t('Open Full Ledger')} <ArrowRight size={12} />
           </button>
         </div>
       </div>

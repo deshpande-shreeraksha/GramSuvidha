@@ -3,6 +3,7 @@ const router = express.Router();
 const Complaint = require('../models/Complaint');
 const { Citizen, Admin, Worker } = require('../models/User');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
+const translateText = require('../utils/translate');
 
 // @route   GET /api/admin/system-intel
 // @desc    Get live system intelligence stats computed from DB
@@ -144,6 +145,25 @@ router.get('/system-intel', protect, adminOnly, async (req, res) => {
         value: topCategory ? topCategory[0].replace(/_/g, ' ').toUpperCase() : '—'
       }
     ];
+
+    const userLang = req.headers['x-language'] || req.user?.language || 'en';
+    if (userLang !== 'en') {
+      const convertNativeDigitsToArabic = (text) => {
+        if (typeof text !== 'string') return text;
+        const mapping = {
+          '೦': '0', '೧': '1', '೨': '2', '೩': '3', '೪': '4', '೫': '5', '೬': '6', '೭': '7', '೮': '8', '೯': '9',
+          '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'
+        };
+        return text.split('').map(char => mapping[char] || char).join('');
+      };
+
+      for (let i = 0; i < intel.length; i++) {
+        intel[i].title = convertNativeDigitsToArabic(await translateText(intel[i].title, userLang, 'en'));
+        intel[i].description = convertNativeDigitsToArabic(await translateText(intel[i].description, userLang, 'en'));
+        intel[i].badge = convertNativeDigitsToArabic(await translateText(intel[i].badge, userLang, 'en'));
+        intel[i].value = convertNativeDigitsToArabic(await translateText(intel[i].value, userLang, 'en'));
+      }
+    }
 
     res.json({
       lastUpdated: now.toISOString(),

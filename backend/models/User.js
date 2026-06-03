@@ -67,6 +67,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  language: {
+    type: String,
+    enum: ['en', 'kn', 'hi'],
+    default: 'en',
+  },
 }, { timestamps: true });
 
 // Hash password before saving

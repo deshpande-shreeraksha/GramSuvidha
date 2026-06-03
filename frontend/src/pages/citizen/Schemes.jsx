@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Lightbulb, Search, Filter, ShieldCheck, IndianRupee, FileText, CheckCircle, XCircle, Clock, Calendar, Download, Printer, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const SCHEMES_DB = [
   { 
@@ -149,6 +150,7 @@ const SCHEMES_DB = [
 ];
 
 const Schemes = () => {
+  const { t } = useLanguage();
   const [age, setAge] = useState('');
   const [income, setIncome] = useState('');
   const [socialCategory, setSocialCategory] = useState('');
@@ -247,7 +249,7 @@ const Schemes = () => {
 
     for (const doc of requiredDocs) {
       if (!documents[doc]) {
-        alert(`Please upload: ${doc}`);
+        alert(`${t('Please upload')}: ${t(doc)}`);
         return;
       }
     }
@@ -290,11 +292,11 @@ const Schemes = () => {
         }, 2500);
       } else {
         const errData = await response.json();
-        alert("Failed to submit application: " + errData.message);
+        alert(t("Failed to submit application: ") + errData.message);
       }
     } catch (error) {
       console.error(error);
-      alert("Error submitting application. Is the backend running?");
+      alert(t("Error submitting application. Is the backend running?"));
     } finally {
       setIsSubmitting(false);
     }
@@ -315,15 +317,15 @@ const Schemes = () => {
   };
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-8 text-[#C4F8FF]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-[#C4F8FF] tracking-tight flex items-center gap-3">
             <Lightbulb className="text-[#C4F8FF] animate-pulse" size={32} />
-            Panchayat Scheme's Portal
+            {t("Panchayat Scheme's Portal")}
           </h1>
           <p className="text-[#C4F8FF]/70 mt-1 text-sm max-w-xl">
-            Explore, filter and apply for state and national government welfare schemes directly with instant digital acknowledgment.
+            {t('Explore, filter and apply for state and national government welfare schemes directly with instant digital acknowledgment.')}
           </p>
         </div>
       </div>
@@ -331,12 +333,12 @@ const Schemes = () => {
           <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm">
             <h2 className="text-sm font-bold text-[#C4F8FF] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Filter size={16} className="text-[#C4F8FF]" />
-              Eligibility Checker & Filter
+              {t('Eligibility Checker & Filter')}
             </h2>
             <form onSubmit={handleSearch} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
               <div>
                 <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-1.5">
-                  Age (Years)
+                  {t('Age (Years)')}
                 </label>
                 <input 
                   type="number" 
@@ -351,7 +353,7 @@ const Schemes = () => {
               <div>
                 <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                   <IndianRupee size={12} />
-                  Annual Income (₹)
+                  {t('Annual Income (₹)')}
                 </label>
                 <input 
                   type="number" 
@@ -365,41 +367,41 @@ const Schemes = () => {
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-1.5">
-                  Social Category
+                  {t('Social Category')}
                 </label>
                 <select 
                   className="w-full border border-[#C4F8FF]/15 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] font-medium" 
                   value={socialCategory}
                   onChange={(e) => {setSocialCategory(e.target.value); setHasSearched(false);}}
                 >
-                  <option value="">All Categories</option>
-                  <option value="General">General</option>
-                  <option value="OBC">OBC</option>
-                  <option value="SC">SC</option>
-                  <option value="ST">ST</option>
+                  <option value="" className="bg-[#061926]">{t('All Categories')}</option>
+                  <option value="General" className="bg-[#061926]">{t('General')}</option>
+                  <option value="OBC" className="bg-[#061926]">{t('OBC')}</option>
+                  <option value="SC" className="bg-[#061926]">{t('SC')}</option>
+                  <option value="ST" className="bg-[#061926]">{t('ST')}</option>
                 </select>
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-1.5">
-                  Occupation
+                  {t('Occupation')}
                 </label>
                 <select 
                   className="w-full border border-[#C4F8FF]/15 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] font-medium" 
                   value={occupation}
                   onChange={(e) => {setOccupation(e.target.value); setHasSearched(false);}}
                 >
-                  <option value="">All Occupations</option>
-                  <option value="Farmer">Farmer</option>
-                  <option value="Student">Student</option>
-                  <option value="Labour">Labour</option>
-                  <option value="Unemployed">Unemployed</option>
-                  <option value="Self-Employed">Self-Employed</option>
+                  <option value="" className="bg-[#061926]">{t('All Occupations')}</option>
+                  <option value="Farmer" className="bg-[#061926]">{t('Farmer')}</option>
+                  <option value="Student" className="bg-[#061926]">{t('Student')}</option>
+                  <option value="Labour" className="bg-[#061926]">{t('Labour')}</option>
+                  <option value="Unemployed" className="bg-[#061926]">{t('Unemployed')}</option>
+                  <option value="Self-Employed" className="bg-[#061926]">{t('Self-Employed')}</option>
                 </select>
               </div>
               <div className="sm:col-span-2 lg:col-span-4 flex gap-3 mt-2">
-                <button type="submit" className="flex-1 py-3 bg-[#0F4B70]/80 text-white rounded-xl font-bold hover:bg-[#C4F8FF]/10-dark shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                <button type="submit" className="flex-1 py-3 bg-[#0F4B70]/80 text-white rounded-xl font-bold hover:bg-[#C4F8FF]/10 shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
                   <Search size={18} />
-                  Check Eligible Schemes
+                  {t('Check Eligible Schemes')}
                 </button>
                 {hasSearched && (
                   <button 
@@ -407,7 +409,7 @@ const Schemes = () => {
                     onClick={handleResetFilters}
                     className="px-6 py-3 border border-[#C4F8FF]/15 text-[#C4F8FF]/80 rounded-xl font-semibold hover:bg-[#0F4B70]/30 transition-colors flex items-center justify-center gap-1.5"
                   >
-                    <RefreshCw size={16} /> Reset
+                    <RefreshCw size={16} /> {t('Reset')}
                   </button>
                 )}
               </div>
@@ -419,11 +421,11 @@ const Schemes = () => {
             <div className="flex items-center justify-between border-b border-[#C4F8FF]/15 pb-3">
               <h2 className="text-lg font-bold text-[#C4F8FF] flex items-center gap-2">
                 <Filter size={18} className="text-[#C4F8FF]/60" />
-                {hasSearched ? `Recommended Schemes (${filteredSchemes.length})` : `All Available Schemes (${SCHEMES_DB.length})`}
+                {hasSearched ? `${t('Recommended Schemes')} (${filteredSchemes.length})` : `${t('All Available Schemes')} (${SCHEMES_DB.length})`}
               </h2>
               {hasSearched && (
                 <span className="text-xs bg-[#0F4B70]/80/10 text-[#C4F8FF] px-3 py-1 rounded-full font-bold">
-                  Filtered by Demographics
+                  {t('Filtered by Demographics')}
                 </span>
               )}
             </div>
@@ -441,19 +443,19 @@ const Schemes = () => {
                   
                   <div>
                     <h3 className="font-extrabold text-lg text-[#C4F8FF] mb-2.5 group-hover:text-[#C4F8FF] transition-colors pr-8">
-                      {scheme.name}
+                      {t(scheme.name)}
                     </h3>
                     <p className="text-[#C4F8FF]/70 text-sm leading-relaxed mb-6">
-                      {scheme.desc}
+                      {t(scheme.desc)}
                     </p>
                   </div>
                   
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#C4F8FF]/20">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#C4F8FF] bg-[#0F4B70]/80/5 px-3 py-1.5 rounded-lg">
-                      <ShieldCheck size={14} /> Eligible
+                      <ShieldCheck size={14} /> {t('Eligible')}
                     </div>
                     <span className="text-xs font-bold text-[#C4F8FF] group-hover:underline flex items-center gap-1">
-                      View details & apply &rarr;
+                      {t('View details & apply')} &rarr;
                     </span>
                   </div>
                 </div>
@@ -464,23 +466,23 @@ const Schemes = () => {
         {/* Applications Tracker Section */}
         <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl border border-[#C4F8FF]/15 shadow-sm overflow-hidden mt-6">
           <div className="px-6 py-5 border-b border-[#C4F8FF]/20 bg-[#0F4B70]/20">
-            <h2 className="font-bold text-[#C4F8FF] text-base">Your Scheme Application Submissions</h2>
-            <p className="text-xs text-[#C4F8FF]/60 mt-1">Official tracking timeline and proof-of-submission receipts for Panchayat audits.</p>
+            <h2 className="font-bold text-[#C4F8FF] text-base">{t('Your Scheme Application Submissions')}</h2>
+            <p className="text-xs text-[#C4F8FF]/60 mt-1">{t('Official tracking timeline and proof-of-submission receipts for Panchayat audits.')}</p>
           </div>
 
           {profileLoading ? (
             <div className="p-12 text-center text-[#C4F8FF]/60 font-medium">
               <Clock className="animate-spin text-[#C4F8FF] mx-auto mb-3" size={28} />
-              Retrieving applications...
+              {t('Retrieving applications...')}
             </div>
           ) : myApplications.length === 0 ? (
             <div className="p-12 text-center">
               <FileText className="text-[#C4F8FF]/70 mx-auto mb-4" size={48} />
-              <p className="text-[#C4F8FF]/80 font-semibold text-sm">No scheme applications logged yet.</p>
-              <p className="text-[#C4F8FF]/60 text-xs mt-1">Go to "Available Schemes" to browse eligibility and apply online.</p>
+              <p className="text-[#C4F8FF]/80 font-semibold text-sm">{t('No scheme applications logged yet.')}</p>
+              <p className="text-[#C4F8FF]/60 text-xs mt-1">{t('Go to "Available Schemes" to browse eligibility and apply online.')}</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100/10">
               {myApplications.map((app) => (
                 <div key={app._id} className="p-6 hover:bg-[#0F4B70]/10 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="space-y-2 flex-1">
@@ -493,30 +495,30 @@ const Schemes = () => {
                         app.status === 'Rejected' ? 'bg-[#C4F8FF]/10 text-red-400 border border-red-400/30' :
                         'bg-[#C4F8FF]/10 text-[#C4F8FF] border border-orange-400/30'
                       }`}>
-                        {app.status === 'Application Submitted' ? 'Submitted' : app.status}
+                        {app.status === 'Application Submitted' ? t('Submitted') : t(app.status)}
                       </span>
                     </div>
 
-                    <h3 className="font-extrabold text-base text-[#C4F8FF]">{app.schemeName}</h3>
+                    <h3 className="font-extrabold text-base text-[#C4F8FF]">{t(app.schemeName)}</h3>
                     
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-xs text-[#C4F8FF]/70 pt-1">
                       <div>
-                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Applicant</span>
+                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Applicant')}</span>
                         <span className="font-bold text-[#C4F8FF]">{app.applicantName}</span>
                       </div>
                       <div>
-                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Relationship</span>
-                        <span className="font-bold text-[#C4F8FF] capitalize">{app.relationship}</span>
+                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Relationship')}</span>
+                        <span className="font-bold text-[#C4F8FF] capitalize">{t(app.relationship)}</span>
                       </div>
                       <div>
-                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Submitted On</span>
+                        <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Submitted On')}</span>
                         <span className="font-bold text-[#C4F8FF]">
-                          {app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : 'N/A'}
+                          {app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : t('N/A')}
                         </span>
                       </div>
                       {app.availableFrom && (
                         <div>
-                          <span className="text-green-400 block text-[9px] font-bold uppercase">Benefits Start</span>
+                          <span className="text-green-400 block text-[9px] font-bold uppercase">{t('Benefits Start')}</span>
                           <span className="font-black text-green-400">
                             {new Date(app.availableFrom).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'})}
                           </span>
@@ -530,7 +532,7 @@ const Schemes = () => {
                       onClick={() => setSelectedReceipt(app)}
                       className="px-4 py-2 border border-primary/20 bg-[#0F4B70]/80/5 hover:bg-[#C4F8FF]/10/10 text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
                     >
-                      <Printer size={14} /> Print Receipt
+                      <Printer size={14} /> {t('Print Receipt')}
                     </button>
                   </div>
                 </div>
@@ -542,7 +544,7 @@ const Schemes = () => {
       {/* Scheme Application Form Modal */}
       {selectedScheme && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl shadow-xl max-w-xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#061926]/95 backdrop-blur-md border border-[#C4F8FF]/20 rounded-2xl shadow-xl max-w-xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setSelectedScheme(null)} 
               className="absolute top-4 right-4 text-[#C4F8FF]/60 hover:text-[#C4F8FF]/80 text-2xl font-bold focus:outline-none"
@@ -552,13 +554,13 @@ const Schemes = () => {
             
             {!submitSuccess ? (
               <>
-                <h2 className="text-2xl font-extrabold text-[#C4F8FF] mb-1 pr-6">{selectedScheme.name}</h2>
+                <h2 className="text-2xl font-extrabold text-[#C4F8FF] mb-1 pr-6">{t(selectedScheme.name)}</h2>
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#C4F8FF] bg-[#0F4B70]/80/5 w-fit px-3 py-1 rounded-lg mb-6">
-                   <ShieldCheck size={14} /> Instant Online Apply Eligible
+                   <ShieldCheck size={14} /> {t('Instant Online Apply Eligible')}
                 </div>
                 
                 <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/20 p-5 rounded-2xl mb-6">
-                  <h4 className="font-bold text-[#C4F8FF] mb-2.5 text-sm">Scheme Guideline & Documents</h4>
+                  <h4 className="font-bold text-[#C4F8FF] mb-2.5 text-sm">{t('Scheme Guideline & Documents')}</h4>
                   <div className="text-[#C4F8FF]/80 text-xs leading-relaxed space-y-2">
                     {(() => {
                       const lines = selectedScheme.fullDetails.split('\n');
@@ -570,7 +572,7 @@ const Schemes = () => {
                           rendered.push(
                             <ul key={`list-${key}`} className="list-disc pl-5 mb-2 space-y-1 text-[#C4F8FF]/80">
                               {currentList.map((item, i) => (
-                                <li key={i}>{item}</li>
+                                <li key={i}>{t(item)}</li>
                               ))}
                             </ul>
                           );
@@ -587,15 +589,15 @@ const Schemes = () => {
                           if (trimmed === '') return;
 
                           if (trimmed.startsWith('**Overview**:')) {
-                            rendered.push(<p key={idx} className="mb-2"><strong className="text-[#C4F8FF]">Overview:</strong> {trimmed.replace('**Overview**:', '').trim()}</p>);
+                            rendered.push(<p key={idx} className="mb-2"><strong className="text-[#C4F8FF]">{t('Overview')}:</strong> {t(trimmed.replace('**Overview**:', '').trim())}</p>);
                           } else if (trimmed.startsWith('**Benefits**:')) {
-                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15/40 mb-2">Benefits:</p>);
+                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15 mb-2">{t('Benefits:')}</p>);
                           } else if (trimmed.startsWith('**Eligibility Criteria**:')) {
-                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15/40 mb-2">Eligibility Criteria:</p>);
+                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15 mb-2">{t('Eligibility Criteria:')}</p>);
                           } else if (trimmed.startsWith('**Documents Required**:')) {
-                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15/40 mb-2">Documents Required:</p>);
+                            rendered.push(<p key={idx} className="font-bold text-[#C4F8FF] pt-2 text-sm border-t border-[#C4F8FF]/15 mb-2">{t('Documents Required:')}</p>);
                           } else {
-                            rendered.push(<p key={idx} className="mb-2">{trimmed}</p>);
+                            rendered.push(<p key={idx} className="mb-2">{t(trimmed)}</p>);
                           }
                         }
                       });
@@ -607,7 +609,7 @@ const Schemes = () => {
                 </div>
 
                 <div className="border-t border-[#C4F8FF]/20 pt-5">
-                  <h3 className="font-bold text-base text-[#C4F8FF] mb-4">Applicant Particulars Form</h3>
+                  <h3 className="font-bold text-base text-[#C4F8FF] mb-4">{t('Applicant Particulars Form')}</h3>
                   
                   {(() => {
                     const isAlreadyRegistered = selectedScheme && myApplications.some(app => 
@@ -619,29 +621,29 @@ const Schemes = () => {
                       <form onSubmit={handleApply} className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Applying For</label>
+                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Applying For')}</label>
                             <select 
                               required
                               className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] font-semibold"
                               value={relationship}
                               onChange={e => setRelationship(e.target.value)}
                             >
-                              <option value="Self">Self (Default)</option>
-                              <option value="Father">Father</option>
-                              <option value="Mother">Mother</option>
-                              <option value="Spouse">Spouse</option>
-                              <option value="Sibling">Sibling</option>
-                              <option value="Daughter">Daughter</option>
-                              <option value="Son">Son</option>
+                              <option value="Self" className="bg-[#061926]">{t('Self (Default)')}</option>
+                              <option value="Father" className="bg-[#061926]">{t('Father')}</option>
+                              <option value="Mother" className="bg-[#061926]">{t('Mother')}</option>
+                              <option value="Spouse" className="bg-[#061926]">{t('Spouse')}</option>
+                              <option value="Sibling" className="bg-[#061926]">{t('Sibling')}</option>
+                              <option value="Daughter" className="bg-[#061926]">{t('Daughter')}</option>
+                              <option value="Son" className="bg-[#061926]">{t('Son')}</option>
                             </select>
                           </div>
                           <div>
-                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Applicant Full Name</label>
+                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Applicant Full Name')}</label>
                             <input 
                               type="text" 
                               required
                               className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] font-semibold"
-                              placeholder="Enter full name"
+                              placeholder={t('Enter full name')}
                               value={applicantName}
                               onChange={e => setApplicantName(e.target.value)}
                             />
@@ -652,14 +654,14 @@ const Schemes = () => {
                           <div className="bg-[#C4F8FF]/10 border border-orange-400/30 text-orange-400 p-3.5 rounded-xl flex items-start gap-2.5">
                             <ShieldCheck className="text-[#C4F8FF] flex-shrink-0 mt-0.5" size={16} />
                             <span className="text-xs font-semibold leading-relaxed">
-                              You have an active registration for this scheme for beneficiary relationship "{relationship}". Duplicate submissions are locked.
+                              {t('You have an active registration for this scheme for beneficiary relationship')} "{t(relationship)}". {t('Duplicate submissions are locked.')}
                             </span>
                           </div>
                         )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Age</label>
+                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Age')}</label>
                             <input 
                               type="number" 
                               disabled
@@ -668,12 +670,12 @@ const Schemes = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Government ID (Aadhaar / PAN)</label>
+                            <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Government ID (Aadhaar / PAN)')}</label>
                             <input 
                               type="text" 
                               required
                               className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] font-semibold uppercase tracking-wider"
-                              placeholder="e.g. 1234 5678 9012"
+                              placeholder={t('e.g. 1234 5678 9012')}
                               value={idNumber}
                               onChange={e => setIdNumber(e.target.value.toUpperCase())}
                             />
@@ -682,7 +684,7 @@ const Schemes = () => {
                         
                         {requiredDocs.map((doc, idx) => (
                           <div key={idx} className="border border-[#C4F8FF]/15 p-3 rounded-xl bg-[#0F4B70]/20">
-                            <label className="block text-[11px] font-bold text-[#C4F8FF]/80 uppercase mb-1.5">Upload {doc} Proof</label>
+                            <label className="block text-[11px] font-bold text-[#C4F8FF]/80 uppercase mb-1.5">{t('Upload')} {t(doc)} {t('Proof')}</label>
                             <input 
                               type="file" 
                               name="documents"
@@ -697,9 +699,9 @@ const Schemes = () => {
                         <button 
                           type="submit" 
                           disabled={isSubmitting || isAlreadyRegistered} 
-                          className="w-full mt-4 py-3 bg-[#0F4B70]/80 hover:bg-[#C4F8FF]/10-dark text-white rounded-xl font-bold shadow-md shadow-primary/15 transition-all flex justify-center items-center gap-2 disabled:opacity-50"
+                          className="w-full mt-4 py-3 bg-[#0F4B70]/80 hover:bg-[#C4F8FF]/10 text-white rounded-xl font-bold shadow-md shadow-primary/15 transition-all flex justify-center items-center gap-2 disabled:opacity-50"
                         >
-                          {isSubmitting ? 'Submitting Application Documents...' : 'Submit Official Application'}
+                          {isSubmitting ? t('Submitting Application Documents...') : t('Submit Official Application')}
                         </button>
                       </form>
                     );
@@ -711,9 +713,9 @@ const Schemes = () => {
                 <div className="w-16 h-16 bg-[#C4F8FF]/10 border border-green-400/30 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
                   <ShieldCheck size={32} />
                 </div>
-                <h3 className="text-xl font-black text-[#C4F8FF] mb-2">Application Logged!</h3>
+                <h3 className="text-xl font-black text-[#C4F8FF] mb-2">{t('Application Logged!')}</h3>
                 <p className="text-[#C4F8FF]/70 text-sm max-w-sm mx-auto leading-relaxed">
-                  Your application for {selectedScheme.name} is successfully stored with ID tracking code. Receipt generated in applications tab.
+                  {t('Your application is successfully stored with ID tracking code. Receipt generated in applications tab.')}
                 </p>
               </div>
             )}
@@ -757,7 +759,7 @@ const Schemes = () => {
               <div className="space-y-3 text-xs text-slate-700">
                 <div className="flex justify-between border-b border-slate-200 pb-1.5">
                   <span className="font-medium text-slate-500">Scheme Requested</span>
-                  <span className="font-extrabold text-slate-900 text-right max-w-[240px]">{selectedReceipt.schemeName}</span>
+                  <span className="font-extrabold text-slate-900 text-right max-w-[240px]">{t(selectedReceipt.schemeName)}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200 pb-1.5">
                   <span className="font-medium text-slate-500">Beneficiary Name</span>
@@ -765,7 +767,7 @@ const Schemes = () => {
                 </div>
                 <div className="flex justify-between border-b border-slate-200 pb-1.5">
                   <span className="font-medium text-slate-500">Relationship Type</span>
-                  <span className="font-extrabold text-slate-900 capitalize">{selectedReceipt.relationship}</span>
+                  <span className="font-extrabold text-slate-900 capitalize">{t(selectedReceipt.relationship)}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200 pb-1.5">
                   <span className="font-medium text-slate-500">ID Verification Lock</span>
@@ -781,7 +783,7 @@ const Schemes = () => {
                 </div>
                 <div className="flex justify-between pb-1.5">
                   <span className="font-medium text-slate-500">Status</span>
-                  <span className="font-black text-slate-900 capitalize">{selectedReceipt.status === 'Application Submitted' ? 'Pending Audit' : selectedReceipt.status}</span>
+                  <span className="font-black text-slate-900 capitalize">{selectedReceipt.status === 'Application Submitted' ? 'Pending Audit' : t(selectedReceipt.status)}</span>
                 </div>
               </div>
 
@@ -801,7 +803,7 @@ const Schemes = () => {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={handlePrint}
-                className="flex-1 py-3 bg-slate-850 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 bg-slate-800"
+                className="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
               >
                 <Printer size={16} /> Print Receipt
               </button>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { DollarSign, Calendar, TrendingUp, Info } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const COLORS = ['#0d47a1', '#1976d2', '#2196f3', '#4fc3f7', '#80deea', '#0097a7', '#006064'];
 
 const CitizenBudget = () => {
+  const { t } = useLanguage();
   const [budgetYear, setBudgetYear] = useState('2026-2027');
   const [budget, setBudget] = useState(null);
   const [savedYears, setSavedYears] = useState([]);
@@ -61,54 +63,54 @@ const CitizenBudget = () => {
 
   const formatIndianCurrency = (num) => {
     if (num >= 10000000) {
-      return `${(num / 10000000).toFixed(2)} Crore`;
+      return `${(num / 10000000).toFixed(2)} ${t('Crore')}`;
     } else if (num >= 100000) {
-      return `${(num / 100000).toFixed(2)} Lakh`;
+      return `${(num / 100000).toFixed(2)} ${t('Lakh')}`;
     }
     return num.toLocaleString('en-IN');
   };
 
   const chartData = budget && budget.items ? budget.items.map(item => ({
-    name: item.category,
+    name: t(item.category),
     value: item.allocatedAmount,
     formattedValue: formatIndianCurrency(item.allocatedAmount)
   })) : [];
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 text-[#C4F8FF]">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-[#C4F8FF] tracking-tight flex items-center gap-3">
             <DollarSign className="text-[#C4F8FF] animate-pulse" size={32} />
-            Panchayat Budget Allocations
+            {t('Panchayat Budget Allocations')}
           </h1>
           <p className="text-[#C4F8FF]/70 mt-1 text-sm">
-            Access transparent breakdowns of the Gram Panchayat annual development budgets and visual sector allocations.
+            {t('Access transparent breakdowns of the Gram Panchayat annual development budgets and visual sector allocations.')}
           </p>
         </div>
 
         {/* Year Selector */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#C4F8FF]/70 uppercase">Fiscal Year:</span>
+          <span className="text-xs font-bold text-[#C4F8FF]/70 uppercase">{t('Fiscal Year:')}</span>
           <select
             value={budgetYear}
             onChange={(e) => setBudgetYear(e.target.value)}
             className="border border-[#C4F8FF]/15 rounded-xl px-4 py-2 text-xs font-bold text-[#C4F8FF] bg-[#0F4B70]/20 backdrop-blur-sm shadow-sm focus:outline-none focus:border-primary"
           >
             {savedYears.map(year => (
-              <option key={year} value={year}>FY {year}</option>
+              <option key={year} value={year}>{t('FY')} {year}</option>
             ))}
           </select>
         </div>
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-[#C4F8FF]/60 font-bold">Retrieving Budget Records...</div>
+        <div className="py-20 text-center text-[#C4F8FF]/60 font-bold">{t('Retrieving Budget Records...')}</div>
       ) : !budget ? (
         <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-12 text-center border border-[#C4F8FF]/15 rounded-2xl">
           <Info size={40} className="text-slate-350 mx-auto mb-3" />
-          <p className="text-[#C4F8FF]/85 font-bold">No budget details registered for fiscal year {budgetYear}.</p>
-          <p className="text-[#C4F8FF]/60 text-xs mt-1">Please check back later or select a different year.</p>
+          <p className="text-[#C4F8FF]/85 font-bold">{t('No budget details registered for fiscal year')} {budgetYear}.</p>
+          <p className="text-[#C4F8FF]/60 text-xs mt-1">{t('Please check back later or select a different year.')}</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -119,7 +121,7 @@ const CitizenBudget = () => {
                 <DollarSign size={24} />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Total Allocated Funds</span>
+                <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Total Allocated Funds')}</span>
                 <span className="text-2xl font-black text-[#C4F8FF]">₹{formatIndianCurrency(budget.allocatedAmount)}</span>
               </div>
             </div>
@@ -129,8 +131,8 @@ const CitizenBudget = () => {
                 <TrendingUp size={24} />
               </div>
               <div className="flex-1">
-                <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">Development Objectives</span>
-                <p className="text-xs text-[#C4F8FF]/80 font-medium leading-relaxed mt-0.5">{budget.description}</p>
+                <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider block">{t('Development Objectives')}</span>
+                <p className="text-xs text-[#C4F8FF]/80 font-medium leading-relaxed mt-0.5">{t(budget.description)}</p>
               </div>
             </div>
           </div>
@@ -140,7 +142,7 @@ const CitizenBudget = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Pie Chart Card */}
               <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm flex flex-col items-center">
-                <h3 className="font-bold text-sm text-[#C4F8FF] uppercase tracking-wider mb-6 w-full text-left">Sector Percentage Share</h3>
+                <h3 className="font-bold text-sm text-[#C4F8FF] uppercase tracking-wider mb-6 w-full text-left">{t('Sector Percentage Share')}</h3>
                 <div className="w-full h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -158,7 +160,7 @@ const CitizenBudget = () => {
                         ))}
                       </Pie>
                       <Tooltip 
-                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Allocation']} 
+                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, t('Allocation')]} 
                         contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}
                       />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
@@ -169,7 +171,7 @@ const CitizenBudget = () => {
 
               {/* Bar Chart Card */}
               <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm flex flex-col items-center">
-                <h3 className="font-bold text-sm text-[#C4F8FF] uppercase tracking-wider mb-6 w-full text-left">Funds Weight Analysis</h3>
+                <h3 className="font-bold text-sm text-[#C4F8FF] uppercase tracking-wider mb-6 w-full text-left">{t('Funds Weight Analysis')}</h3>
                 <div className="w-full h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
@@ -190,14 +192,14 @@ const CitizenBudget = () => {
 
           {/* Table Details */}
           <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm">
-            <h3 className="font-bold text-base text-[#C4F8FF] mb-4">Itemized Category Allocations</h3>
+            <h3 className="font-bold text-base text-[#C4F8FF] mb-4">{t('Itemized Category Allocations')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="text-xs font-bold text-[#C4F8FF]/60 uppercase tracking-wider border-b border-[#C4F8FF]/20 bg-[#0F4B70]/20">
-                    <th className="py-3 pl-4">Sector Category</th>
-                    <th className="py-3">Funding Target</th>
-                    <th className="py-3 text-right pr-4">Amount Allocated</th>
+                    <th className="py-3 pl-4">{t('Sector Category')}</th>
+                    <th className="py-3">{t('Funding Target')}</th>
+                    <th className="py-3 text-right pr-4">{t('Amount Allocated')}</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -205,10 +207,10 @@ const CitizenBudget = () => {
                     <tr key={idx} className="border-b border-[#C4F8FF]/20 hover:bg-[#0F4B70]/30/40 transition-colors">
                       <td className="py-3.5 pl-4 flex items-center gap-3">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                        <span className="font-extrabold text-[#C4F8FF]">{item.category}</span>
+                        <span className="font-extrabold text-[#C4F8FF]">{t(item.category)}</span>
                       </td>
                       <td className="py-3.5 text-[#C4F8FF]/70 text-xs">
-                        {item.description || 'General Panchayat development works.'}
+                        {t(item.description) || t('General Panchayat development works.')}
                       </td>
                       <td className="py-3.5 text-right pr-4 font-black text-[#C4F8FF] font-mono">
                         ₹{item.allocatedAmount.toLocaleString('en-IN')}

@@ -25,6 +25,9 @@ const CitizenBudget = lazy(() => import('./pages/citizen/CitizenBudget'));
 const AdminMeetings = lazy(() => import('./pages/admin/AdminMeetings'));
 const CitizenMeetings = lazy(() => import('./pages/citizen/CitizenMeetings'));
 const Chatbot = lazy(() => import('./components/Chatbot'));
+const SelectLanguage = lazy(() => import('./pages/SelectLanguage'));
+const AdminBroadcasts = lazy(() => import('./pages/admin/AdminBroadcasts'));
+const CitizenBroadcasts = lazy(() => import('./pages/citizen/CitizenBroadcasts'));
 
 // Premium glassmorphic fallback loader
 const LoadingSpinner = () => (
@@ -42,6 +45,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/select-language" element={<SelectLanguage />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<DashboardLayout role="admin" />}>
@@ -54,6 +58,7 @@ function App() {
               <Route path="taxes" element={<AdminTaxes />} />
               <Route path="budget" element={<AdminBudget />} />
               <Route path="meetings" element={<AdminMeetings />} />
+              <Route path="broadcasts" element={<AdminBroadcasts />} />
               <Route path="profile" element={<AdminProfile />} />
             </Route>
 
@@ -68,6 +73,7 @@ function App() {
               <Route path="taxes" element={<Taxes />} />
               <Route path="budget" element={<CitizenBudget />} />
               <Route path="meetings" element={<CitizenMeetings />} />
+              <Route path="broadcasts" element={<CitizenBroadcasts />} />
             </Route>
 
             {/* Fallback */}

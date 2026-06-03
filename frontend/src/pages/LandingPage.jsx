@@ -178,7 +178,7 @@ const LandingPage = () => {
               {t('smartPortal')}
             </div>
             <p className="text-[#C4F8FF]/90 text-sm md:text-base leading-relaxed font-medium">
-              Empowering Indian villages through automated AI complaint routing, secure tax calculation simulators, and digital scheme catalog audits.
+              {t("Empowering Indian villages through automated AI complaint routing, secure tax calculation simulators, and digital scheme catalog audits.")}
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
@@ -186,7 +186,7 @@ const LandingPage = () => {
                 {t('btnReport')} <ArrowRight size={18} />
               </AnimatedButton>
               <AnimatedButton onClick={handleDashboardRedirect} secondary>
-                Access Dashboard
+                {t("Access Dashboard")}
               </AnimatedButton>
             </div>
           </AnimateSection>
@@ -204,13 +204,13 @@ const LandingPage = () => {
                 <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
                   <Globe size={20} />
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">Citizen Services</h3>
+                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Citizen Services")}</h3>
                 <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
-                  Apply for state welfare schemes, register complaints with maps coordinates, track status timeline, and pay local property taxes online.
+                  {t("Apply for state welfare schemes, register complaints with maps coordinates, track status timeline, and pay local property taxes online.")}
                 </p>
               </div>
               <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 group hover:text-white transition-colors">
-                Enter Citizen Portal &rarr;
+                {t("Enter Citizen Portal")} &rarr;
               </span>
             </div>
 
@@ -223,13 +223,13 @@ const LandingPage = () => {
                 <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
                   <Lock size={20} />
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">Panchayat Administration</h3>
+                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Panchayat Administration")}</h3>
                 <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
-                  Log in as Sarpanch or Panchayat Officer to review budgets, monitor community notices, orchestrate field forces, and resolve reports.
+                  {t("Log in as Sarpanch or Panchayat Officer to review budgets, monitor community notices, orchestrate field forces, and resolve reports.")}
                 </p>
               </div>
               <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 hover:text-white transition-colors">
-                Officer Login Panel &rarr;
+                {t("Officer Login Panel")} &rarr;
               </span>
             </div>
           </AnimateSection>
@@ -238,7 +238,7 @@ const LandingPage = () => {
         {/* Categories Section */}
         <section className="bg-[#0F4B70]/20 py-20 border-t border-[#C4F8FF]/10">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-[#C4F8FF] tracking-tight mb-2">Explore Portal Services</h2>
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-[#C4F8FF] tracking-tight mb-2">{t("Explore Portal Services")}</h2>
             <p className="text-[#C4F8FF]/65 max-w-md mx-auto mb-12 text-xs font-semibold uppercase tracking-wider">{t('categoriesDesc')}</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -294,9 +294,9 @@ const LandingPage = () => {
         <section id="features" className="bg-[#0F4B70]/10 py-20 border-t border-[#C4F8FF]/10 relative z-10 scroll-mt-16">
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
-              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">System Features</span>
-              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">Panchayat Empowerment Through Innovation</h2>
-              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">Automated operations for seamless administration.</p>
+              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("System Features")}</span>
+              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Panchayat Empowerment Through Innovation")}</h2>
+              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Automated operations for seamless administration.")}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -304,24 +304,24 @@ const LandingPage = () => {
                 <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
                   <Activity size={20} />
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">AI Departmental Routing</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Incoming grievances are analyzed by our local Natural Language Processing (NLP) microservice. The text is parsed to determine category validity, auto-detect severity, and allocate to respective local departments instantly.</p>
+                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("AI Departmental Routing")}</h3>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Incoming grievances are analyzed by our local Natural Language Processing (NLP) microservice. The text is parsed to determine category validity, auto-detect severity, and allocate to respective local departments instantly.")}</p>
               </div>
 
               <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 shadow-md hover:shadow-lg transition-all duration-300">
                 <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
                   <MapPin size={20} />
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">Precision Geocoding Maps</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Integrated with OpenStreetMap and reverse geocoding APIs. Citizens pin issue spots directly on village maps, converting coordinates to verified address strings so workers locate them with zero confusion.</p>
+                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Precision Geocoding Maps")}</h3>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Integrated with OpenStreetMap and reverse geocoding APIs. Citizens pin issue spots directly on village maps, converting coordinates to verified address strings so workers locate them with zero confusion.")}</p>
               </div>
 
               <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 shadow-md hover:shadow-lg transition-all duration-300">
                 <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
                   <ShieldCheck size={20} />
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">Secure Digital Tax Portal</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Brings local revenue collection into the digital age. Allows self-assessment of properties and implements legal Gram Panchayat tax calculations based on construction types, area, and official cess components.</p>
+                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Secure Digital Tax Portal")}</h3>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Brings local revenue collection into the digital age. Allows self-assessment of properties and implements legal Gram Panchayat tax calculations based on construction types, area, and official cess components.")}</p>
               </div>
             </div>
           </div>
@@ -331,34 +331,34 @@ const LandingPage = () => {
         <section id="how-it-works" className="py-20 border-t border-[#C4F8FF]/10 relative z-10 scroll-mt-16 bg-[#0F4B70]/20">
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
-              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">Operational Flow</span>
-              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">Simple, Transparent Lifecycle</h2>
-              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">Four simple steps connecting citizens and sarpanch.</p>
+              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("Operational Flow")}</span>
+              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Simple, Transparent Lifecycle")}</h2>
+              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Four simple steps connecting citizens and sarpanch.")}</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
               <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">1</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">Onboard Securely</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Sign up using your mobile number and email. Authenticate your registration through Nodemailer SMTP OTP verification to prevent fake spam accounts.</p>
+                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Onboard Securely")}</h4>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Sign up using your mobile number and email. Authenticate your registration through Nodemailer SMTP OTP verification to prevent fake spam accounts.")}</p>
               </div>
 
               <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">2</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">File or Pay</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Submit your complaints with photos, apply for welfare schemes, or calculate and pay annual property taxes instantly through our digital payment simulator.</p>
+                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("File or Pay")}</h4>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Submit your complaints with photos, apply for welfare schemes, or calculate and pay annual property taxes instantly through our digital payment simulator.")}</p>
               </div>
 
               <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">3</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">Orchestration</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Admins review submissions, allocate budgets, and dispatch designated field workers. Real-time notifications keep citizens informed about changes.</p>
+                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Orchestration")}</h4>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Admins review submissions, allocate budgets, and dispatch designated field workers. Real-time notifications keep citizens informed about changes.")}</p>
               </div>
 
               <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">4</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">Track & Audit</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Use your unique Complaint ID or Scheme ID to track progress stages live on your dashboard and download official receipts for your permanent records.</p>
+                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Track & Audit")}</h4>
+                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Use your unique Complaint ID or Scheme ID to track progress stages live on your dashboard and download official receipts for your permanent records.")}</p>
               </div>
             </div>
           </div>
@@ -368,9 +368,9 @@ const LandingPage = () => {
         <section id="community" className="bg-[#0F4B70]/10 py-20 border-t border-[#C4F8FF]/10">
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
-              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">Panchayat Community</span>
-              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">Participatory Rural Governance</h2>
-              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">Fostering collaboration across village lines.</p>
+              <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("Panchayat Community")}</span>
+              <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Participatory Rural Governance")}</h2>
+              <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Fostering collaboration across village lines.")}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -379,8 +379,8 @@ const LandingPage = () => {
                   <Users size={20} />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">Collaborative Action</h3>
-                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Empower local village committees and youth associations by registering them as authorized field workers. Workers resolve community reports and provide digital photo proof of completed works.</p>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Collaborative Action")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Empower local village committees and youth associations by registering them as authorized field workers. Workers resolve community reports and provide digital photo proof of completed works.")}</p>
                 </div>
               </div>
 
@@ -389,8 +389,8 @@ const LandingPage = () => {
                   <FileSpreadsheet size={20} />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">Financial Transparency</h3>
-                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">Tax payments made by citizens directly fund local development. We enable citizens to review the Gram Panchayat's annual budget allocation on demand, assuring public funds are spent correctly.</p>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Financial Transparency")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Tax payments made by citizens directly fund local development. We enable citizens to review the Gram Panchayat's annual budget allocation on demand, assuring public funds are spent correctly.")}</p>
                 </div>
               </div>
             </div>

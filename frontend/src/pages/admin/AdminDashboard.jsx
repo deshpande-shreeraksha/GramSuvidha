@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Activity, Clock, CheckCircle, Users, AlertCircle, TrendingUp, Zap, User, MapPin, Mail, Phone, Flame, UserX, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const AdminDashboard = () => {
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
   const [workers, setWorkers] = useState([]);
@@ -42,17 +44,17 @@ const AdminDashboard = () => {
 
   const getSystemLogs = () => {
     const logs = [
-      { id: 'LOG-001', event: 'Database connection established to MongoDB Cluster', category: 'SYSTEM', time: 'Just now', type: 'success' },
-      { id: 'LOG-002', event: 'AI Chatbot assistant initialized on client ports', category: 'AI_BOT', time: '5 mins ago', type: 'info' },
-      { id: 'LOG-003', event: 'Bilingual translation dictionary cache refreshed successfully', category: 'I18N', time: '12 mins ago', type: 'success' },
-      { id: 'LOG-004', event: 'System overview dashboard requested by user admin@panchayat.gov.in', category: 'AUTH', time: '20 mins ago', type: 'info' },
+      { id: 'LOG-001', event: t('Database connection established to MongoDB Cluster'), category: 'SYSTEM', time: t('Just now'), type: 'success' },
+      { id: 'LOG-002', event: t('AI Chatbot assistant initialized on client ports'), category: 'AI_BOT', time: t('5 mins ago'), type: 'info' },
+      { id: 'LOG-003', event: t('Bilingual translation dictionary cache refreshed successfully'), category: 'I18N', time: t('12 mins ago'), type: 'success' },
+      { id: 'LOG-004', event: t('System overview dashboard requested by user admin@panchayat.gov.in'), category: 'AUTH', time: t('20 mins ago'), type: 'info' },
     ];
 
     complaints.slice(0, 3).forEach((comp, idx) => {
       const timeString = comp.createdAt ? new Date(comp.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : `${idx + 1} hr ago`;
       logs.unshift({
         id: `LOG-C${idx + 10}`,
-        event: `Complaint updated: status marked as "${comp.status}" and assigned to "${comp.assigned || 'None'}"`,
+        event: `${t('Complaint updated: status marked as')} "${t(comp.status)}" ${t('and assigned to')} "${comp.assigned && comp.assigned !== '-' ? comp.assigned : t('None')}"`,
         category: 'COMPLAINTS',
         time: timeString,
         type: comp.status === 'Resolved' ? 'success' : 'warning'
@@ -62,7 +64,7 @@ const AdminDashboard = () => {
     workers.slice(0, 2).forEach((worker, idx) => {
       logs.unshift({
         id: `LOG-W${idx + 20}`,
-        event: `Field worker registered: ${worker.name} assigned to village/ward "${worker.village || 'Panchayat Area'}"`,
+        event: `${t('Field worker registered:')} ${worker.name} ${t('assigned to village/ward')} "${worker.village || t('Panchayat Area')}"`,
         category: 'WORKFORCE',
         time: `${idx + 2} hrs ago`,
         type: 'info'
@@ -78,7 +80,10 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('/api/admin/system-intel', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'X-Language': language
+        }
       });
       if (res.status === 401) {
         localStorage.clear();
@@ -98,7 +103,7 @@ const AdminDashboard = () => {
       setIntelLoading(false);
       setIsRefreshing(false);
     }
-  }, [navigate]);
+  }, [navigate, language]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -197,19 +202,19 @@ const AdminDashboard = () => {
   ];
 
   const stats = [
-    { title: 'TOTAL REQUESTS', value: totalRequests.toString(), trend: '+12%', icon: <Activity size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#0F4B70]/10' },
-    { title: 'PENDING ACTION', value: pendingCount.toString(), trend: '-2%', icon: <Clock size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
-    { title: 'SUCCESSFUL RESOLUTIONS', value: resolvedCount.toString(), trend: '+5%', icon: <CheckCircle size={24} className="text-green-550" />, bg: 'bg-[#C4F8FF]/10' },
-    { title: 'ACTIVE VOLUNTEERS', value: activeWorkers.toString(), trend: 'STABLE', icon: <Users size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
-    { title: `CITIZENS (ID: ${adminInfo?.villageId || 'N/A'})`, value: (systemIntel?.summary?.totalCitizens ?? 0).toString(), trend: 'LIVE', icon: <Users size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
+    { title: t('TOTAL REQUESTS'), value: totalRequests.toString(), trend: '+12%', icon: <Activity size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#0F4B70]/10' },
+    { title: t('PENDING ACTION'), value: pendingCount.toString(), trend: '-2%', icon: <Clock size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
+    { title: t('SUCCESSFUL RESOLUTIONS'), value: resolvedCount.toString(), trend: '+5%', icon: <CheckCircle size={24} className="text-green-550" />, bg: 'bg-[#C4F8FF]/10' },
+    { title: t('ACTIVE VOLUNTEERS'), value: activeWorkers.toString(), trend: 'STABLE', icon: <Users size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
+    { title: `${t('CITIZENS')} (ID: ${adminInfo?.villageId || 'N/A'})`, value: (systemIntel?.summary?.totalCitizens ?? 0).toString(), trend: 'LIVE', icon: <Users size={24} className="text-[#C4F8FF]" />, bg: 'bg-[#C4F8FF]/10' },
   ];
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#C4F8FF]">System Overview</h1>
-          <p className="text-[#C4F8FF]/70 mt-1">GramSuvidha infrastructure dashboard and complaint routing.</p>
+          <h1 className="text-3xl font-bold text-[#C4F8FF]">{t('System Overview')}</h1>
+          <p className="text-[#C4F8FF]/70 mt-1">{t('GramSuvidha infrastructure dashboard and complaint routing.')}</p>
         </div>
       </div>
 
@@ -238,42 +243,42 @@ const AdminDashboard = () => {
       {/* Panchayat Financial Intelligence Panel */}
       <div className="card">
         <h3 className="font-bold text-lg text-[#C4F8FF] flex items-center gap-2 mb-2">
-          <TrendingUp size={20} className="text-[#C4F8FF]" /> Panchayat Financial Intelligence
+          <TrendingUp size={20} className="text-[#C4F8FF]" /> {t('Panchayat Financial Intelligence')}
         </h3>
-        <p className="text-xs text-[#C4F8FF]/70 mb-6">Revenue and expenditure audit tracking for this fiscal year.</p>
+        <p className="text-xs text-[#C4F8FF]/70 mb-6">{t('Revenue and expenditure audit tracking for this fiscal year.')}</p>
 
         {financialsLoading ? (
-          <div className="py-8 text-center text-[#C4F8FF]/60 font-medium">Loading financials...</div>
+          <div className="py-8 text-center text-[#C4F8FF]/60 font-medium">{t('Loading financials...')}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/20 rounded-2xl p-4 flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Allocated Budget</span>
+              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Allocated Budget')}</span>
               <div className="text-xl font-black text-[#C4F8FF] mt-2">₹{financials.allocatedBudget.toLocaleString()}</div>
-              <span className="text-[9px] text-[#C4F8FF]/60 mt-1 uppercase">State/Central Allocation</span>
+              <span className="text-[9px] text-[#C4F8FF]/60 mt-1 uppercase">{t('State/Central Allocation')}</span>
             </div>
 
             <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/20 rounded-2xl p-4 flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Taxes Collected</span>
+              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Taxes Collected')}</span>
               <div className="text-xl font-black text-green-400 mt-2">₹{financials.totalTaxesCollected.toLocaleString()}</div>
-              <span className="text-[9px] text-green-400 mt-1 uppercase font-bold">{Math.round((financials.totalTaxesCollected / (financials.totalTaxesCollected + financials.totalTaxesOutstanding || 1)) * 100)}% Tax Recovery</span>
+              <span className="text-[9px] text-green-400 mt-1 uppercase font-bold">{Math.round((financials.totalTaxesCollected / (financials.totalTaxesCollected + financials.totalTaxesOutstanding || 1)) * 100)}% {t('Tax Recovery')}</span>
             </div>
 
             <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/20 rounded-2xl p-4 flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Taxes Outstanding</span>
+              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Taxes Outstanding')}</span>
               <div className="text-xl font-black text-[#C4F8FF] mt-2">₹{financials.totalTaxesOutstanding.toLocaleString()}</div>
-              <span className="text-[9px] text-[#C4F8FF]/60 mt-1 uppercase">Pending Collection</span>
+              <span className="text-[9px] text-[#C4F8FF]/60 mt-1 uppercase">{t('Pending Collection')}</span>
             </div>
 
             <div className="bg-[#0F4B70]/30 border border-[#C4F8FF]/20 rounded-2xl p-4 flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">Grievance Expenses</span>
+              <span className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider">{t('Grievance Expenses')}</span>
               <div className="text-xl font-black text-red-400 mt-2">₹{financials.totalResolutionExpenses.toLocaleString()}</div>
-              <span className="text-[9px] text-red-500 mt-1 uppercase font-bold">Spent on Resolutions</span>
+              <span className="text-[9px] text-red-500 mt-1 uppercase font-bold">{t('Spent on Resolutions')}</span>
             </div>
 
             <div className="bg-[#0F4B70]/10 border border-[#C4F8FF]/20 rounded-2xl p-4 flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-[#C4F8FF] uppercase tracking-wider">Available Balance</span>
+              <span className="text-[10px] font-bold text-[#C4F8FF] uppercase tracking-wider">{t('Available Balance')}</span>
               <div className="text-xl font-black text-[#C4F8FF] mt-2">₹{financials.netBalance.toLocaleString()}</div>
-              <span className="text-[9px] text-[#C4F8FF]/70 mt-1 uppercase font-bold">Panchayat Cash Reserve</span>
+              <span className="text-[9px] text-[#C4F8FF]/70 mt-1 uppercase font-bold">{t('Panchayat Cash Reserve')}</span>
             </div>
           </div>
         )}
@@ -285,9 +290,9 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="font-bold text-lg text-[#C4F8FF] flex items-center gap-2">
-                <Flame size={20} className="text-rose-500 animate-pulse" /> Complaint Priority Distribution
+                <Flame size={20} className="text-rose-500 animate-pulse" /> {t('Complaint Priority Distribution')}
               </h3>
-              <p className="text-xs text-[#C4F8FF]/70 mt-1">Real-time breakdown of filed complaints categorized by priority.</p>
+              <p className="text-xs text-[#C4F8FF]/70 mt-1">{t('Real-time breakdown of filed complaints categorized by priority.')}</p>
             </div>
           </div>
           <div className="h-64">
@@ -312,7 +317,7 @@ const AdminDashboard = () => {
             {priorityData.map((p, idx) => (
               <div key={idx} className="flex items-center gap-1.5 text-xs font-bold text-[#C4F8FF]/70">
                 <span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: p.color}}></span>
-                {p.name} ({p.value})
+                {t(p.name)} ({p.value})
               </div>
             ))}
           </div>
@@ -320,51 +325,51 @@ const AdminDashboard = () => {
           <div className="mt-6 pt-6 border-t border-[#C4F8FF]/20 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             <div>
               <div className="text-[10px] font-extrabold text-rose-400 uppercase mb-2 flex items-center gap-1">
-                <Flame size={12} /> High Priority Tasks
+                <Flame size={12} /> {t('High Priority Tasks')}
               </div>
               <ul className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
                 {filteredComplaints.filter(c => c.priority === 'High').map((c, i) => (
                   <li key={i} className="text-xs text-rose-300 font-semibold bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded truncate flex items-center justify-between" title={c.description}>
-                    <span>{c.category ? c.category.replace('_', ' ').toUpperCase() : 'GENERAL'}</span>
-                    <span className="text-[9px] font-bold text-rose-300 bg-rose-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : 'UNASSIGNED'}</span>
+                    <span>{c.category ? t(c.category.replace('_', ' ').toUpperCase()) : t('GENERAL')}</span>
+                    <span className="text-[9px] font-bold text-rose-300 bg-rose-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : t('UNASSIGNED')}</span>
                   </li>
                 ))}
                 {filteredComplaints.filter(c => c.priority === 'High').length === 0 && (
-                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">No active high priority</li>
+                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">{t('No active high priority')}</li>
                 )}
               </ul>
             </div>
 
             <div>
               <div className="text-[10px] font-extrabold text-amber-400 uppercase mb-2 flex items-center gap-1">
-                <Flame size={12} /> Medium Priority Tasks
+                <Flame size={12} /> {t('Medium Priority Tasks')}
               </div>
               <ul className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
                 {filteredComplaints.filter(c => c.priority === 'Medium' || !c.priority).map((c, i) => (
                   <li key={i} className="text-xs text-amber-300 font-semibold bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded truncate flex items-center justify-between" title={c.description}>
-                    <span>{c.category ? c.category.replace('_', ' ').toUpperCase() : 'GENERAL'}</span>
-                    <span className="text-[9px] font-bold text-amber-300 bg-amber-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : 'UNASSIGNED'}</span>
+                    <span>{c.category ? t(c.category.replace('_', ' ').toUpperCase()) : t('GENERAL')}</span>
+                    <span className="text-[9px] font-bold text-amber-300 bg-amber-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : t('UNASSIGNED')}</span>
                   </li>
                 ))}
                 {filteredComplaints.filter(c => c.priority === 'Medium' || !c.priority).length === 0 && (
-                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">No active medium priority</li>
+                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">{t('No active medium priority')}</li>
                 )}
               </ul>
             </div>
 
             <div>
               <div className="text-[10px] font-extrabold text-green-400 uppercase mb-2 flex items-center gap-1">
-                <Flame size={12} /> Low Priority Tasks
+                <Flame size={12} /> {t('Low Priority Tasks')}
               </div>
               <ul className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
                 {filteredComplaints.filter(c => c.priority === 'Low').map((c, i) => (
                   <li key={i} className="text-xs text-green-300 font-semibold bg-green-500/10 border border-green-500/20 px-2 py-1 rounded truncate flex items-center justify-between" title={c.description}>
-                    <span>{c.category ? c.category.replace('_', ' ').toUpperCase() : 'GENERAL'}</span>
-                    <span className="text-[9px] font-bold text-green-300 bg-green-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : 'UNASSIGNED'}</span>
+                    <span>{c.category ? t(c.category.replace('_', ' ').toUpperCase()) : t('GENERAL')}</span>
+                    <span className="text-[9px] font-bold text-green-300 bg-green-500/25 px-1.5 py-0.5 rounded truncate max-w-20">{c.assigned && c.assigned !== '-' ? c.assigned : t('UNASSIGNED')}</span>
                   </li>
                 ))}
                 {filteredComplaints.filter(c => c.priority === 'Low').length === 0 && (
-                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">No active low priority</li>
+                  <li className="text-[11px] text-[#C4F8FF]/60 font-medium italic">{t('No active low priority')}</li>
                 )}
               </ul>
             </div>
@@ -376,9 +381,9 @@ const AdminDashboard = () => {
         <div className="card">
           <div className="text-center mb-2">
             <h3 className="font-bold text-lg text-[#C4F8FF] flex items-center justify-center gap-2">
-              <Zap size={20} className="text-[#C4F8FF]" /> Live Status
+              <Zap size={20} className="text-[#C4F8FF]" /> {t('Live Status')}
             </h3>
-            <p className="text-xs text-[#C4F8FF]/70 mt-1">Operational lifecycle phase.</p>
+            <p className="text-xs text-[#C4F8FF]/70 mt-1">{t('Operational lifecycle phase.')}</p>
           </div>
           <div className="h-48 relative">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={150}>
@@ -401,14 +406,14 @@ const AdminDashboard = () => {
             </ResponsiveContainer>
             <div className="absolute inset-0 flex items-center justify-center flex-col">
               <span className="text-3xl font-bold text-[#C4F8FF]">{complaints.length || '3'}</span>
-              <span className="text-[9px] text-[#C4F8FF]/60 font-bold uppercase tracking-widest mt-1">Incidents</span>
+              <span className="text-[9px] text-[#C4F8FF]/60 font-bold uppercase tracking-widest mt-1">{t('Incidents')}</span>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
             {pieData.map((item, i) => (
               <div key={i} className="text-center">
                 <div className="w-2.5 h-2.5 rounded-full mx-auto mb-1" style={{backgroundColor: item.color}}></div>
-                <div className="text-[10px] font-bold text-[#C4F8FF]/70 uppercase truncate">{item.name}</div>
+                <div className="text-[10px] font-bold text-[#C4F8FF]/70 uppercase truncate">{t(item.name)}</div>
                 <div className="font-bold text-sm text-[#C4F8FF]">{item.value}</div>
               </div>
             ))}
@@ -422,9 +427,9 @@ const AdminDashboard = () => {
         <div className="card w-full">
           <div className="flex items-start justify-between mb-1">
             <h3 className="font-bold text-lg text-[#C4F8FF] flex items-center gap-2">
-              <AlertCircle size={20} className="text-red-500" /> System Intel
+              <AlertCircle size={20} className="text-red-500" /> {t('System Intel')}
               <span className="flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 ml-1 animate-pulse">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span> LIVE
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span> {t('LIVE')}
               </span>
             </h3>
             <button
@@ -436,11 +441,11 @@ const AdminDashboard = () => {
               <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
             </button>
           </div>
-          <p className="text-xs text-[#C4F8FF]/70 mb-1">Real-time intelligence computed from your MongoDB data.</p>
+          <p className="text-xs text-[#C4F8FF]/70 mb-1">{t('Real-time intelligence computed from your MongoDB data.')}</p>
           {lastRefreshed && (
             <p className="text-[10px] text-[#C4F8FF]/60 mb-5 flex items-center gap-1">
               {intelError ? <WifiOff size={10} className="text-red-400" /> : <Wifi size={10} className="text-green-500" />}
-              {intelError ? 'Connection issue — showing last known data' : `Last updated: ${lastRefreshed.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'})}`}
+              {intelError ? t('Connection issue — showing last known data') : `${t('Last updated')}: ${lastRefreshed.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'})}`}
             </p>
           )}
 
@@ -453,9 +458,9 @@ const AdminDashboard = () => {
           ) : intelError && !systemIntel ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <WifiOff size={32} className="text-[#C4F8FF]/70 mb-2" />
-              <p className="text-sm font-semibold text-[#C4F8FF]/70">Could not load system intel</p>
-              <p className="text-xs text-[#C4F8FF]/60 mt-1">Make sure the backend server is running</p>
-              <button onClick={() => fetchSystemIntel(true)} className="mt-3 text-xs font-bold text-[#C4F8FF] hover:underline">Retry</button>
+              <p className="text-sm font-semibold text-[#C4F8FF]/70">{t('Could not load system intel')}</p>
+              <p className="text-xs text-[#C4F8FF]/60 mt-1">{t('Make sure the backend server is running')}</p>
+              <button onClick={() => fetchSystemIntel(true)} className="mt-3 text-xs font-bold text-[#C4F8FF] hover:underline">{t('Retry')}</button>
             </div>
           ) : (
             <div className="space-y-3">
@@ -481,11 +486,11 @@ const AdminDashboard = () => {
                       {iconMap[item.icon] || <Activity size={18} />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-[#C4F8FF] text-sm">{item.title}</h4>
-                      <p className="text-xs text-[#C4F8FF]/70 mt-0.5 leading-relaxed">{item.description}</p>
+                      <h4 className="font-bold text-[#C4F8FF] text-sm">{t(item.title)}</h4>
+                      <p className="text-xs text-[#C4F8FF]/70 mt-0.5 leading-relaxed">{t(item.description)}</p>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                      <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide ${c.badge}`}>{item.badge}</span>
+                      <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide ${c.badge}`}>{t(item.badge)}</span>
                       <span className="text-[11px] font-bold text-[#C4F8FF]/80">{item.value}</span>
                     </div>
                   </div>
@@ -498,7 +503,7 @@ const AdminDashboard = () => {
             onClick={() => setShowLogsModal(true)}
             className="w-full mt-5 py-3 text-sm font-bold text-[#C4F8FF]/70 uppercase tracking-wider hover:text-[#C4F8FF] transition-colors border border-[#C4F8FF]/15 hover:bg-[#0F4B70]/30 rounded-xl"
           >
-            VIEW OPERATIONAL LOG
+            {t('VIEW OPERATIONAL LOG')}
           </button>
         </div>
       </div>
@@ -509,8 +514,8 @@ const AdminDashboard = () => {
           <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl max-w-2xl w-full shadow-xl border border-[#C4F8FF]/15 overflow-hidden">
             <div className="px-6 py-4 bg-[#0F4B70]/30 border-b border-[#C4F8FF]/20 flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-[#C4F8FF] text-lg">System Operational Logs</h3>
-                <p className="text-xs text-[#C4F8FF]/70 mt-0.5">Real-time status updates and admin action tracking.</p>
+                <h3 className="font-bold text-[#C4F8FF] text-lg">{t('System Operational Logs')}</h3>
+                <p className="text-xs text-[#C4F8FF]/70 mt-0.5">{t('Real-time status updates and admin action tracking.')}</p>
               </div>
               <button onClick={() => setShowLogsModal(false)} className="text-[#C4F8FF]/60 hover:text-[#C4F8FF]/80 font-bold text-lg">✕</button>
             </div>
@@ -527,11 +532,11 @@ const AdminDashboard = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start gap-2">
-                      <span className="text-xs font-bold text-[#C4F8FF]/60 tracking-wider uppercase">{log.category}</span>
-                      <span className="text-[10px] text-[#C4F8FF]/60 font-medium">{log.time}</span>
+                      <span className="text-xs font-bold text-[#C4F8FF]/60 tracking-wider uppercase">{t(log.category)}</span>
+                      <span className="text-[10px] text-[#C4F8FF]/60 font-medium">{t(log.time)}</span>
                     </div>
-                    <p className="text-sm font-semibold text-[#C4F8FF] mt-1">{log.event}</p>
-                    <span className="text-[10px] text-[#C4F8FF]/60 font-mono mt-1 block">ID: {log.id}</span>
+                    <p className="text-sm font-semibold text-[#C4F8FF] mt-1">{t(log.event)}</p>
+                    <span className="text-[10px] text-[#C4F8FF]/60 font-mono mt-1 block">{t('ID')}: {log.id}</span>
                   </div>
                 </div>
               ))}
@@ -539,7 +544,7 @@ const AdminDashboard = () => {
             
             <div className="px-6 py-4 bg-[#0F4B70]/30 border-t border-[#C4F8FF]/20 flex justify-end">
               <button onClick={() => setShowLogsModal(false)} className="px-4 py-2 bg-[#0F4B70]/80 text-white font-bold rounded-lg hover:bg-[#0F4B70]/90 shadow-sm transition-colors">
-                Close Logs
+                {t('Close Logs')}
               </button>
             </div>
           </div>

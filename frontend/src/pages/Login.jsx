@@ -104,8 +104,8 @@ const Login = () => {
                 <div className="inline-flex items-center justify-center p-3 bg-[#0F4B70]/50 rounded-full border border-[#C4F8FF]/20 mb-3 shadow-[0_0_20px_rgba(196,248,255,0.15)]">
                   <Key className="text-[#C4F8FF]" size={20} />
                 </div>
-                <h2 className="text-[#C4F8FF] font-black text-xl mb-1">{t('loginTitle') || 'Welcome Home'}</h2>
-                <p className="text-[#C4F8FF]/60 text-xs">Unlock your digital portal</p>
+                <h2 className="text-[#C4F8FF] font-black text-xl mb-1">{t('loginTitle') || t('Welcome Home')}</h2>
+                <p className="text-[#C4F8FF]/60 text-xs">{t('Unlock your digital portal')}</p>
               </div>
 
               {/* Role Toggle inside the door */}
@@ -120,7 +120,7 @@ const Login = () => {
                   }`}
                 >
                   <UserCircle size={16} />
-                  Citizen
+                  {t('Citizen')}
                 </button>
                 <button
                   type="button"
@@ -132,7 +132,7 @@ const Login = () => {
                   }`}
                 >
                   <ShieldCheck size={16} />
-                  Admin
+                  {t('Admin')}
                 </button>
               </div>
               
@@ -146,7 +146,7 @@ const Login = () => {
               <form onSubmit={handleLogin} className="space-y-4 flex-1">
                 <div>
                   <label htmlFor="identifier" className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1.5">
-                    {t('email') || 'Email Address'}
+                    {t('Email Address')}
                   </label>
                   <input
                     id="identifier"
@@ -155,13 +155,13 @@ const Login = () => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     className="w-full border border-[#C4F8FF]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all"
-                    placeholder="you@example.com"
+                    placeholder={t('you@example.com')}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="password" className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1.5">
-                    {t('password') || 'Password'}
+                    {t('Password')}
                   </label>
                   <div className="relative">
                     <input
@@ -171,7 +171,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full border border-[#C4F8FF]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all pr-10"
-                      placeholder="Enter your key"
+                      placeholder={t('Enter your key')}
                     />
                     <button
                       type="button"
@@ -191,7 +191,7 @@ const Login = () => {
                       className="h-3.5 w-3.5 rounded border-[#C4F8FF]/30 bg-[#0F4B70]/40 text-[#C4F8FF] focus:ring-[#C4F8FF]/50"
                     />
                     <label htmlFor="remember-me" className="ml-2 block text-[#C4F8FF]/70 font-medium">
-                      {t('rememberMe') || 'Remember Key'}
+                      {t('Remember Key')}
                     </label>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ const Login = () => {
                   className="w-full py-3.5 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/30 rounded-xl font-bold hover:bg-[#C4F8FF]/10 shadow-lg shadow-black/20 flex justify-center items-center gap-2 mt-2 transition-all disabled:opacity-50 group"
                 >
                   <LogIn size={18} className="group-hover:translate-x-1 transition-transform" />
-                  {loading ? 'Unlocking...' : 'Unlock Portal'}
+                  {loading ? t('Unlocking...') : t('Unlock Portal')}
                 </button>
               </form>
            </div>
@@ -223,9 +223,9 @@ const Login = () => {
         {/* Footer info & Sandbox bypass outside the house */}
         <div className="w-full max-w-2xl mt-10 space-y-6">
           <div className="text-center text-xs text-[#C4F8FF]/60 font-medium">
-            {t('newToGram') || 'Don\'t have a key?'} {' '}
+            {t("Don't have a key?")} {' '}
             <Link to="/signup" className="font-extrabold text-[#C4F8FF] hover:underline tracking-wide">
-              {t('registerHere') || 'Build yours here'}
+              {t('Build yours here')}
             </Link>
           </div>
         </div>

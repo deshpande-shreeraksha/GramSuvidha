@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, ShieldAlert, Activity, Menu, X, PlusCircle, Clock, MapPin, Briefcase, Home, ChevronLeft, ChevronRight, CreditCard, DollarSign, Calendar } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, ShieldAlert, Activity, Menu, X, PlusCircle, Clock, MapPin, Briefcase, Home, ChevronLeft, ChevronRight, CreditCard, DollarSign, Calendar, Megaphone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const Sidebar = ({ role, isOpen, setIsOpen }) => {
@@ -16,10 +16,11 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
     { name: t('systemOverview'), path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: t('fieldWorkers'), path: '/admin/workers', icon: <Users size={20} /> },
     { name: t('complaintsMgmt'), path: '/admin/complaints', icon: <FileText size={20} /> },
-    { name: "Scheme's", path: '/admin/schemes', icon: <Briefcase size={20} /> },
-    { name: 'Property Taxes', path: '/admin/taxes', icon: <CreditCard size={20} /> },
-    { name: 'Panchayat Budget', path: '/admin/budget', icon: <DollarSign size={20} /> },
-    { name: 'Meetings & Minutes', path: '/admin/meetings', icon: <Calendar size={20} /> },
+    { name: t('schemes'), path: '/admin/schemes', icon: <Briefcase size={20} /> },
+    { name: t('taxes'), path: '/admin/taxes', icon: <CreditCard size={20} /> },
+    { name: t('budget'), path: '/admin/budget', icon: <DollarSign size={20} /> },
+    { name: t('meetings'), path: '/admin/meetings', icon: <Calendar size={20} /> },
+    { name: t('broadcasts'), path: '/admin/broadcasts', icon: <Megaphone size={20} /> },
     { name: t('profile'), path: '/admin/profile', icon: <Users size={20} /> },
   ];
 
@@ -27,10 +28,11 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
     { name: t('home'), path: '/citizen/home', icon: <Home size={20} /> },
     { name: t('dashboard'), path: '/citizen/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: t('reportComplaint'), path: '/citizen/complaint', icon: <PlusCircle size={20} /> },
-    { name: "Scheme's", path: '/citizen/schemes', icon: <Briefcase size={20} /> },
-    { name: 'Property Taxes', path: '/citizen/taxes', icon: <CreditCard size={20} /> },
-    { name: 'Panchayat Budget', path: '/citizen/budget', icon: <DollarSign size={20} /> },
-    { name: 'Meetings & Minutes', path: '/citizen/meetings', icon: <Calendar size={20} /> },
+    { name: t('schemes'), path: '/citizen/schemes', icon: <Briefcase size={20} /> },
+    { name: t('taxes'), path: '/citizen/taxes', icon: <CreditCard size={20} /> },
+    { name: t('budget'), path: '/citizen/budget', icon: <DollarSign size={20} /> },
+    { name: t('meetings'), path: '/citizen/meetings', icon: <Calendar size={20} /> },
+    { name: t('broadcasts'), path: '/citizen/broadcasts', icon: <Megaphone size={20} /> },
     { name: t('profile'), path: '/citizen/profile', icon: <Users size={20} /> },
   ];
 
@@ -78,7 +80,7 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
                 }`}
               >
                 <span className="flex-shrink-0">{link.icon}</span>
-                {!isCollapsed && <span className="font-medium animate-fade-in whitespace-nowrap">{link.name}</span>}
+                {!isCollapsed && <span className="font-medium animate-fade-in text-sm leading-tight max-w-[160px]">{link.name}</span>}
               </NavLink>
             );
           })}

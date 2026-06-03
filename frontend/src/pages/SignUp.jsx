@@ -92,7 +92,8 @@ const SignUp = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`
+          name: `${formData.firstName} ${formData.lastName}`,
+          lang: language
         }),
       });
 
@@ -151,11 +152,7 @@ const SignUp = () => {
           village: data.village || ''
         }));
         
-        if (data.role === 'admin') {
-          navigate('/admin/home');
-        } else {
-          navigate('/citizen/home');
-        }
+        navigate('/select-language');
       } else {
         setError(data.message || 'Registration failed.');
       }
@@ -177,7 +174,8 @@ const SignUp = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`
+          name: `${formData.firstName} ${formData.lastName}`,
+          lang: language
         })
       });
 
@@ -257,10 +255,10 @@ const SignUp = () => {
                     <div className="inline-flex items-center justify-center p-3 bg-[#0F4B70]/50 rounded-full border border-[#C4F8FF]/20 mb-3 shadow-[0_0_20px_rgba(196,248,255,0.15)]">
                       <Mail className="text-[#C4F8FF]" size={20} />
                     </div>
-                    <h2 className="text-[#C4F8FF] font-black text-xl mb-1">Verify Your Key</h2>
-                    <p className="text-[#C4F8FF]/60 text-xs">Unlock your newly built digital key</p>
+                    <h2 className="text-[#C4F8FF] font-black text-xl mb-1">{t('Verify Your Key')}</h2>
+                    <p className="text-[#C4F8FF]/60 text-xs">{t('Unlock your newly built digital key')}</p>
                     <p className="text-[11px] text-[#C4F8FF]/50 mt-3 break-all px-2 text-center">
-                      A verification code has been sent to:<br/>
+                      {t('A verification code has been sent to:')}<br/>
                       <strong className="text-[#C4F8FF] font-bold">{formData.email}</strong>
                     </p>
                   </div>
@@ -268,7 +266,7 @@ const SignUp = () => {
                   <form onSubmit={handleVerifyOTP} className="space-y-4">
                     <div>
                       <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-2 text-center">
-                        Enter 6-Digit OTP
+                        {t('Enter 6-Digit OTP')}
                       </label>
                       <input 
                         type="text" 
@@ -287,7 +285,7 @@ const SignUp = () => {
                       className="w-full py-3.5 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/30 rounded-xl font-bold hover:bg-[#C4F8FF]/10 shadow-lg shadow-black/20 flex justify-center items-center gap-2 mt-6 transition-all disabled:opacity-50 group"
                     >
                       <Key size={18} className="group-hover:rotate-12 transition-transform" />
-                      {loading ? 'Verifying...' : 'Verify & Create Account'}
+                      {loading ? t('Verifying...') : t('Verify & Create Account')}
                     </button>
                   </form>
 
@@ -297,7 +295,7 @@ const SignUp = () => {
                       disabled={resending}
                       className="text-[#C4F8FF] hover:underline disabled:opacity-50"
                     >
-                      {resending ? 'Resending Key...' : 'Resend Verification Code'}
+                      {resending ? t('Resending Key...') : t('Resend Verification Code')}
                     </button>
                     <button 
                       onClick={() => {
@@ -308,7 +306,7 @@ const SignUp = () => {
                       className="text-[#C4F8FF]/50 hover:text-[#C4F8FF] transition-colors flex items-center gap-1.5"
                     >
                       <ArrowLeft size={14} />
-                      Back to registration
+                      {t('Back to registration')}
                     </button>
                   </div>
                 </div>
@@ -318,8 +316,8 @@ const SignUp = () => {
                     <div className="inline-flex items-center justify-center p-3 bg-[#0F4B70]/50 rounded-full border border-[#C4F8FF]/20 mb-3 shadow-[0_0_20px_rgba(196,248,255,0.15)]">
                       <UserPlus className="text-[#C4F8FF]" size={20} />
                     </div>
-                    <h2 className="text-[#C4F8FF] font-black text-xl mb-1">{t('signupTitle') || 'Create Account'}</h2>
-                    <p className="text-[#C4F8FF]/60 text-xs">Build your digital connection</p>
+                    <h2 className="text-[#C4F8FF] font-black text-xl mb-1">{t('signupTitle') || t('Create Account')}</h2>
+                    <p className="text-[#C4F8FF]/60 text-xs">{t('Build your digital connection')}</p>
                   </div>
 
                   <form onSubmit={handleSignUp} className="space-y-3">
@@ -327,7 +325,7 @@ const SignUp = () => {
                     {/* Role Selection Toggle */}
                     <div>
                       <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1.5">
-                        {t('regType') || 'Registration Type'}
+                        {t('Registration Type')}
                       </label>
                       <div className="flex bg-[#0F4B70]/30 rounded-xl p-1 border border-[#C4F8FF]/15">
                         <button
@@ -340,7 +338,7 @@ const SignUp = () => {
                           }`}
                         >
                           <UserCircle size={15} />
-                          Citizen
+                          {t('Citizen')}
                         </button>
                         <button
                           type="button"
@@ -352,7 +350,7 @@ const SignUp = () => {
                           }`}
                         >
                           <ShieldCheck size={15} />
-                          Admin
+                          {t('Admin')}
                         </button>
                       </div>
                     </div>
@@ -360,7 +358,7 @@ const SignUp = () => {
                     {formData.role === 'admin' && (
                       <div className="bg-orange-400/10 border border-orange-400/30 p-3 rounded-xl">
                         <label className="block text-[10px] font-extrabold text-orange-400 uppercase tracking-widest mb-1">
-                          {t('villageId') || 'Official Panchayat / Village ID'}
+                          {t('Official Panchayat / Village ID')}
                         </label>
                         <input 
                           type="text" 
@@ -371,7 +369,7 @@ const SignUp = () => {
                           className="w-full border border-orange-400/30 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 bg-[#0F4B70]/15 text-orange-400 placeholder:text-orange-400/30 transition-all font-bold" 
                           placeholder="e.g. VIL-10293" 
                         />
-                        <p className="text-[9px] text-orange-400/70 font-bold mt-1">Required for admin verification.</p>
+                        <p className="text-[9px] text-orange-400/70 font-bold mt-1">{t('Required for admin verification.')}</p>
                       </div>
                     )}
 
@@ -379,7 +377,7 @@ const SignUp = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('firstName') || 'First Name'}
+                          {t('First Name')}
                         </label>
                         <input 
                           type="text" 
@@ -388,12 +386,12 @@ const SignUp = () => {
                           value={formData.firstName}
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all" 
-                          placeholder="Raj" 
+                          placeholder={t('Raj')} 
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('lastName') || 'Last Name'}
+                          {t('Last Name')}
                         </label>
                         <input 
                           type="text" 
@@ -402,7 +400,7 @@ const SignUp = () => {
                           value={formData.lastName}
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all" 
-                          placeholder="Kumar" 
+                          placeholder={t('Kumar')} 
                         />
                       </div>
                     </div>
@@ -411,7 +409,7 @@ const SignUp = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('age') || 'Age'}
+                          {t('Age')}
                         </label>
                         <input 
                           type="number" 
@@ -426,7 +424,7 @@ const SignUp = () => {
                       </div>
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('phone') || 'Mobile Number'}
+                          {t('Mobile Number')}
                         </label>
                         <input 
                           type="tel" 
@@ -436,7 +434,7 @@ const SignUp = () => {
                           value={formData.phone}
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all" 
-                          placeholder="10 digits" 
+                          placeholder={t('10 digits')} 
                         />
                       </div>
                     </div>
@@ -445,7 +443,7 @@ const SignUp = () => {
                     {formData.role === 'citizen' && (
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('village') || 'Village'}
+                          {t('Village')}
                         </label>
                         <select
                           name="village"
@@ -462,7 +460,7 @@ const SignUp = () => {
                           }}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all [&>option]:bg-[#061926] [&>option]:text-[#C4F8FF]"
                         >
-                          <option value="" disabled>Select Village</option>
+                          <option value="" disabled>{t('Select Village')}</option>
                           {villages.map((v, i) => (
                             <option key={i} value={v.name}>{v.name} ({v.id})</option>
                           ))}
@@ -474,7 +472,7 @@ const SignUp = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('email') || 'Email Address'}
+                          {t('Email Address')}
                         </label>
                         <input 
                           type="email" 
@@ -488,7 +486,7 @@ const SignUp = () => {
                       </div>
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('gender') || 'Gender'}
+                          {t('Gender')}
                         </label>
                         <select 
                           name="gender" 
@@ -497,10 +495,10 @@ const SignUp = () => {
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all [&>option]:bg-[#061926] [&>option]:text-[#C4F8FF]" 
                         >
-                          <option value="" disabled>Select Gender</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
+                          <option value="" disabled>{t('Select Gender')}</option>
+                          <option value="Male">{t('Male')}</option>
+                          <option value="Female">{t('Female')}</option>
+                          <option value="Other">{t('Other')}</option>
                         </select>
                       </div>
                     </div>
@@ -509,7 +507,7 @@ const SignUp = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('password') || 'Password'}
+                          {t('Password')}
                         </label>
                         <input 
                           type="password" 
@@ -518,12 +516,12 @@ const SignUp = () => {
                           value={formData.password}
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all" 
-                          placeholder="Create password" 
+                          placeholder={t('Create password')} 
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-extrabold text-[#C4F8FF]/70 uppercase tracking-widest mb-1">
-                          {t('confirmPass') || 'Confirm Password'}
+                          {t('Confirm Password')}
                         </label>
                         <input 
                           type="password" 
@@ -532,7 +530,7 @@ const SignUp = () => {
                           value={formData.confirmPassword}
                           onChange={handleChange}
                           className="w-full border border-[#C4F8FF]/20 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#C4F8FF] focus:ring-1 focus:ring-[#C4F8FF] bg-[#0F4B70]/20 text-[#C4F8FF] placeholder:text-[#C4F8FF]/30 transition-all" 
-                          placeholder="Confirm password" 
+                          placeholder={t('Confirm password')} 
                         />
                       </div>
                     </div>
@@ -543,7 +541,7 @@ const SignUp = () => {
                       className="w-full py-3 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/30 rounded-xl font-bold hover:bg-[#C4F8FF]/10 shadow-lg shadow-black/20 flex justify-center items-center gap-2 mt-4 transition-all disabled:opacity-50 group"
                     >
                       <UserPlus size={16} className="group-hover:translate-x-1 transition-transform" />
-                      {loading ? 'Sending Code...' : 'Register Now'}
+                      {loading ? t('Sending Code...') : t('Register Now')}
                     </button>
                   </form>
                 </div>
@@ -565,9 +563,9 @@ const SignUp = () => {
 
         {/* Footer info & Link back to login */}
         <div className="w-full max-w-2xl mt-10 mb-8 text-center text-xs text-[#C4F8FF]/60 font-medium">
-          {t('alreadyReg') || 'Already registered?'} {' '}
+          {t('Already registered?')} {' '}
           <Link to="/login" className="font-extrabold text-[#C4F8FF] hover:underline tracking-wide">
-            {t('loginHere') || 'Login Here'}
+            {t('Login Here')}
           </Link>
         </div>
         

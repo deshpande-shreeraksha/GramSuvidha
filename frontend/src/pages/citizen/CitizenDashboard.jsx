@@ -131,7 +131,10 @@ const formatIndianCurrency = (num) => {
   return `₹${num.toLocaleString('en-IN')}`;
 };
 
+import { useLanguage } from '../../context/LanguageContext';
+
 const CitizenDashboard = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -312,59 +315,61 @@ const CitizenDashboard = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#C4F8FF]">Citizen Dashboard</h1>
-          <p className="text-[#C4F8FF]/70 mt-1">Welcome back, <span className="font-bold text-[#C4F8FF]">{userName}</span>. Track and manage your reported issues.</p>
+          <h1 className="text-3xl font-bold text-[#C4F8FF]">{t('Citizen Dashboard')}</h1>
+          <p className="text-[#C4F8FF]/70 mt-1">{t('Welcome back')}, <span className="font-bold text-[#C4F8FF]">{userName}</span>. {t('Track and manage your reported issues.')}</p>
         </div>
         <div className="flex gap-2">
           <button 
             onClick={() => navigate('/citizen/budget')}
             className="bg-[#0F4B70]/20 backdrop-blur-sm hover:bg-[#0F4B70]/30 text-[#C4F8FF] border border-[#C4F8FF]/15 px-5 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 shadow-sm"
           >
-            <LucideIcons.DollarSign size={18} className="text-[#C4F8FF]" /> Panchayat Budget
+            <LucideIcons.DollarSign size={18} className="text-[#C4F8FF]" /> {t('Panchayat Budget')}
           </button>
           <button 
             onClick={() => navigate('/citizen/complaint')}
             className="bg-[#0F4B70] hover:bg-[#0a344f] border border-[#C4F8FF]/20 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center gap-2"
           >
-            <LucideIcons.PlusCircle size={18} /> New Complaint
+            <LucideIcons.PlusCircle size={18} /> {t('New Complaint')}
           </button>
         </div>
-          {/* Stats Grid */}
+      </div>
+      
+      {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="card text-center py-6 hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: '50ms' }}>
           <LucideIcons.FileText className="mx-auto mb-2 text-[#C4F8FF]/60" size={24} />
           <div className="text-3xl font-bold text-[#C4F8FF]">{stats.total}</div>
-          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">Total</div>
+          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">{t('Total')}</div>
         </div>
         <div className="card text-center py-6 hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: '100ms' }}>
           <LucideIcons.Clock className="mx-auto mb-2 text-yellow-500" size={24} />
           <div className="text-3xl font-bold text-[#C4F8FF]">{stats.review}</div>
-          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">Under Review</div>
+          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">{t('Under Review')}</div>
         </div>
         <div className="card text-center py-6 hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: '150ms' }}>
           <LucideIcons.Activity className="mx-auto mb-2 text-[#C4F8FF]" size={24} />
           <div className="text-3xl font-bold text-[#C4F8FF]">{stats.progress}</div>
-          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">In Progress</div>
+          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">{t('In Progress')}</div>
         </div>
         <div className="card text-center py-6 hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: '200ms' }}>
           <LucideIcons.CheckCircle className="mx-auto mb-2 text-green-550" size={24} />
           <div className="text-3xl font-bold text-[#C4F8FF]">{stats.resolved}</div>
-          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">Resolved</div>
+          <div className="text-xs font-bold text-[#C4F8FF]/70 uppercase mt-1">{t('Resolved')}</div>
         </div>
-      </div>      </div>
+      </div>
 
       {/* Tracking and Budget Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="card lg:col-span-2">
           <h3 className="font-bold text-lg text-[#C4F8FF] mb-2 flex items-center gap-2">
-            <LucideIcons.Search size={20} className="text-[#C4F8FF]" /> Track Complaint or Scheme
+            <LucideIcons.Search size={20} className="text-[#C4F8FF]" /> {t('Track Complaint or Scheme')}
           </h3>
-          <p className="text-xs text-[#C4F8FF]/70 mb-4">Enter your unique tracking ID (COMP-XXXXXXXX or SCH-XXXXXXXX) to check its status and download the receipt.</p>
+          <p className="text-xs text-[#C4F8FF]/70 mb-4">{t('Enter your unique tracking ID (COMP-XXXXXXXX or SCH-XXXXXXXX) to check its status and download the receipt.')}</p>
           
           <form onSubmit={handleTrackItem} className="flex gap-2">
             <input 
               type="text" 
-              placeholder="e.g. COMP-10293847" 
+              placeholder={t('e.g. COMP-10293847')} 
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               className="flex-1 rounded-xl border border-[#C4F8FF]/30 px-4 py-2.5 text-sm focus:outline-none focus:border-primary bg-[#0F4B70]/20 backdrop-blur-sm font-semibold text-[#C4F8FF]"
@@ -374,12 +379,12 @@ const CitizenDashboard = () => {
               disabled={trackingLoading}
               className="bg-[#0F4B70] hover:bg-[#0a344f] border border-[#C4F8FF]/20 text-white px-6 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap transition-colors flex items-center gap-2"
             >
-              {trackingLoading ? 'Searching...' : 'Track Status'}
+              {trackingLoading ? t('Searching...') : t('Track Status')}
             </button>
           </form>
 
           {trackingError && (
-            <p className="text-xs font-bold text-red-500 mt-2">{trackingError}</p>
+            <p className="text-xs font-bold text-red-500 mt-2">{t(trackingError)}</p>
           )}
 
           {trackedItem && (
@@ -387,22 +392,22 @@ const CitizenDashboard = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-[#C4F8FF] text-sm">
-                    {trackedItem.type === 'complaint' ? 'Civic Complaint' : 'Scheme Application'}
+                    {trackedItem.type === 'complaint' ? t('Civic Complaint') : t('Scheme Application')}
                   </span>
                   <span className="text-[10px] font-extrabold px-2 py-0.5 bg-[#0F4B70]/30 text-[#C4F8FF]/80 rounded font-mono">
                     {trackedItem.type === 'complaint' ? trackedItem.complaintId : trackedItem.applicationId}
                   </span>
                 </div>
                 <p className="text-xs text-[#C4F8FF]/80 mt-1">
-                  {trackedItem.type === 'complaint' ? trackedItem.category : trackedItem.schemeName} — {trackedItem.description || trackedItem.applicantName}
+                  {trackedItem.type === 'complaint' ? t(trackedItem.category) : t(trackedItem.schemeName)} — {trackedItem.description || trackedItem.applicantName}
                 </p>
                 <div className="mt-2 text-xs font-bold text-[#C4F8FF]/70">
-                  Status: 
+                  {t('Status')}: 
                   <span className={`ml-1 px-2 py-0.5 rounded font-bold uppercase tracking-wider text-[9px] border ${
                     trackedItem.status === 'Resolved' || trackedItem.status === 'Approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
                     trackedItem.status === 'Rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                   }`}>
-                    {trackedItem.status}
+                    {t(trackedItem.status)}
                   </span>
                 </div>
               </div>
@@ -410,7 +415,7 @@ const CitizenDashboard = () => {
                 onClick={() => setShowTrackedReceipt(true)}
                 className="text-xs font-bold bg-[#0F4B70]/20 backdrop-blur-sm hover:bg-[#0F4B70]/40 text-[#C4F8FF] border border-[#C4F8FF]/15 px-4 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5 align-self-start sm:align-self-auto"
               >
-                <LucideIcons.FileText size={14} className="text-[#C4F8FF]" /> View Receipt
+                <LucideIcons.FileText size={14} className="text-[#C4F8FF]" /> {t('View Receipt')}
               </button>
             </div>
           )}
@@ -419,16 +424,16 @@ const CitizenDashboard = () => {
         {/* Quick Information Panel */}
         <div className="card bg-gradient-to-br from-[#0F4B70]/40 to-[#061926] text-[#C4F8FF] border border-[#C4F8FF]/15 p-5 flex flex-col justify-between">
           <div>
-            <h4 className="font-extrabold text-base mb-1 text-[#C4F8FF]">Participatory Budgeting</h4>
+            <h4 className="font-extrabold text-base mb-1 text-[#C4F8FF]">{t('Participatory Budgeting')}</h4>
             <p className="text-xs text-[#C4F8FF]/70 leading-relaxed">
-              Every tax rupee paid by citizens is funneled back directly into village development budgets. Click below to inspect our annual Panchayat allocation values.
+              {t('Every tax rupee paid by citizens is funneled back directly into village development budgets. Click below to inspect our annual Panchayat allocation values.')}
             </p>
           </div>
           <button 
             onClick={() => navigate('/citizen/budget')}
             className="w-full py-2.5 mt-4 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 font-extrabold rounded-xl text-xs hover:bg-[#0a344f] shadow-md transition-all flex items-center justify-center gap-1.5"
           >
-            <LucideIcons.DollarSign size={14} className="text-[#C4F8FF]" /> View Panchayat Budget
+            <LucideIcons.DollarSign size={14} className="text-[#C4F8FF]" /> {t('View Panchayat Budget')}
           </button>
         </div>
       </div>
@@ -437,8 +442,8 @@ const CitizenDashboard = () => {
       <div className="card bg-[#0F4B70]/20 backdrop-blur-sm p-6 rounded-2xl border border-[#C4F8FF]/15 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h3 className="font-bold text-lg text-[#C4F8FF]">My Submissions</h3>
-            <p className="text-xs text-[#C4F8FF]/70">Track the live progress of your reported issues.</p>
+            <h3 className="font-bold text-lg text-[#C4F8FF]">{t('My Submissions')}</h3>
+            <p className="text-xs text-[#C4F8FF]/70">{t('Track the live progress of your reported issues.')}</p>
           </div>
           {/* Status Tabs */}
           <div className="flex bg-[#0F4B70]/40 p-1 rounded-xl border border-[#C4F8FF]/15 text-xs">
@@ -452,7 +457,7 @@ const CitizenDashboard = () => {
                     : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
                 }`}
               >
-                {status}
+                {t(status)}
               </button>
             ))}
           </div>
@@ -460,16 +465,16 @@ const CitizenDashboard = () => {
 
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="py-12 text-center text-[#C4F8FF]/70">Loading submissions...</div>
+            <div className="py-12 text-center text-[#C4F8FF]/70">{t('Loading submissions...')}</div>
           ) : (
             <table className="w-full text-left">
               <thead>
                 <tr className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider border-b border-[#C4F8FF]/15">
-                  <th className="pb-3 pl-4">Incident</th>
-                  <th className="pb-3">Current Status</th>
-                  <th className="pb-3">Incident Location</th>
-                  <th className="pb-3">Progress Stage</th>
-                  <th className="pb-3">Registered</th>
+                  <th className="pb-3 pl-4">{t('Incident')}</th>
+                  <th className="pb-3">{t('Current Status')}</th>
+                  <th className="pb-3">{t('Incident Location')}</th>
+                  <th className="pb-3">{t('Progress Stage')}</th>
+                  <th className="pb-3">{t('Registered')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -485,7 +490,7 @@ const CitizenDashboard = () => {
                     return (
                       <tr>
                         <td colSpan="5" className="py-12 text-center text-[#C4F8FF]/60 font-medium">
-                          No {selectedComplaintStatus.toLowerCase()} submissions found.
+                          {t('No submissions found.')}
                         </td>
                       </tr>
                     );
@@ -497,13 +502,13 @@ const CitizenDashboard = () => {
                           {sub.icon}
                         </div>
                         <div>
-                          <div className="font-bold text-[#C4F8FF] text-sm mb-0.5">{sub.title}</div>
+                          <div className="font-bold text-[#C4F8FF] text-sm mb-0.5">{t(sub.title)}</div>
                           <div className="text-xs text-[#C4F8FF]/70 line-clamp-1 w-48">{sub.desc}</div>
                         </div>
                       </td>
                       <td className="py-4">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-md lowercase ${sub.statusColor}`}>
-                          {sub.status}
+                          {t(sub.status)}
                         </span>
                       </td>
                       <td className="py-4">
@@ -515,7 +520,7 @@ const CitizenDashboard = () => {
                         </div>
                       </td>
                       <td className="py-4 w-48">
-                        <div className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase mb-1.5">{sub.stage}</div>
+                        <div className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase mb-1.5">{t(sub.stage)}</div>
                         <div className="w-full h-1.5 bg-[#0F4B70]/40 rounded-full overflow-hidden">
                           <div 
                             className={`h-full ${sub.progress === 100 ? 'bg-[#C4F8FF]/100' : 'bg-[#C4F8FF]/100'}`} 
@@ -525,7 +530,7 @@ const CitizenDashboard = () => {
                       </td>
                       <td className="py-4">
                         <div className="font-bold text-sm text-[#C4F8FF]">{sub.date}</div>
-                        <div className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Verified Entry</div>
+                        <div className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Verified Entry')}</div>
                       </td>
                     </tr>
                   ));
@@ -542,12 +547,12 @@ const CitizenDashboard = () => {
           <div>
             <h3 className="font-bold text-lg text-[#C4F8FF] flex items-center gap-2">
               <LucideIcons.ShieldAlert className="text-[#C4F8FF] animate-pulse" size={20} />
-              Government Schemes Tailored to Your Reports
+              {t('Government Schemes Tailored to Your Reports')}
             </h3>
-            <p className="text-xs text-[#C4F8FF]/80">Based on your village reports, you might be eligible for these development & welfare programs.</p>
+            <p className="text-xs text-[#C4F8FF]/80">{t('Based on your village reports, you might be eligible for these development & welfare programs.')}</p>
           </div>
           <span className="text-[10px] font-bold text-[#C4F8FF] tracking-wider uppercase bg-[#0F4B70]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">
-            INTELLIGENT COMPLIANCE
+            {t('INTELLIGENT COMPLIANCE')}
           </span>
         </div>
 
@@ -560,17 +565,17 @@ const CitizenDashboard = () => {
                     {scheme.icon}
                   </div>
                   <span className="text-[9px] font-bold px-2 py-0.5 bg-[#C4F8FF]/10 text-[#C4F8FF] rounded border border-[#C4F8FF]/20 tracking-wider">
-                    {scheme.complaintCategory === 'GENERAL' ? 'RECOMMENDED' : `REMEDY FOR: ${scheme.complaintCategory}`}
+                    {scheme.complaintCategory === 'GENERAL' ? t('RECOMMENDED') : `${t('REMEDY FOR')}: ${t(scheme.complaintCategory)}`}
                   </span>
                 </div>
-                <h4 className="font-bold text-[#C4F8FF] text-base mb-2">{scheme.name}</h4>
-                <p className="text-xs text-[#C4F8FF]/70 leading-relaxed mb-4">{scheme.relation}</p>
+                <h4 className="font-bold text-[#C4F8FF] text-base mb-2">{t(scheme.name)}</h4>
+                <p className="text-xs text-[#C4F8FF]/70 leading-relaxed mb-4">{t(scheme.relation)}</p>
               </div>
               <button 
                 onClick={() => setSelectedScheme(scheme)}
                 className="w-full py-2 bg-[#0F4B70]/40 hover:bg-[#C4F8FF]/20 hover:text-[#C4F8FF] hover:border-[#C4F8FF]/30 border border-[#C4F8FF]/15 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
               >
-                <LucideIcons.Eye size={14} /> View Expanded Details
+                <LucideIcons.Eye size={14} /> {t('View Expanded Details')}
               </button>
             </div>
           ))}
@@ -580,8 +585,8 @@ const CitizenDashboard = () => {
       {/* Analytics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="card">
-          <h3 className="font-bold text-lg mb-1">Complaint Analytics</h3>
-          <p className="text-xs text-[#C4F8FF]/70 mb-6">Visual overview of your reporting activity.</p>
+          <h3 className="font-bold text-lg mb-1">{t('Complaint Analytics')}</h3>
+          <p className="text-xs text-[#C4F8FF]/70 mb-6">{t('Visual overview of your reporting activity.')}</p>
           
           <div className="h-48 mt-4">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={150}>
@@ -597,7 +602,7 @@ const CitizenDashboard = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="text-center text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-widest mt-2">Issues By Category</div>
+          <div className="text-center text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-widest mt-2">{t('Issues By Category')}</div>
         </div>
 
         <div className="card">
@@ -626,11 +631,11 @@ const CitizenDashboard = () => {
             {pieData.map((item, i) => (
               <div key={i} className="flex items-center gap-1.5 text-xs font-bold text-[#C4F8FF]/70">
                 <span className="w-2 h-2 rounded-full" style={{backgroundColor: item.color}}></span>
-                {item.name}
+                {t(item.name)}
               </div>
             ))}
           </div>
-          <div className="text-center text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-widest mt-4">Resolution Status</div>
+          <div className="text-center text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-widest mt-4">{t('Resolution Status')}</div>
         </div>
       </div>
 
@@ -650,9 +655,9 @@ const CitizenDashboard = () => {
                 {selectedScheme.icon}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[#C4F8FF]">{selectedScheme.name}</h3>
+                <h3 className="text-xl font-bold text-[#C4F8FF]">{t(selectedScheme.name)}</h3>
                 <span className="text-[10px] font-bold text-[#C4F8FF] tracking-wider uppercase bg-[#0F4B70]/10 px-2.5 py-0.5 rounded-full border border-[#C4F8FF]/20 mt-1 inline-block">
-                  RECONCILED WELFARE
+                  {t('RECONCILED WELFARE')}
                 </span>
               </div>
             </div>
@@ -660,25 +665,25 @@ const CitizenDashboard = () => {
             <div className="space-y-4">
               <div className="bg-[#C4F8FF]/10 border border-[#C4F8FF]/20 p-4 rounded-2xl">
                 <h4 className="font-bold text-[#C4F8FF] text-xs uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                  <LucideIcons.ShieldCheck size={14} className="text-[#C4F8FF]" /> Why this is recommended
+                  <LucideIcons.ShieldCheck size={14} className="text-[#C4F8FF]" /> {t('Why this is recommended')}
                 </h4>
-                <p className="text-[#C4F8FF]/80 text-sm leading-relaxed">{selectedScheme.relation}</p>
+                <p className="text-[#C4F8FF]/80 text-sm leading-relaxed">{t(selectedScheme.relation)}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-[#0F4B70]/30 p-4 rounded-2xl border border-[#C4F8FF]/20">
-                  <h5 className="font-bold text-xs uppercase tracking-wider text-[#C4F8FF]/60 mb-1">ELIGIBILITY RULES</h5>
-                  <p className="text-xs text-[#C4F8FF] font-semibold leading-relaxed">{selectedScheme.eligibility}</p>
+                  <h5 className="font-bold text-xs uppercase tracking-wider text-[#C4F8FF]/60 mb-1">{t('ELIGIBILITY RULES')}</h5>
+                  <p className="text-xs text-[#C4F8FF] font-semibold leading-relaxed">{t(selectedScheme.eligibility)}</p>
                 </div>
                 <div className="bg-[#0F4B70]/30 p-4 rounded-2xl border border-[#C4F8FF]/20">
-                  <h5 className="font-bold text-xs uppercase tracking-wider text-[#C4F8FF]/60 mb-1">SCHEME BENEFITS</h5>
-                  <p className="text-xs text-[#C4F8FF] font-semibold leading-relaxed">{selectedScheme.benefits}</p>
+                  <h5 className="font-bold text-xs uppercase tracking-wider text-[#C4F8FF]/60 mb-1">{t('SCHEME BENEFITS')}</h5>
+                  <p className="text-xs text-[#C4F8FF] font-semibold leading-relaxed">{t(selectedScheme.benefits)}</p>
                 </div>
               </div>
 
               <div className="border-t border-[#C4F8FF]/20 pt-4">
-                <h4 className="font-bold text-[#C4F8FF] text-sm uppercase tracking-wider mb-2">FULL PROGRAM DETAILS</h4>
-                <p className="text-[#C4F8FF]/80 text-sm leading-relaxed">{selectedScheme.details}</p>
+                <h4 className="font-bold text-[#C4F8FF] text-sm uppercase tracking-wider mb-2">{t('FULL PROGRAM DETAILS')}</h4>
+                <p className="text-[#C4F8FF]/80 text-sm leading-relaxed">{t(selectedScheme.details)}</p>
               </div>
 
               <div className="pt-6 border-t border-[#C4F8FF]/20 flex gap-4">
@@ -686,7 +691,7 @@ const CitizenDashboard = () => {
                   onClick={() => setSelectedScheme(null)}
                   className="flex-1 py-3 border border-[#C4F8FF]/15 rounded-xl text-sm font-bold text-[#C4F8FF]/70 hover:bg-[#0F4B70]/30 transition-colors"
                 >
-                  Close
+                  {t('Close')}
                 </button>
                 <button 
                   onClick={() => {
@@ -695,7 +700,7 @@ const CitizenDashboard = () => {
                   }}
                   className="flex-2 py-3 bg-[#0F4B70] border border-[#C4F8FF]/20 text-white rounded-xl text-sm font-bold hover:bg-[#0a344f] shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2"
                 >
-                  <LucideIcons.ArrowRightCircle size={18} /> Check Eligibility & Apply Now
+                  <LucideIcons.ArrowRightCircle size={18} /> {t('Check Eligibility & Apply Now')}
                 </button>
               </div>
             </div>
@@ -710,19 +715,19 @@ const CitizenDashboard = () => {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-lg w-full border border-slate-200 relative flex flex-col max-h-[90vh] text-slate-800 animate-fade-in">
             <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center print:hidden">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Official Receipt Preview</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Official Receipt Preview')}</span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => window.print()}
                   className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 border border-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
                 >
-                  <LucideIcons.FileText size={14} /> Print Receipt
+                  <LucideIcons.FileText size={14} /> {t('Print Receipt')}
                 </button>
                 <button 
                   onClick={() => setShowTrackedReceipt(false)}
                   className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all"
                 >
-                  Close
+                  {t('Close')}
                 </button>
               </div>
             </div>
@@ -730,15 +735,15 @@ const CitizenDashboard = () => {
             <div className="p-8 space-y-6 overflow-y-auto flex-1 bg-white printable-receipt text-slate-850">
               <div className="flex justify-between items-start border-b-2 border-slate-300 pb-6">
                 <div>
-                  <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900">Gram Panchayat Portal</h2>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Government of India / Local Administration Board</p>
-                  <p className="text-xs text-slate-500 mt-0.5 font-medium">Village Ward: {trackedItem.user?.village || 'Panchayat Area'}</p>
+                  <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900">{t('Gram Panchayat Portal')}</h2>
+                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">{t('Government of India / Local Administration Board')}</p>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium">{t('Village Ward')}: {trackedItem.user?.village || t('Panchayat Area')}</p>
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-3 py-1 rounded border border-slate-250 uppercase tracking-widest font-mono">
-                    {trackedItem.type === 'complaint' ? 'REGISTRATION' : 'SUBMISSION'}
+                    {trackedItem.type === 'complaint' ? t('REGISTRATION') : t('SUBMISSION')}
                   </span>
-                  <p className="text-xs font-mono font-bold text-slate-500 mt-2">Date: {trackedItem.createdAt ? new Date(trackedItem.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
+                  <p className="text-xs font-mono font-bold text-slate-500 mt-2">{t('Date')}: {trackedItem.createdAt ? new Date(trackedItem.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}</p>
                 </div>
               </div>
 
@@ -746,16 +751,16 @@ const CitizenDashboard = () => {
                 // Complaint Receipt
                 <div className="space-y-6">
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs space-y-2 text-slate-700">
-                    <p className="font-bold text-slate-900">Complaint ID: <span className="font-mono text-slate-900 font-bold">{trackedItem.complaintId}</span></p>
-                    <p className="text-slate-700">Category: <span className="font-bold text-slate-800">{trackedItem.category}</span></p>
-                    <p className="text-slate-700">Location: <span className="font-bold text-slate-800">{trackedItem.location}</span></p>
-                    <p className="text-slate-700">Priority: <span className="font-bold text-slate-800">{trackedItem.priority || 'Medium'}</span></p>
-                    <p className="text-slate-700">Reporter: <span className="font-bold text-slate-800">{trackedItem.user?.name || userName}</span></p>
-                    <p className="text-slate-700">Status: <span className="font-bold text-slate-900 uppercase">{trackedItem.status}</span></p>
+                    <p className="font-bold text-slate-900">{t('Complaint ID')}: <span className="font-mono text-slate-900 font-bold">{trackedItem.complaintId}</span></p>
+                    <p className="text-slate-700">{t('Category')}: <span className="font-bold text-slate-800">{t(trackedItem.category)}</span></p>
+                    <p className="text-slate-700">{t('Location')}: <span className="font-bold text-slate-800">{trackedItem.location}</span></p>
+                    <p className="text-slate-700">{t('Priority')}: <span className="font-bold text-slate-800">{t(trackedItem.priority || 'Medium')}</span></p>
+                    <p className="text-slate-700">{t('Reporter')}: <span className="font-bold text-slate-800">{trackedItem.user?.name || userName}</span></p>
+                    <p className="text-slate-700">{t('Status')}: <span className="font-bold text-slate-900 uppercase">{t(trackedItem.status)}</span></p>
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-500">Grievance Description</h4>
+                    <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-500">{t('Grievance Description')}</h4>
                     <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-205 whitespace-pre-wrap">
                       {trackedItem.description}
                     </p>
@@ -765,29 +770,29 @@ const CitizenDashboard = () => {
                 // Scheme Receipt
                 <div className="space-y-6">
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs space-y-2 text-slate-700">
-                    <p className="font-bold text-slate-900">Application ID: <span className="font-mono text-slate-900 font-bold">{trackedItem.applicationId}</span></p>
-                    <p className="text-slate-700">Scheme Applied: <span className="font-bold text-slate-800">{trackedItem.schemeName}</span></p>
-                    <p className="text-slate-700">Applicant: <span className="font-bold text-slate-800">{trackedItem.applicantName}</span></p>
-                    <p className="text-slate-700">Age: <span className="font-bold text-slate-800">{trackedItem.age}</span></p>
-                    <p className="text-slate-700">Masked ID Number: <span className="font-bold text-slate-800">XXXX-XXXX-{trackedItem.idNumber?.slice(-4) || 'XXXX'}</span></p>
-                    <p className="text-slate-700">Relationship: <span className="font-bold text-slate-800">{trackedItem.relationship || 'Self'}</span></p>
-                    <p className="text-slate-700">Status: <span className="font-bold text-slate-900 uppercase">{trackedItem.status}</span></p>
+                    <p className="font-bold text-slate-900">{t('Application ID')}: <span className="font-mono text-slate-900 font-bold">{trackedItem.applicationId}</span></p>
+                    <p className="text-slate-700">{t('Scheme Applied')}: <span className="font-bold text-slate-800">{t(trackedItem.schemeName)}</span></p>
+                    <p className="text-slate-700">{t('Applicant')}: <span className="font-bold text-slate-800">{trackedItem.applicantName}</span></p>
+                    <p className="text-slate-700">{t('Age')}: <span className="font-bold text-slate-800">{trackedItem.age}</span></p>
+                    <p className="text-slate-700">{t('Masked ID Number')}: <span className="font-bold text-slate-800">XXXX-XXXX-{trackedItem.idNumber?.slice(-4) || 'XXXX'}</span></p>
+                    <p className="text-slate-700">{t('Relationship')}: <span className="font-bold text-slate-800">{t(trackedItem.relationship || 'Self')}</span></p>
+                    <p className="text-slate-700">{t('Status')}: <span className="font-bold text-slate-900 uppercase">{t(trackedItem.status)}</span></p>
                   </div>
                 </div>
               )}
 
               <div className="pt-8 border-t border-slate-300 flex justify-between items-center text-xs">
                 <div>
-                  <p className="text-[10px] text-slate-500 font-extrabold uppercase">Verification</p>
-                  <p className="font-bold text-slate-800 mt-1">Gram Panchayat Comptroller Office</p>
-                  <p className="text-slate-500 mt-0.5">Digitally signed & cataloged through GramSuvidha node registry.</p>
+                  <p className="text-[10px] text-slate-500 font-extrabold uppercase">{t('Verification')}</p>
+                  <p className="font-bold text-slate-800 mt-1">{t('Gram Panchayat Comptroller Office')}</p>
+                  <p className="text-slate-500 mt-0.5">{t('Digitally signed & cataloged through GramSuvidha node registry.')}</p>
                 </div>
                 
                 <div className="text-center relative">
                   <div className="border-4 border-dashed border-slate-400 text-slate-600 rounded-full w-24 h-24 flex items-center justify-center font-black text-xs uppercase transform rotate-12 flex-shrink-0">
                     <div className="text-center">
-                      <p>SUBMITTED</p>
-                      <p className="text-[8px] font-bold">DIGITAL NODE</p>
+                      <p>{t('SUBMITTED')}</p>
+                      <p className="text-[8px] font-bold">{t('DIGITAL NODE')}</p>
                     </div>
                   </div>
                 </div>

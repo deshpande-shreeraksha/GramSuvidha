@@ -55,5 +55,32 @@ const citizenOnly = (req, res, next) => {
   }
 };
 
-module.exports = { protect, adminOnly, citizenOnly };
+const protectOptional = async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+
+      let user = await Citizen.findById(decoded.id).select('-password');
+      if (!user) {
+        user = await Admin.findById(decoded.id).select('-password');
+      }
+      if (!user) {
+        user = await Worker.findById(decoded.id).select('-password');
+      }
+
+      req.user = user;
+    } catch (error) {
+      console.warn('Optional token verification failed:', error.message);
+    }
+  }
+  next();
+};
+
+module.exports = { protect, adminOnly, citizenOnly, protectOptional };
 

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield, Upload, MapPin, Navigation, CheckCircle, Loader2 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const RegisterComplaint = () => {
   const navigate = useNavigate();
   const locationState = useLocation();
+  const { t } = useLanguage();
 
   // Pre-select category if passed in route state
   const initialCategory = locationState.state?.category || 'water_leakage';
@@ -31,7 +33,7 @@ const RegisterComplaint = () => {
   // Geocode address manually using Nominatim forward geocoding
   const resolveManualAddress = async () => {
     if (!address.trim()) {
-      setError('Please type an address first.');
+      setError(t('Please type an address first.'));
       return;
     }
     setFetchingLocation(true);
@@ -45,16 +47,16 @@ const RegisterComplaint = () => {
           const { lat, lon, display_name } = data[0];
           setCoordinates({ lat: parseFloat(lat), lon: parseFloat(lon) });
           setAddress(display_name);
-          setMessage('Address located successfully on map!');
+          setMessage(t('Address located successfully on map!'));
           setTimeout(() => setMessage(''), 3000);
         } else {
-          setError('Could not find this address on the map. Please refine the text.');
+          setError(t('Could not find this address on the map. Please refine the text.'));
         }
       } else {
-        setError('Error reaching address lookup service.');
+        setError(t('Error reaching address lookup service.'));
       }
     } catch (err) {
-      setError('Network error searching address.');
+      setError(t('Network error searching address.'));
     } finally {
       setFetchingLocation(false);
     }
@@ -63,7 +65,7 @@ const RegisterComplaint = () => {
   // Geolocation Fetching utilizing OSM Nominatim Reverse Geocoder
   const fetchLiveLocation = () => {
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.');
+      setError(t('Geolocation is not supported by your browser.'));
       return;
     }
 
@@ -80,7 +82,7 @@ const RegisterComplaint = () => {
             const data = await response.json();
             setAddress(data.display_name || `${latitude}, ${longitude}`);
             setCoordinates({ lat: latitude, lon: longitude });
-            setMessage('Live location fetched successfully!');
+            setMessage(t('Live location fetched successfully!'));
             setTimeout(() => setMessage(''), 3000);
           } else {
             setAddress(`${latitude}, ${longitude}`);
@@ -94,7 +96,7 @@ const RegisterComplaint = () => {
         }
       },
       (err) => {
-        setError('Failed to fetch live location. Please allow browser location permissions or type manually.');
+        setError(t('Failed to fetch live location. Please allow browser location permissions or type manually.'));
         setFetchingLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -118,7 +120,7 @@ const RegisterComplaint = () => {
     setMessage('');
 
     if (!description.trim()) {
-      setError('Please provide a detailed description of the issue.');
+      setError(t('Please provide a detailed description of the issue.'));
       return;
     }
 
@@ -164,79 +166,79 @@ const RegisterComplaint = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage('Complaint registered successfully! Redirecting...');
+        setMessage(t('Complaint registered successfully! Redirecting...'));
         setTimeout(() => {
           navigate('/citizen/dashboard');
         }, 1500);
       } else {
-        setError(data.message || 'Failed to submit complaint.');
+        setError(data.message || t('Failed to submit complaint.'));
       }
     } catch (err) {
-      setError('Network error. Is the backend running?');
+      setError(t('Network error. Is the backend running?'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6 animate-fade-in">
+    <div className="w-full max-w-3xl mx-auto space-y-6 animate-fade-in text-[#C4F8FF]">
       <div className="card border-primary/20 bg-[#0F4B70]/10 flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center flex-shrink-0">
           <Shield size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#C4F8FF]">Register New Complaint</h2>
-          <p className="text-sm text-[#C4F8FF]/80 mt-1">Provide detailed information to help our volunteers address the issue.</p>
+          <h2 className="text-xl font-bold text-[#C4F8FF]">{t('Register New Complaint')}</h2>
+          <p className="text-sm text-[#C4F8FF]/80 mt-1">{t('Provide detailed information to help our volunteers address the issue.')}</p>
         </div>
       </div>
 
-      {error && <div className="bg-[#C4F8FF]/10 border border-red-400/30 text-red-400 px-4 py-3 rounded-lg text-sm font-semibold">{error}</div>}
-      {message && <div className="bg-[#C4F8FF]/10 border border-green-400/30 text-green-400 px-4 py-3 rounded-lg text-sm font-semibold">{message}</div>}
+      {error && <div className="bg-[#C4F8FF]/10 border border-red-400/30 text-red-400 px-4 py-3 rounded-lg text-sm font-semibold">{t(error)}</div>}
+      {message && <div className="bg-[#C4F8FF]/10 border border-green-400/30 text-green-400 px-4 py-3 rounded-lg text-sm font-semibold">{t(message)}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* 1. Complaint Details */}
         <div className="space-y-4">
           <h3 className="font-bold text-[#C4F8FF] flex items-center gap-2">
-            1. Complaint Details
+            {t('1. Complaint Details')}
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Issue Category *</label>
+              <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Issue Category *')}</label>
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[#0F4B70]/20 backdrop-blur-sm"
+                className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF]"
               >
-                <option value="water_leakage">Water Leakage</option>
-                <option value="road_damage">Road Damage</option>
-                <option value="garbage_dump">Garbage Dump</option>
-                <option value="electricity_issue">Electricity Issue</option>
-                <option value="drainage_issue">Drainage Issue</option>
+                <option value="water_leakage" className="bg-[#061926]">{t('Water Leakage')}</option>
+                <option value="road_damage" className="bg-[#061926]">{t('Road Damage')}</option>
+                <option value="garbage_dump" className="bg-[#061926]">{t('Garbage Dump')}</option>
+                <option value="electricity_issue" className="bg-[#061926]">{t('Electricity Issue')}</option>
+                <option value="drainage_issue" className="bg-[#061926]">{t('Drainage Issue')}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Complaint Priority *</label>
+              <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Complaint Priority *')}</label>
               <select 
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[#0F4B70]/20 backdrop-blur-sm"
+                className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF]"
               >
-                <option value="High">High (Urgent Resolution Required)</option>
-                <option value="Medium">Medium (Standard Timeline)</option>
-                <option value="Low">Low (General Infrastructure Improvement)</option>
+                <option value="High" className="bg-[#061926]">{t('High (Urgent Resolution Required)')}</option>
+                <option value="Medium" className="bg-[#061926]">{t('Medium (Standard Timeline)')}</option>
+                <option value="Low" className="bg-[#061926]">{t('Low (General Infrastructure Improvement)')}</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Detailed Description *</label>
+            <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Detailed Description *')}</label>
             <textarea 
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe the issue in detail. Include landmarks or specific observations."
+              placeholder={t('Describe the issue in detail. Include landmarks or specific observations.')}
               className="w-full border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] placeholder-[#C4F8FF]/50 resize-none"
             ></textarea>
           </div>
@@ -245,7 +247,7 @@ const RegisterComplaint = () => {
         {/* 2. Visual Evidence */}
         <div className="space-y-4">
           <h3 className="font-bold text-[#C4F8FF] flex items-center gap-2">
-            2. Visual Evidence & Documentation
+            {t('2. Visual Evidence & Documentation')}
           </h3>
           
           <label className="border-2 border-dashed border-[#C4F8FF]/30 rounded-xl p-10 flex flex-col items-center justify-center text-center bg-[#0F4B70]/30 hover:bg-[#0F4B70]/40 transition-colors cursor-pointer group relative block">
@@ -259,18 +261,18 @@ const RegisterComplaint = () => {
             <div className="w-16 h-16 bg-[#0F4B70]/30 rounded-full flex items-center justify-center text-[#C4F8FF] mb-4 group-hover:scale-110 transition-transform">
               <Upload size={28} />
             </div>
-            <div className="font-bold text-[#C4F8FF] mb-1">Click to upload photos, videos or documents</div>
-            <div className="text-sm text-[#C4F8FF]/70 mb-6">Images (JPG, PNG), Videos (MP4), Documents (PDF, DOC)</div>
-            <div className="text-xs text-[#C4F8FF]/60">Up to 5 files (Max 10MB each)</div>
+            <div className="font-bold text-[#C4F8FF] mb-1">{t('Click to upload photos, videos or documents')}</div>
+            <div className="text-sm text-[#C4F8FF]/70 mb-6">{t('Images (JPG, PNG), Videos (MP4), Documents (PDF, DOC)')}</div>
+            <div className="text-xs text-[#C4F8FF]/60">{t('Up to 5 files (Max 10MB each)')}</div>
             
             <div className="mt-6 px-6 py-2 bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/30 rounded-lg text-sm font-bold text-[#C4F8FF]/80 shadow-sm hover:bg-[#0F4B70]/30 flex items-center gap-2">
-              <Upload size={16} /> Browse Files
+              <Upload size={16} /> {t('Browse Files')}
             </div>
           </label>
           
           {selectedFiles.length > 0 && (
             <div className="mt-4 space-y-2">
-              <p className="text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider">Selected Files</p>
+              <p className="text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider">{t('Selected Files')}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {selectedFiles.map((file, idx) => (
                   <div key={idx} className="flex items-center justify-between p-2.5 bg-[#0F4B70]/20 backdrop-blur-sm border border-[#C4F8FF]/15 rounded-lg text-xs shadow-sm">
@@ -283,7 +285,7 @@ const RegisterComplaint = () => {
                       onClick={(e) => { e.preventDefault(); handleRemoveFile(idx); }}
                       className="text-red-500 hover:text-red-400 font-bold px-1.5 py-0.5 hover:bg-[#C4F8FF]/10 rounded"
                     >
-                      Remove
+                      {t('Remove')}
                     </button>
                   </div>
                 ))}
@@ -295,7 +297,7 @@ const RegisterComplaint = () => {
         {/* 3. Location Information */}
         <div className="space-y-4">
           <h3 className="font-bold text-[#C4F8FF] flex items-center gap-2">
-            3. Location Information
+            {t('3. Location Information')}
           </h3>
           
           <div className="flex rounded-lg overflow-hidden border border-[#C4F8FF]/15 p-1 bg-[#0F4B70]/40">
@@ -306,7 +308,7 @@ const RegisterComplaint = () => {
                 locationMode === 'gps' ? 'bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] shadow-sm' : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
               }`}
             >
-              <Navigation size={16} className={fetchingLocation && locationMode === 'gps' ? "animate-spin text-[#C4F8FF]" : ""} /> Auto GPS Detect
+              <Navigation size={16} className={fetchingLocation && locationMode === 'gps' ? "animate-spin text-[#C4F8FF]" : ""} /> {t('Auto GPS Detect')}
             </button>
             <button 
               type="button" 
@@ -315,7 +317,7 @@ const RegisterComplaint = () => {
                 locationMode === 'manual' ? 'bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF] shadow-sm' : 'text-[#C4F8FF]/70 hover:text-[#C4F8FF]'
               }`}
             >
-              <MapPin size={16} /> Manual Input
+              <MapPin size={16} /> {t('Manual Input')}
             </button>
           </div>
 
@@ -328,11 +330,11 @@ const RegisterComplaint = () => {
             >
               {fetchingLocation ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Geocoding Live Coordinates...
+                  <Loader2 size={16} className="animate-spin" /> {t('Geocoding Live Coordinates...')}
                 </>
               ) : (
                 <>
-                  <Navigation size={16} /> Auto-Detect My Live Location
+                  <Navigation size={16} /> {t('Auto-Detect My Live Location')}
                 </>
               )}
             </button>
@@ -345,11 +347,11 @@ const RegisterComplaint = () => {
             >
               {fetchingLocation ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Searching Address...
+                  <Loader2 size={16} className="animate-spin" /> {t('Searching Address...')}
                 </>
               ) : (
                 <>
-                  <MapPin size={16} /> Search & Pin Address on Map
+                  <MapPin size={16} /> {t('Search & Pin Address on Map')}
                 </>
               )}
             </button>
@@ -376,27 +378,27 @@ const RegisterComplaint = () => {
                     <MapPin size={32} />
                   </div>
                   <div className="bg-[#0F4B70]/20 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md text-xs font-bold text-[#C4F8FF] flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#C4F8FF]/100 animate-pulse"></span> LIVE GEOLOCATION ENGINE
+                    <span className="w-2 h-2 rounded-full bg-[#C4F8FF]/100 animate-pulse"></span> {t('LIVE GEOLOCATION ENGINE')}
                   </div>
                 </div>
               </>
             )}
             
-            <div className="absolute bottom-4 left-4 right-4 bg-[#0F4B70]/20 backdrop-blur-sm/90 backdrop-blur-sm p-3 rounded-lg border border-[#C4F8FF]/15 shadow-sm">
-              <div className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider mb-1">DETECTED PHYSICAL LOCATION</div>
+            <div className="absolute bottom-4 left-4 right-4 bg-[#0F4B70]/20 backdrop-blur-sm/90 backdrop-blur-sm p-3 rounded-lg border border-[#C4F8FF]/15 shadow-sm animate-fade-in">
+              <div className="text-[10px] font-bold text-[#C4F8FF]/60 uppercase tracking-wider mb-1">{t('DETECTED PHYSICAL LOCATION')}</div>
               <div className="text-xs font-semibold text-[#C4F8FF] truncate">{address}</div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">Final Verified Address</label>
+            <label className="block text-xs font-bold text-[#C4F8FF]/70 uppercase tracking-wider mb-2">{t('Final Verified Address')}</label>
             <div className="flex gap-2">
               <input 
                 type="text" 
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Type your address manually here..."
-                className="flex-grow border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm"
+                placeholder={t('Type your address manually here...')}
+                className="flex-grow border border-[#C4F8FF]/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-[#0F4B70]/20 backdrop-blur-sm text-[#C4F8FF]"
               />
               <button
                 type="button"
@@ -404,7 +406,7 @@ const RegisterComplaint = () => {
                 disabled={fetchingLocation}
                 className="px-4 py-2 bg-[#0F4B70]/40 text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold text-xs hover:bg-[#0F4B70]/60 transition-colors flex items-center gap-1.5 disabled:opacity-50"
               >
-                <MapPin size={14} /> Locate
+                <MapPin size={14} /> {t('Locate')}
               </button>
             </div>
           </div>
@@ -416,19 +418,19 @@ const RegisterComplaint = () => {
             onClick={() => navigate('/citizen/dashboard')}
             className="px-6 py-3 border border-[#C4F8FF]/30 rounded-lg font-bold text-[#C4F8FF]/80 hover:bg-[#0F4B70]/30 sm:w-1/3"
           >
-            Cancel
+            {t('Cancel')}
           </button>
           <button 
             type="submit" 
             disabled={loading}
             className="px-6 py-3 bg-[#0F4B70] text-[#C4F8FF] border border-[#C4F8FF]/20 rounded-lg font-bold hover:bg-[#0a344f] shadow-sm sm:w-2/3 flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
           >
-            <CheckCircle size={18} /> {loading ? 'Registering...' : 'Register Complaint'}
+            <CheckCircle size={18} /> {loading ? t('Registering...') : t('Register Complaint')}
           </button>
         </div>
         
         <p className="text-center text-xs text-[#C4F8FF]/70 flex items-center justify-center gap-1.5 mt-4">
-          <Shield size={12} /> Your IP address and location will be logged for verification.
+          <Shield size={12} /> {t('Your IP address and location will be logged for verification.')}
         </p>
       </form>
     </div>

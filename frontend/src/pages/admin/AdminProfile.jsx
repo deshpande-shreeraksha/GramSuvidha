@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, MapPin, Edit3, CheckCircle, Info } from 'lucide-react';
+import { User, Mail, Phone, Calendar, MapPin, Edit3, CheckCircle, Info, Languages } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const AdminProfile = () => {
+  const { setLanguage, t } = useLanguage();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -17,7 +19,8 @@ const AdminProfile = () => {
     taluk: '',
     district: '',
     state: '',
-    pincode: ''
+    pincode: '',
+    language: 'en'
   });
 
   const fetchProfile = async () => {
@@ -39,7 +42,8 @@ const AdminProfile = () => {
             taluk: data.user.taluk || '',
             district: data.user.district || '',
             state: data.user.state || '',
-            pincode: data.user.pincode || ''
+            pincode: data.user.pincode || '',
+            language: data.user.language || 'en'
           });
         }
       } else {
@@ -73,6 +77,7 @@ const AdminProfile = () => {
       const result = await res.json();
       if (res.ok) {
         setProfileData(prev => ({ ...prev, user: result.user }));
+        setLanguage(result.user.language); // Update context language
         setIsEditing(false);
         setSaveStatus('Profile updated successfully!');
         setTimeout(() => setSaveStatus(''), 4000);
@@ -110,17 +115,17 @@ const AdminProfile = () => {
         <div>
           <h1 className="text-3xl font-extrabold text-[#C4F8FF] tracking-tight flex items-center gap-3">
             <User className="text-[#C4F8FF] animate-pulse" size={32} />
-            Administrator Profile
+            {t('Admin Profile')}
           </h1>
           <p className="text-[#C4F8FF]/70 mt-1 text-sm">
-            View or edit your administrative details, contact numbers, and registered Panchayat regions.
+            {t('View or edit your administrative details and check system info.')}
           </p>
         </div>
         <button
           onClick={() => setIsEditing(!isEditing)}
           className="px-4 py-2 border border-primary/20 bg-[#0F4B70]/80/5 hover:bg-[#C4F8FF]/10/10 text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
         >
-          <Edit3 size={14} /> {isEditing ? 'Cancel Edit' : 'Edit Profile'}
+          <Edit3 size={14} /> {isEditing ? t('Cancel Edit') : t('Edit Profile')}
         </button>
       </div>
 
@@ -131,7 +136,7 @@ const AdminProfile = () => {
             : 'bg-[#C4F8FF]/10 text-[#C4F8FF] border-[#C4F8FF]/30'
         }`}>
           <CheckCircle size={16} />
-          {saveStatus}
+          {t(saveStatus)}
         </div>
       )}
 
@@ -145,18 +150,18 @@ const AdminProfile = () => {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#C4F8FF]">{user.name || 'Panchayat Admin'}</h2>
-            <p className="text-[#C4F8FF]/70 text-xs font-bold uppercase tracking-wider mt-1">{user.role || 'Administrator'}</p>
+            <h2 className="text-xl font-bold text-[#C4F8FF]">{user.name || t('Panchayat Admin')}</h2>
+            <p className="text-[#C4F8FF]/70 text-xs font-bold uppercase tracking-wider mt-1">{t(user.role || 'Administrator')}</p>
           </div>
 
           <div className="border-t border-[#C4F8FF]/20 pt-4 text-left space-y-2 text-xs text-[#C4F8FF]/70">
             <div>
-              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Account ID</span>
+              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Account ID')}</span>
               <span className="font-mono text-[#C4F8FF] font-bold">{user._id}</span>
             </div>
             <div>
-              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Role Verification</span>
-              <span className="font-bold text-[#C4F8FF]">Official Panchayat Officer</span>
+              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Role Verification')}</span>
+              <span className="font-bold text-[#C4F8FF]">{t('Official Panchayat Officer')}</span>
             </div>
           </div>
         </div>
@@ -167,60 +172,70 @@ const AdminProfile = () => {
             /* DISPLAY MODE */
             <div className="space-y-6">
               <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 flex items-center gap-2">
-                <Info size={18} className="text-[#C4F8FF]" /> Profile Credentials
+                <Info size={18} className="text-[#C4F8FF]" /> {t('Profile Credentials')}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Mail size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Email Address</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.email || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Email Address')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.email || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Phone size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Contact Number</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.phone || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Contact Number')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.phone || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Calendar size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Age (Years)</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.age || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Age (Years)')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.age || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <MapPin size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Registered Village</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.village || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Registered Village')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.village || t('Not set')}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-[#C4F8FF]/80">
+                  <Languages size={18} className="text-[#C4F8FF]" />
+                  <div>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Application Language')}</p>
+                    <p className="font-bold text-[#C4F8FF] uppercase">
+                      {user.language === 'kn' ? 'ಕನ್ನಡ (Kannada)' : user.language === 'hi' ? 'हिन्दी (Hindi)' : 'English'}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 pt-4">Regional Jurisdiction Details</h3>
+              <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 pt-4">{t('Regional Jurisdiction Details')}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="bg-[#0F4B70]/30 p-3.5 border border-[#C4F8FF]/20 rounded-xl">
-                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">Taluk</span>
-                  <span className="font-bold text-[#C4F8FF] text-xs">{user.taluk || 'Not set'}</span>
+                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">{t('Taluk')}</span>
+                  <span className="font-bold text-[#C4F8FF] text-xs">{user.taluk || t('Not set')}</span>
                 </div>
                 <div className="bg-[#0F4B70]/30 p-3.5 border border-[#C4F8FF]/20 rounded-xl">
-                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">District</span>
-                  <span className="font-bold text-[#C4F8FF] text-xs">{user.district || 'Not set'}</span>
+                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">{t('District')}</span>
+                  <span className="font-bold text-[#C4F8FF] text-xs">{user.district || t('Not set')}</span>
                 </div>
                 <div className="bg-[#0F4B70]/30 p-3.5 border border-[#C4F8FF]/20 rounded-xl">
-                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">State</span>
-                  <span className="font-bold text-[#C4F8FF] text-xs">{user.state || 'Not set'}</span>
+                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">{t('State')}</span>
+                  <span className="font-bold text-[#C4F8FF] text-xs">{user.state || t('Not set')}</span>
                 </div>
                 <div className="bg-[#0F4B70]/30 p-3.5 border border-[#C4F8FF]/20 rounded-xl">
-                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">Pincode</span>
-                  <span className="font-mono font-bold text-[#C4F8FF] text-xs">{user.pincode || 'Not set'}</span>
+                  <span className="text-[9px] text-[#C4F8FF]/60 font-bold block uppercase tracking-wider">{t('Pincode')}</span>
+                  <span className="font-mono font-bold text-[#C4F8FF] text-xs">{user.pincode || t('Not set')}</span>
                 </div>
               </div>
             </div>
@@ -228,12 +243,12 @@ const AdminProfile = () => {
             /* EDIT FORM MODE */
             <form onSubmit={handleSave} className="space-y-6">
               <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 flex items-center gap-2">
-                <Edit3 size={18} className="text-[#C4F8FF]" /> Update Particulars
+                <Edit3 size={18} className="text-[#C4F8FF]" /> {t('Update Particulars')}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Full Name</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Full Name')}</label>
                   <input
                     type="text"
                     required
@@ -243,7 +258,7 @@ const AdminProfile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Phone Number</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Phone Number')}</label>
                   <input
                     type="text"
                     required
@@ -256,7 +271,7 @@ const AdminProfile = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Age</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Age')}</label>
                   <input
                     type="number"
                     required
@@ -266,7 +281,7 @@ const AdminProfile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Assigned Village</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Assigned Village')}</label>
                   <input
                     type="text"
                     required
@@ -275,11 +290,23 @@ const AdminProfile = () => {
                     className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-primary text-[#C4F8FF]"
                   />
                 </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Application Language')}</label>
+                  <select
+                    value={form.language}
+                    onChange={(e) => setForm({ ...form, language: e.target.value })}
+                    className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-primary text-[#C4F8FF] bg-[#0F4B70]/20 [&>option]:bg-[#061926] [&>option]:text-[#C4F8FF]"
+                  >
+                    <option value="en">English</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Taluk</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Taluk')}</label>
                   <input
                     type="text"
                     value={form.taluk}
@@ -288,7 +315,7 @@ const AdminProfile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">District</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('District')}</label>
                   <input
                     type="text"
                     value={form.district}
@@ -297,7 +324,7 @@ const AdminProfile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">State</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('State')}</label>
                   <input
                     type="text"
                     value={form.state}
@@ -306,7 +333,7 @@ const AdminProfile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Pincode</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Pincode')}</label>
                   <input
                     type="text"
                     value={form.pincode}
@@ -320,7 +347,7 @@ const AdminProfile = () => {
                 type="submit"
                 className="w-full py-2.5 bg-[#0F4B70]/80 hover:bg-[#C4F8FF]/10-dark text-white rounded-xl font-bold shadow-md shadow-primary/25 transition-all text-xs"
               >
-                Save Profile Changes
+                {t('Save Changes')}
               </button>
             </form>
           )}

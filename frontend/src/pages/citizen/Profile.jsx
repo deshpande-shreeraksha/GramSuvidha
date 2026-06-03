@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, ClipboardList, Clock, CheckCircle, XCircle, MapPin, Edit3, Info } from 'lucide-react';
+import { User, Mail, Phone, Calendar, ClipboardList, Clock, CheckCircle, XCircle, MapPin, Edit3, Info, Languages } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const Profile = () => {
+  const { setLanguage, t } = useLanguage();
   const [profileData, setProfileData] = useState(null);
   const [adminDetails, setAdminDetails] = useState(null);
-  const [editData, setEditData] = useState({ name: '', phone: '', age: '', gender: '' });
+  const [editData, setEditData] = useState({ name: '', phone: '', age: '', gender: '', language: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,7 +28,8 @@ const Profile = () => {
           name: data.user.name || '',
           phone: data.user.phone || '',
           age: data.user.age || '',
-          gender: data.user.gender || ''
+          gender: data.user.gender || '',
+          language: data.user.language || 'en'
         });
 
         // Fetch assigned admin details
@@ -103,13 +106,15 @@ const Profile = () => {
           name: editData.name,
           phone: editData.phone,
           age: editData.age,
-          gender: editData.gender
+          gender: editData.gender,
+          language: editData.language
         })
       });
 
       const result = await res.json();
       if (res.ok) {
         setProfileData((prev) => ({ ...prev, user: result.user }));
+        setLanguage(result.user.language); // Update Context Language
         setIsEditing(false);
         setStatusMessage('Profile updated successfully.');
         setTimeout(() => setStatusMessage(''), 4000);
@@ -130,10 +135,10 @@ const Profile = () => {
         <div>
           <h1 className="text-3xl font-extrabold text-[#C4F8FF] tracking-tight flex items-center gap-3">
             <User className="text-[#C4F8FF] animate-pulse" size={32} />
-            Citizen Profile
+            {t('Citizen Profile')}
           </h1>
           <p className="text-[#C4F8FF]/70 mt-1 text-sm">
-            View or edit your residency details, contact numbers, and check your assigned Panchayat Administrator.
+            {t('View or edit your residency details, contact numbers, and check your assigned Panchayat Administrator.')}
           </p>
         </div>
         <button
@@ -143,7 +148,7 @@ const Profile = () => {
           }}
           className="px-4 py-2 border border-primary/20 bg-[#0F4B70]/80/5 hover:bg-[#C4F8FF]/10/10 text-[#C4F8FF] text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
         >
-          <Edit3 size={14} /> {isEditing ? 'Cancel Edit' : 'Edit Profile'}
+          <Edit3 size={14} /> {isEditing ? t('Cancel Edit') : t('Edit Profile')}
         </button>
       </div>
 
@@ -154,7 +159,7 @@ const Profile = () => {
             : 'bg-[#C4F8FF]/10 text-[#C4F8FF] border-[#C4F8FF]/30'
         }`}>
           <CheckCircle size={16} />
-          {statusMessage}
+          {t(statusMessage)}
         </div>
       )}
 
@@ -197,11 +202,11 @@ const Profile = () => {
                         setStatusMessage('Profile photo updated successfully.');
                       } else {
                         const errorData = await res.json();
-                        alert(errorData.message || "Failed to upload photo.");
+                        alert(errorData.message || t("Failed to upload photo."));
                       }
                     } catch (err) {
                       console.error(err);
-                      alert("Error uploading photo.");
+                      alert(t("Error uploading photo."));
                     }
                   }
                 }}
@@ -210,18 +215,18 @@ const Profile = () => {
           </div>
           
           <div>
-            <h2 className="text-xl font-bold text-[#C4F8FF]">{user.name || 'Panchayat Resident'}</h2>
-            <p className="text-[#C4F8FF]/70 text-xs font-bold uppercase tracking-wider mt-1">{user.role || 'Citizen'}</p>
+            <h2 className="text-xl font-bold text-[#C4F8FF]">{user.name || t('Panchayat Resident')}</h2>
+            <p className="text-[#C4F8FF]/70 text-xs font-bold uppercase tracking-wider mt-1">{t(user.role || 'Citizen')}</p>
           </div>
 
           <div className="border-t border-[#C4F8FF]/20 pt-4 text-left space-y-2 text-xs text-[#C4F8FF]/70">
             <div>
-              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Account ID</span>
+              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Account ID')}</span>
               <span className="font-mono text-[#C4F8FF] font-bold">{user._id}</span>
             </div>
             <div>
-              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">Residency Verification</span>
-              <span className="font-bold text-[#C4F8FF]">Official Panchayat Resident</span>
+              <span className="text-[#C4F8FF]/60 block text-[9px] font-bold uppercase">{t('Residency Verification')}</span>
+              <span className="font-bold text-[#C4F8FF]">{t('Official Panchayat Resident')}</span>
             </div>
           </div>
         </div>
@@ -232,54 +237,64 @@ const Profile = () => {
             /* DISPLAY MODE */
             <div className="space-y-6">
               <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 flex items-center gap-2">
-                <Info size={18} className="text-[#C4F8FF]" /> Profile Credentials
+                <Info size={18} className="text-[#C4F8FF]" /> {t('Profile Credentials')}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Mail size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Email Address</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.email || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Email Address')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.email || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Phone size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Contact Number</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.phone || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Contact Number')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.phone || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <Calendar size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Age (Years)</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.age || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Age (Years)')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.age || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <User size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Gender</p>
-                    <p className="font-bold text-[#C4F8FF] capitalize">{user.gender || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Gender')}</p>
+                    <p className="font-bold text-[#C4F8FF] capitalize">{t(user.gender) || t('Not set')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                   <MapPin size={18} className="text-[#C4F8FF]" />
                   <div>
-                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Registered Village</p>
-                    <p className="font-bold text-[#C4F8FF]">{user.village || 'Not set'}</p>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Registered Village')}</p>
+                    <p className="font-bold text-[#C4F8FF]">{user.village || t('Not set')}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-[#C4F8FF]/80">
+                  <Languages size={18} className="text-[#C4F8FF]" />
+                  <div>
+                    <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Application Language')}</p>
+                    <p className="font-bold text-[#C4F8FF] uppercase">
+                      {user.language === 'kn' ? 'ಕನ್ನಡ (Kannada)' : user.language === 'hi' ? 'हिन्दी (Hindi)' : 'English'}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Assigned Panchayat Administrator Block */}
               <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 pt-4 flex items-center gap-2">
-                <Info size={18} className="text-[#C4F8FF]" /> My Assigned Panchayat Administrator
+                <Info size={18} className="text-[#C4F8FF]" /> {t('My Assigned Panchayat Administrator')}
               </h3>
               
               {adminDetails ? (
@@ -287,7 +302,7 @@ const Profile = () => {
                   <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                     <User size={18} className="text-[#C4F8FF]" />
                     <div>
-                      <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Admin Name</p>
+                      <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Admin Name')}</p>
                       <p className="font-bold text-[#C4F8FF]">{adminDetails.name}</p>
                     </div>
                   </div>
@@ -295,13 +310,13 @@ const Profile = () => {
                   <div className="flex items-center gap-3 text-[#C4F8FF]/80">
                     <Phone size={18} className="text-[#C4F8FF]" />
                     <div>
-                      <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">Admin Phone</p>
+                      <p className="text-[10px] text-[#C4F8FF]/60 font-bold uppercase tracking-wider">{t('Admin Phone')}</p>
                       <p className="font-bold text-[#C4F8FF]">{adminDetails.phone}</p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-[#C4F8FF]/60 italic">Loading administrator details...</p>
+                <p className="text-xs text-[#C4F8FF]/60 italic">{t('Loading administrator details...')}</p>
               )}
 
             </div>
@@ -309,12 +324,12 @@ const Profile = () => {
             /* EDIT FORM MODE */
             <form onSubmit={saveProfile} className="space-y-6">
               <h3 className="font-bold text-[#C4F8FF] text-base border-b pb-3 flex items-center gap-2">
-                <Edit3 size={18} className="text-[#C4F8FF]" /> Update Particulars
+                <Edit3 size={18} className="text-[#C4F8FF]" /> {t('Update Particulars')}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Full Name</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Full Name')}</label>
                   <input
                     type="text"
                     required
@@ -325,7 +340,7 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Phone Number</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Phone Number')}</label>
                   <input
                     type="text"
                     required
@@ -336,7 +351,7 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Age</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Age')}</label>
                   <input
                     type="number"
                     required
@@ -347,16 +362,29 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">Gender</label>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Gender')}</label>
                   <select
                     value={editData.gender}
                     onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
                     className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-primary text-[#C4F8FF] bg-[#0F4B70]/20"
                   >
-                    <option value="">Select gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="">{t('Select gender')}</option>
+                    <option value="Male">{t('Male')}</option>
+                    <option value="Female">{t('Female')}</option>
+                    <option value="Other">{t('Other')}</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-[#C4F8FF]/70 uppercase mb-1.5">{t('Application Language')}</label>
+                  <select
+                    value={editData.language}
+                    onChange={(e) => setEditData({ ...editData, language: e.target.value })}
+                    className="w-full border border-[#C4F8FF]/15 rounded-xl px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-primary text-[#C4F8FF] bg-[#0F4B70]/20 [&>option]:bg-[#061926] [&>option]:text-[#C4F8FF]"
+                  >
+                    <option value="en">English</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
                   </select>
                 </div>
 
@@ -364,9 +392,9 @@ const Profile = () => {
                   <div className="flex items-start gap-2.5 text-[#C4F8FF]/70">
                     <MapPin size={18} className="text-[#C4F8FF] flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wider">Registered Village (Locked)</p>
-                      <p className="text-xs font-bold text-[#C4F8FF] mt-1">{user.village || 'Panchayat Area'}</p>
-                      <p className="text-[9px] text-[#C4F8FF]/50 mt-1.5">Citizens cannot change their village name. Please contact your Panchayat office for address verification changes.</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider">{t('Registered Village (Locked)')}</p>
+                      <p className="text-xs font-bold text-[#C4F8FF] mt-1">{user.village || t('Panchayat Area')}</p>
+                      <p className="text-[9px] text-[#C4F8FF]/50 mt-1.5">{t('Citizens cannot change their village name. Please contact your Panchayat office for address verification changes.')}</p>
                     </div>
                   </div>
                 </div>
@@ -386,13 +414,13 @@ const Profile = () => {
                   }}
                   className="px-4 py-2 text-xs font-bold text-[#C4F8FF]/70 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t('Cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-5 py-2.5 bg-[#0F4B70] text-white border border-[#C4F8FF]/20 rounded-xl font-bold text-xs hover:bg-[#0a344f] shadow-sm transition-all"
                 >
-                  Save Changes
+                  {t('Save Changes')}
                 </button>
               </div>
             </form>
@@ -404,27 +432,27 @@ const Profile = () => {
       <div className="bg-[#0F4B70]/20 backdrop-blur-sm rounded-2xl border border-[#C4F8FF]/15 p-6 shadow-sm">
         <h3 className="text-xl font-bold text-[#C4F8FF] mb-6 flex items-center gap-2">
           <ClipboardList className="text-[#C4F8FF]" />
-          My Scheme Applications
+          {t('My Scheme Applications')}
         </h3>
         
         {applications.length === 0 ? (
           <div className="text-center py-8 bg-[#0F4B70]/30 rounded-xl border border-[#C4F8FF]/20">
-            <p className="text-[#C4F8FF]/70 text-sm">You haven't applied for any schemes yet.</p>
+            <p className="text-[#C4F8FF]/70 text-sm">{t("You haven't applied for any schemes yet.")}</p>
           </div>
         ) : (
           <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
             {applications.map((app) => (
               <div key={app._id} className="p-4 border border-[#C4F8FF]/20 bg-[#0F4B70]/30 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#C4F8FF]/15 transition-colors">
                 <div>
-                  <h4 className="font-bold text-[#C4F8FF] text-base mb-1">{app.schemeName}</h4>
+                  <h4 className="font-bold text-[#C4F8FF] text-base mb-1">{t(app.schemeName)}</h4>
                   <div className="flex flex-wrap items-center gap-3 text-xs text-[#C4F8FF]/70 font-medium">
-                    <span className="flex items-center gap-1"><User size={12} /> {app.applicantName} ({app.relationship})</span>
+                    <span className="flex items-center gap-1"><User size={12} /> {app.applicantName} ({t(app.relationship)})</span>
                     <span className="flex items-center gap-1"><Calendar size={12} /> {new Date(app.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${getStatusClass(app.status)} whitespace-nowrap`}>
                   {getStatusIcon(app.status)}
-                  {app.status}
+                  {t(app.status)}
                 </div>
               </div>
             ))}
