@@ -21,7 +21,6 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
     { name: t('budget'), path: '/admin/budget', icon: <DollarSign size={20} /> },
     { name: t('meetings'), path: '/admin/meetings', icon: <Calendar size={20} /> },
     { name: t('broadcasts'), path: '/admin/broadcasts', icon: <Megaphone size={20} /> },
-    { name: t('profile'), path: '/admin/profile', icon: <Users size={20} /> },
   ];
 
   const citizenLinks = [
@@ -33,7 +32,6 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
     { name: t('budget'), path: '/citizen/budget', icon: <DollarSign size={20} /> },
     { name: t('meetings'), path: '/citizen/meetings', icon: <Calendar size={20} /> },
     { name: t('broadcasts'), path: '/citizen/broadcasts', icon: <Megaphone size={20} /> },
-    { name: t('profile'), path: '/citizen/profile', icon: <Users size={20} /> },
   ];
 
   const links = role === 'admin' ? adminLinks : citizenLinks;
@@ -87,18 +85,6 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
         </div>
 
         <div className="p-4 border-t border-[#C4F8FF]/10 flex flex-col gap-4 bg-[#0F4B70]/10">
-          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'}`}>
-            <div className="w-10 h-10 rounded-full bg-[#C4F8FF]/20 border border-[#C4F8FF]/30 flex items-center justify-center font-bold text-[#C4F8FF] flex-shrink-0 shadow-lg">
-              {displayName ? displayName.charAt(0).toUpperCase() : role === 'admin' ? 'A' : 'C'}
-            </div>
-            {!isCollapsed && (
-              <div className="animate-fade-in overflow-hidden">
-                <p className="text-sm font-bold text-[#C4F8FF] truncate tracking-wide">{displayName}</p>
-                <p className="text-xs text-[#C4F8FF]/70 capitalize truncate">{displaySub}</p>
-              </div>
-            )}
-          </div>
-
           {/* Collapse Toggle Button (Desktop only) */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}

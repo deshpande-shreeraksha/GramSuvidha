@@ -62,7 +62,7 @@ router.post('/send-otp', async (req, res) => {
     console.log(`[OTP Verification] Code for ${email} (${name || 'User'}): ${generatedOtp}`);
     console.log(`==================================================\n`);
 
-    const targetLang = lang || 'en';
+    const targetLang = 'en';
     let subject = 'Verify Your Email - GramSuvidha Smart Portal';
     let welcomeTitle = 'Welcome to GramSuvidha!';
     let welcomeSubtitle = 'Smart Rural Administration Portal';

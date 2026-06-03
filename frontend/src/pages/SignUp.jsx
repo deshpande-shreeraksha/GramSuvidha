@@ -4,8 +4,13 @@ import { UserPlus, Activity, UserCircle, ShieldCheck, Key, ArrowLeft, Mail, Lock
 import { useLanguage } from '../context/LanguageContext';
 
 const SignUp = () => {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setLanguage('en');
+  }, [setLanguage]);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -93,7 +98,7 @@ const SignUp = () => {
         body: JSON.stringify({
           email: formData.email,
           name: `${formData.firstName} ${formData.lastName}`,
-          lang: language
+          lang: 'en'
         }),
       });
 
@@ -175,7 +180,7 @@ const SignUp = () => {
         body: JSON.stringify({
           email: formData.email,
           name: `${formData.firstName} ${formData.lastName}`,
-          lang: language
+          lang: 'en'
         })
       });
 

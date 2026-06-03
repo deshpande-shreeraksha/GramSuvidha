@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Outlet, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Menu, Bell, LogOut, Check, CheckCircle2 } from 'lucide-react';
+import { Menu, Bell, LogOut, Check, CheckCircle2, User } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const DashboardLayout = ({ role }) => {
@@ -11,7 +11,7 @@ const DashboardLayout = ({ role }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
   const location = useLocation();
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   const notificationsRef = useRef(null);
   const bellRef = useRef(null);
@@ -245,13 +245,21 @@ const DashboardLayout = ({ role }) => {
               </div>
             )}
 
+            <button 
+              className="flex items-center gap-2 text-sm font-bold text-[#C4F8FF]/70 hover:text-white transition-colors"
+              onClick={() => {
+                navigate(role === 'admin' ? '/admin/profile' : '/citizen/profile');
+              }}
+            >
+              <User size={18} />
+              <span className="hidden sm:inline">{t('profile')}</span>
+            </button>
             <div className="h-6 w-px bg-[#C4F8FF]/20"></div>
             <button 
               className="flex items-center gap-2 text-sm font-bold text-[#C4F8FF]/70 hover:text-red-400 transition-colors"
               onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('role');
-                localStorage.removeItem('user');
+                localStorage.clear();
+                setLanguage('en');
                 navigate('/login');
               }}
             >

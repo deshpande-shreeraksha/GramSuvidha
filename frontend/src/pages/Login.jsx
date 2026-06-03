@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn, UserCircle, ShieldCheck, Activity, Key } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const Login = () => {
-  const { t } = useLanguage();
+  const { t, setLanguage } = useLanguage();
+
+  useEffect(() => {
+    setLanguage('en');
+  }, [setLanguage]);
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState('citizen'); // 'citizen' or 'admin'
   const [identifier, setIdentifier] = useState('');

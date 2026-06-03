@@ -323,7 +323,7 @@ const FieldWorkers = () => {
                           </div>
                         </td>
                         <td className="py-4 text-[#C4F8FF]/80 text-xs">
-                          {worker.age} {t('Y/O')} • {t(worker.gender ? worker.gender.toUpperCase() : 'MALE')}
+                          {worker.age} {t('Y/O')} • {t(worker.gender ? (worker.gender.charAt(0).toUpperCase() + worker.gender.slice(1).toLowerCase()) : 'Male')}
                         </td>
                         <td className="py-4">
                           <div className="flex items-center justify-center gap-3">
