@@ -3,8 +3,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const LanguageContext = createContext();
 
 const translations = {
-  en: {}, // Keys will fallback to English if missing, but we define them here for reference or direct lookup
+  en: {
+    loginTitle: "Welcome Home",
+    signupTitle: "Create Account"
+  }, // Keys will fallback to English if missing, but we define them here for reference or direct lookup
   kn: {
+    loginTitle: "ಸ್ವಾಗತ",
+    signupTitle: "ಖಾತೆಯನ್ನು ರಚಿಸಿ",
     // Header & Landing
     features: "ವೈಶಿಷ್ಟ್ಯಗಳು",
     howItWorks: "ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
@@ -659,6 +664,8 @@ const translations = {
     "Fitting solar cells and street LEDs": "ಸೌರ ಫಲಕಗಳು ಮತ್ತು ರಸ್ತೆ ಎಲ್ಇಡಿಗಳನ್ನು ಅಳವಡಿಸುವುದು"
   },
   hi: {
+    loginTitle: "स्वागत है",
+    signupTitle: "खाता बनाएं",
     // Header & Landing
     features: "विशेषताएं",
     howItWorks: "यह कैसे काम करता है",
@@ -1334,7 +1341,9 @@ export const LanguageProvider = ({ children }) => {
 
   const t = (key) => {
     if (!key) return '';
-    if (language === 'en') return key;
+    if (language === 'en') {
+      return translations.en[key] || key;
+    }
     const langDict = translations[language] || {};
     const upperKey = typeof key === 'string' ? key.toUpperCase() : '';
     const lowerKey = typeof key === 'string' ? key.toLowerCase() : '';
