@@ -8,6 +8,65 @@ const Broadcast = require('../models/Broadcast');
 const PropertyTax = require('../models/PropertyTax');
 const { protectOptional } = require('../middleware/authMiddleware');
 const translateText = require('../utils/translate');
+const https = require('https');
+const http = require('http');
+
+// Safe fetch polyfill using native Node.js http/https modules
+const safeFetch = (url, options = {}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const parsedUrl = new URL(url);
+      const reqOptions = {
+        method: options.method || 'GET',
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
+        path: parsedUrl.pathname + parsedUrl.search,
+        headers: options.headers || {},
+      };
+
+      const httpLib = parsedUrl.protocol === 'https:' ? https : http;
+      
+      const req = httpLib.request(reqOptions, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          resolve({
+            ok: res.statusCode >= 200 && res.statusCode < 300,
+            status: res.statusCode,
+            json: async () => {
+              try {
+                return JSON.parse(data);
+              } catch (e) {
+                return {};
+              }
+            },
+            text: async () => data
+          });
+        });
+      });
+
+      req.on('error', (err) => {
+        reject(err);
+      });
+
+      if (options.body) {
+        req.write(typeof options.body === 'string' ? options.body : JSON.stringify(options.body));
+      }
+      req.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+// Safe date formatter to prevent RangeError: Invalid time value
+function formatDate(dateVal) {
+  if (!dateVal) return 'N/A';
+  const d = new Date(dateVal);
+  return isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString();
+}
 
 const projectContext = {
   projectName: "Gram-Suvidha AI",
@@ -90,7 +149,15 @@ router.post('/query', protectOptional, async (req, res) => {
       project: projectContext,
       schemes: schemes.map(s => ({ title: s.title, description: s.description, eligibility: s.eligibility, benefits: s.benefits, applicationProcess: s.applicationProcess })),
       budget: budget ? { year: budget.year, allocatedAmount: budget.allocatedAmount, items: budget.items } : null,
-      meetings: meetings.map(m => ({ title: m.title, date: m.date, venue: m.venue, agenda: m.agenda })),
+      meetings: meetings.map(m => ({
+        date: m.date,
+        time: m.time,
+        detailsDiscussed: m.detailsDiscussed,
+        questionsRaised: m.questionsRaised,
+        solutionsProvided: m.solutionsProvided,
+        actionsNeeded: m.actionsNeeded,
+        developmentBeforeNext: m.developmentBeforeNext
+      })),
       broadcasts: broadcasts.map(b => ({ category: b.category, title: b.title, description: b.description, date: b.date, timings: b.timings })),
       userComplaints: userComplaints.map(c => ({ title: `${c.category} Complaint`, category: c.category, status: c.status, address: c.location, date: c.createdAt })),
       userTaxes: userTaxes.map(t => ({ assessmentNumber: t.propertyId, taxAmount: t.taxAmount, status: t.paymentStatus, billingPeriod: t.taxYear })),
@@ -121,7 +188,7 @@ Instructions:
 5. If the user is logged in, you can mention their name and check their personal complaints and property taxes in the context. If they are not logged in, tell them they can log in to view their complaints and property taxes.
 6. Provide the response in the user's requested language. The user's query language is: ${lang}. Make sure to write the response in the same language (${lang}). If the language is Hindi ('hi') or Kannada ('kn'), reply in that language.`;
 
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        const geminiResponse = await safeFetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -155,7 +222,7 @@ Instructions:
 
     if (!isGeminiUsed) {
       try {
-        const mlResponse = await fetch('http://127.0.0.1:8000/chatbot/query', {
+        const mlResponse = await safeFetch('http://127.0.0.1:8000/chatbot/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: englishQuery, context })
@@ -204,6 +271,18 @@ function getLocalFallbackResponse(englishQuery, context) {
 5. 💳 **Checking your property tax dues**.
 6. 📢 **Latest village announcements** and alerts.`;
   }
+
+  // 1.5. GramSuvidha Project details fallback
+  if (query.includes('gramsuvidha') || query.includes('gram suvidha') || query.includes('repository') || query.includes('codebase') || query.includes('tech stack') || query.includes('technology') || query.includes('author') || query.includes('developer') || query.includes('creator') || query.includes('contributor') || (query.includes('project') && (query.includes('gram') || query.includes('suvidha') || query.includes('ai') || query.includes('github') || query.includes('git')))) {
+    return `Gram-Suvidha AI is an intelligent, secure, full-stack smart governance web application designed to modernize rural governance. 
+
+Key Project Information:
+- **Technologies**: React 19, Vite 6, Tailwind CSS 3, Node.js, Express, MongoDB Atlas.
+- **Portals**: Citizen Portal (OTP registration, schemes, complaints tracking, tax dues) and Admin Dashboard (worker dispatcher, budgets, tax audits).
+- **Developers**: Shreeraksha R Deshpande and Ashwini Rati.
+- **APIs**: Auth, Complaints, Schemes, Budgets, Taxes, Meetings.
+- **Structure**: \`backend/\` (Express server & Mongoose routes) and \`frontend/\` (Vite React Client).`;
+  }
   
   // 2. Schemes
   if (query.includes('scheme') || query.includes('yojana') || query.includes('benefit') || query.includes('project') || query.includes('apply')) {
@@ -244,7 +323,7 @@ function getLocalFallbackResponse(englishQuery, context) {
       if (complaints.length > 0) {
         let res = "Here are your recent registered complaints and their status:\n";
         complaints.forEach((c, idx) => {
-          res += `\n${idx + 1}. **${c.title}** (${c.category})\n   - Status: *${c.status}*\n   - Location: ${c.address || 'GPS Coordinates'}\n   - Filed on: ${new Date(c.date).toLocaleDateString()}\n`;
+          res += `\n${idx + 1}. **${c.title}** (${c.category})\n   - Status: *${c.status}*\n   - Location: ${c.address || 'GPS Coordinates'}\n   - Filed on: ${formatDate(c.date)}\n`;
         });
         res += "\nYou can file a new complaint by clicking \"Register Complaint\" in the sidebar.";
         return res;
@@ -262,7 +341,7 @@ function getLocalFallbackResponse(englishQuery, context) {
     if (meetings.length > 0) {
       let res = "Here are the scheduled Gram Sabha / Panchayat meetings:\n";
       meetings.forEach((m, idx) => {
-        res += `\n${idx + 1}. **${m.title}**\n   - Date: ${new Date(m.date).toLocaleDateString()}\n   - Venue: ${m.venue}\n   - Agenda: ${m.agenda}\n`;
+        res += `\n${idx + 1}. **Meeting on ${formatDate(m.date)} at ${m.time || 'N/A'}**\n   - *Discussions*: ${m.detailsDiscussed || 'N/A'}\n   - *Questions Raised*: ${m.questionsRaised || 'N/A'}\n   - *Solutions*: ${m.solutionsProvided || 'N/A'}\n   - *Next Steps*: ${m.actionsNeeded || 'N/A'}\n`;
       });
       res += "\nYou can read previous meeting minutes in the \"Meetings & Minutes\" page.";
       return res;
@@ -296,7 +375,7 @@ function getLocalFallbackResponse(englishQuery, context) {
     if (broadcasts.length > 0) {
       let res = "Here are the latest alerts and announcements published by the Panchayat:\n";
       broadcasts.forEach((b) => {
-        res += `\n📢 **[${b.category}] ${b.title}**\n   - Scheduled Date: ${new Date(b.date).toLocaleDateString()}\n   - Timings: ${b.timings || 'N/A'}\n   - Details: ${b.description}\n`;
+        res += `\n📢 **[${b.category}] ${b.title}**\n   - Scheduled Date: ${formatDate(b.date)}\n   - Timings: ${b.timings || 'N/A'}\n   - Details: ${b.description}\n`;
       });
       return res;
     } else {
@@ -346,14 +425,15 @@ function getLocalFallbackResponse(englishQuery, context) {
     // Search meetings
     (context.meetings || []).forEach(m => {
       const matchScore = queryWords.reduce((score, w) => {
-        if (m.title.toLowerCase().includes(w)) score += 5;
-        if (m.agenda.toLowerCase().includes(w)) score += 2;
+        if ((m.detailsDiscussed || '').toLowerCase().includes(w)) score += 4;
+        if ((m.questionsRaised || '').toLowerCase().includes(w)) score += 3;
+        if ((m.solutionsProvided || '').toLowerCase().includes(w)) score += 2;
         return score;
       }, 0);
       if (matchScore > 0) {
         matchedResults.push({
           score: matchScore,
-          text: `📅 Meeting: **${m.title}** - Date: ${new Date(m.date).toLocaleDateString()}, Agenda: ${m.agenda}.`
+          text: `📅 Meeting on ${formatDate(m.date)}: Discussed "${m.detailsDiscussed || 'N/A'}".`
         });
       }
     });
@@ -381,18 +461,6 @@ function getLocalFallbackResponse(englishQuery, context) {
       });
       return res;
     }
-  }
-
-  // 9. GramSuvidha Project details fallback
-  if (query.includes('gramsuvidha') || query.includes('gram suvidha') || query.includes('project') || query.includes('repository') || query.includes('code') || query.includes('stack') || query.includes('technology') || query.includes('author') || query.includes('developer') || query.includes('creator') || query.includes('contributor')) {
-    return `Gram-Suvidha AI is an intelligent, secure, full-stack smart governance web application designed to modernize rural governance. 
-
-Key Project Information:
-- **Technologies**: React 19, Vite 6, Tailwind CSS 3, Node.js, Express, MongoDB Atlas.
-- **Portals**: Citizen Portal (OTP registration, schemes, complaints tracking, tax dues) and Admin Dashboard (worker dispatcher, budgets, tax audits).
-- **Developers**: Shreeraksha R Deshpande and Ashwini Rati.
-- **APIs**: Auth, Complaints, Schemes, Budgets, Taxes, Meetings.
-- **Structure**: \`backend/\` (Express server & Mongoose routes) and \`frontend/\` (Vite React Client).`;
   }
 
   // 10. Standard Help guide
