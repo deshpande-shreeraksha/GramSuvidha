@@ -89,61 +89,57 @@ textarea:disabled {
 }
 
 @media print {
-  /* Set body to clean white background and black text during print */
-  body {
+  /* Set body to clean white background and black text during print, and enable scrolling */
+  html, body {
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #000000 !important;
-  }
-  
-  /* Hide all UI layout shells during printing */
-  aside,
-  header,
-  nav,
-  button,
-  .print\:hidden {
-    display: none !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
   }
 
-  /* Reset layout constraints and display receipt page fully */
-  .fixed {
+  /* Hide everything inside body during print */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Make only the printable receipt section and its children visible */
+  .printable-receipt,
+  .printable-receipt * {
+    visibility: visible !important;
+  }
+
+  /* Force the printable section to be positioned at the top-left corner, covering the page */
+  .printable-receipt {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
     height: auto !important;
-    background: #ffffff !important;
-    padding: 0 !important;
     margin: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    overflow: visible !important;
-    z-index: 9999 !important;
-  }
-
-  .fixed > div {
-    max-width: 100% !important;
-    box-shadow: none !important;
-    border: none !important;
-    background: #ffffff !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  .printable-receipt {
+    padding: 24px !important;
     background: #ffffff !important;
     color: #000000 !important;
     border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
     box-shadow: none !important;
     overflow: visible !important;
+    z-index: 99999 !important;
   }
 
+  /* Ensure standard black text and transparent background inside printable section */
   .printable-receipt * {
     color: #000000 !important;
     background-color: transparent !important;
-    border-color: #000000 !important;
+    background: transparent !important;
+    border-color: #cccccc !important;
     box-shadow: none !important;
+  }
+
+  /* Hide elements marked print:hidden explicitly inside the printable-receipt area */
+  .printable-receipt .print\:hidden,
+  .printable-receipt button {
+    display: none !important;
   }
 }
 

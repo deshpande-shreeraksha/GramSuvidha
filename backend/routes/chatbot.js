@@ -261,6 +261,58 @@ Instructions:
 function getLocalFallbackResponse(englishQuery, context) {
   const query = englishQuery.toLowerCase();
   
+  const backupSchemes = [
+    {
+      title: "Pradhan Mantri Awas Yojana (PMAY)",
+      description: "Housing for the rural poor.",
+      eligibility: "Homeless families or those with zero, one, or two-room houses with kutcha walls and kutcha roof. Annual household income must be less than ₹3,00,000.",
+      benefits: "Financial assistance of ₹1.20 lakh in plains and ₹1.30 lakh in hilly states. Toilet construction assistance of ₹12,000. 90/95 days of unskilled wage labor under MGNREGA.",
+      applicationProcess: "Submit application with Aadhaar Card, Bank Account Details, Job Card (MGNREGA), and Swachh Bharat Mission (SBM) number on the Schemes Portal."
+    },
+    {
+      title: "Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA)",
+      description: "Guarantees 100 days of wage employment.",
+      eligibility: "Must be a Citizen of India and 18 years of age or older. Must reside in the rural area (Gram Panchayat). Willing to do unskilled manual work.",
+      benefits: "Guaranteed 100 days of employment per year. Wages are paid directly into bank/post office. Unemployment allowance if work not provided in 15 days.",
+      applicationProcess: "Submit application with Aadhaar Card or Voter ID, Bank or Post Office Account Details, and Passport size photographs on the Schemes Portal."
+    },
+    {
+      title: "PM Kisan Samman Nidhi (PM-KISAN)",
+      description: "Income support to all landholding farmer families.",
+      eligibility: "All landholding farmers' families with cultivable landholding in their name (exclusions apply for government employees/taxpayers).",
+      benefits: "Income support of ₹6,00,000 per year. The amount is provided in three equal installments of ₹2,000 every four months.",
+      applicationProcess: "Submit application with Land Ownership Papers (Khatauni), Aadhaar Card, and Bank Account Details (Passbook)."
+    },
+    {
+      title: "National Social Assistance Programme (NSAP)",
+      description: "Pension scheme for elderly citizens.",
+      eligibility: "Must belong to a Below Poverty Line (BPL) household. Age must be 60 years or higher.",
+      benefits: "IGNOAPS Old age pension: ₹200/month (60-79 years), ₹500/month (80+ years). State governments typically contribute an equal or greater amount.",
+      applicationProcess: "Submit application with BPL Card, Aadhaar Card, Age Proof (Voter ID, Birth Certificate), and Bank Account Details."
+    },
+    {
+      title: "Sukanya Samriddhi Yojana (SSY)",
+      description: "Savings scheme targeted at parents of girl children.",
+      eligibility: "Girl child must be an Indian resident. Account must be opened before the girl child attains the age of 10 years. Only one account per girl child, and maximum two accounts per family.",
+      benefits: "High interest rate (compounded annually). Tax benefits under Section 80C. Account matures 21 years from opening date.",
+      applicationProcess: "Submit application with Birth Certificate of the girl child, Identity and Address Proof of the parent/guardian."
+    },
+    {
+      title: "Jal Jeevan Mission (Har Ghar Jal)",
+      description: "Safe and adequate drinking water through individual household tap connections.",
+      eligibility: "Applicable to all rural households that do not have a functional tap connection.",
+      benefits: "Functional household tap connection providing 55 liters per capita per day of prescribed quality. Water quality monitoring and surveillance at the community level.",
+      applicationProcess: "Submit application with Aadhaar Card, Address Proof, and Village Panchayat resolution."
+    },
+    {
+      title: "Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY)",
+      description: "Placement linked skill development program for rural youth.",
+      eligibility: "Rural youth between 15 and 35 years (up to 45 for women, SC/ST, PWD). Must belong to a poor family (BPL card, Antyodaya card, etc.).",
+      benefits: "Free skill training programs, free uniforms and materials, guaranteed placement for at least 70% of candidates, post-placement support.",
+      applicationProcess: "Submit application with Aadhaar Card, Proof of age, BPL/Category certificate, and Educational qualification certificates."
+    }
+  ];
+
   // 1. Greetings
   if (query.includes('hello') || query.includes('hi') || query.includes('namaste') || query.includes('hey') || query.includes('greet')) {
     return `Namaste! I am Suvidha AI, your smart Gram Panchayat assistant. How can I help you today? You can ask me about:
@@ -283,14 +335,40 @@ Key Project Information:
 - **APIs**: Auth, Complaints, Schemes, Budgets, Taxes, Meetings.
 - **Structure**: \`backend/\` (Express server & Mongoose routes) and \`frontend/\` (Vite React Client).`;
   }
+
+  // 1.8. Instructions / How-to queries
+  const isHowToQuery = query.includes('how to') || query.includes('how do') || query.includes('how can') || query.includes('how i') || query.includes('steps to') || query.includes('procedure') || query.includes('process for') || query.includes('where can') || query.includes('where to') || query.includes('guide to');
+  if (isHowToQuery && context.project && context.project.howToUse) {
+    if (query.includes('complaint') || query.includes('report') || query.includes('grievance')) {
+      return `Here are the steps to file a complaint in GramSuvidha:\n\n${context.project.howToUse.fileComplaint}`;
+    }
+    if (query.includes('tax') || query.includes('pay') || query.includes('property')) {
+      return `Here are the steps to view and pay property taxes in GramSuvidha:\n\n${context.project.howToUse.payTaxes}`;
+    }
+    if (query.includes('broadcast') || query.includes('announcement') || query.includes('notice') || query.includes('alert')) {
+      return `Here are the steps to view village broadcasts/announcements:\n\n${context.project.howToUse.seeBroadcasts}`;
+    }
+    if (query.includes('scheme') || query.includes('yojana') || query.includes('apply')) {
+      return `Here are the steps to browse and apply for government welfare schemes:\n\n${context.project.howToUse.applySchemes}`;
+    }
+    if (query.includes('meeting') || query.includes('sabha') || query.includes('minutes')) {
+      return `Here are the steps to view Gram Sabha Panchayat meetings and minutes:\n\n${context.project.howToUse.viewMeetings}`;
+    }
+    if (query.includes('budget') || query.includes('allocate')) {
+      return `Here are the steps to configure and view budget details:\n\n${context.project.howToUse.adminBudget}`;
+    }
+    if (query.includes('worker') || query.includes('staff')) {
+      return `Here are the steps to register and manage field workers:\n\n${context.project.howToUse.adminWorker}`;
+    }
+  }
   
   // 2. Schemes
   if (query.includes('scheme') || query.includes('yojana') || query.includes('benefit') || query.includes('project') || query.includes('apply')) {
-    const schemes = context.schemes || [];
+    const schemes = (context.schemes && context.schemes.length > 0) ? context.schemes : backupSchemes;
     if (schemes.length > 0) {
       let res = "Here are the active Panchayat schemes:\n";
       schemes.forEach((s, idx) => {
-        res += `\n${idx + 1}. **${s.title}**\n   - *Description*: ${s.description}\n   - *Eligibility*: ${s.eligibility}\n   - *Benefits*: ${s.benefits}\n   - *How to Apply*: ${s.applicationProcess}\n`;
+        res += `\n${idx + 1}. **${s.title}**\n   - *Description*: ${s.description}\n   - *Eligibility*: ${s.eligibility}\n   - *Benefits*: ${s.benefits}\n   - *How to Apply*: ${s.applicationProcess || s.benefits}\n`;
       });
       res += "\nYou can apply for these online in the \"Scheme's\" sidebar tab.";
       return res;
@@ -391,7 +469,8 @@ Key Project Information:
     let matchedResults = [];
     
     // Search schemes
-    (context.schemes || []).forEach(s => {
+    const searchSchemes = (context.schemes && context.schemes.length > 0) ? context.schemes : backupSchemes;
+    searchSchemes.forEach(s => {
       const matchScore = queryWords.reduce((score, w) => {
         if (s.title.toLowerCase().includes(w)) score += 5;
         if (s.description.toLowerCase().includes(w)) score += 2;

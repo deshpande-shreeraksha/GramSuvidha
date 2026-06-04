@@ -51,6 +51,14 @@ const connectDB = async () => {
     const conn = await mongoose.connect(dbUri);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     await seedWorkers();
+
+    // Auto-seed Admin, Schemes, Budget, Meetings, and Broadcasts
+    try {
+      const seedData = require('./utils/seedData');
+      await seedData();
+    } catch (seedErr) {
+      console.error('Failed to run database auto-seeding:', seedErr.message);
+    }
     
     // Migrate existing users to have default language set if missing
     try {

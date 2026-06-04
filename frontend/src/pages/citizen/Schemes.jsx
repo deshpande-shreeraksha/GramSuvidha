@@ -303,17 +303,7 @@ const Schemes = () => {
   };
 
   const handlePrint = () => {
-    const printContent = printRef.current.innerHTML;
-    const originalContent = document.body.innerHTML;
-    
-    document.body.innerHTML = `
-      <div style="padding: 40px; font-family: sans-serif;">
-        ${printContent}
-      </div>
-    `;
     window.print();
-    document.body.innerHTML = originalContent;
-    window.location.reload(); // Reload to restore React state cleanly
   };
 
   return (
@@ -729,13 +719,13 @@ const Schemes = () => {
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto border border-slate-200 text-slate-800 animate-fade-in">
             <button 
               onClick={() => setSelectedReceipt(null)} 
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold focus:outline-none"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold focus:outline-none print:hidden"
             >
               &times;
             </button>
 
             {/* Printable Frame */}
-            <div ref={printRef} className="border-2 border-slate-350 rounded-xl p-6 bg-white relative">
+            <div ref={printRef} className="border-2 border-slate-350 rounded-xl p-6 bg-white relative printable-receipt">
               {/* Watermark */}
               <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] select-none pointer-events-none">
                 <ShieldCheck size={280} className="text-slate-500 rotate-12" />
@@ -800,7 +790,7 @@ const Schemes = () => {
               </div>
             </div>
 
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 flex gap-3 print:hidden">
               <button
                 onClick={handlePrint}
                 className="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
