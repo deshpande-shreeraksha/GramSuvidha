@@ -9,6 +9,43 @@ const PropertyTax = require('../models/PropertyTax');
 const { protectOptional } = require('../middleware/authMiddleware');
 const translateText = require('../utils/translate');
 
+const projectContext = {
+  projectName: "Gram-Suvidha AI",
+  description: "An intelligent, secure, full-stack smart governance web application designed to modernize rural governance. It streamlines Gram Panchayat administration, empowers rural citizens, and automates tracking and scheme applications under a beautiful, unified dark glassmorphic design system.",
+  techStack: {
+    frontend: "React 19, Vite 6, Tailwind CSS 3, Recharts, Lucide Icons, React Router 7",
+    backend: "Node.js, Express, Nodemailer, MongoDB Driver",
+    database: "MongoDB Atlas (Mongoose ODM)",
+    deployment: "Vercel Serverless Configurations"
+  },
+  keyFeatures: [
+    "Role-Based Access Control (RBAC): Citizen Portal (OTP registration, schemes eligibility & apply, complaints track, tax payment, budget) and Administrative Portal (analytics, worker assignment, scheme approval).",
+    "Secure Onboarding & Authentication: Locked onboarding, OTP verification, developer sandbox bypass removed.",
+    "Nodemailer Delivery: Verification via SMTP, automatic Ethereal Mail fallback for developer testing, automated budget and meetings email broadcasts.",
+    "OpenStreetMap Geocoding: Reverse-geocodes complaints coordinates using Nominatim API, OSM maps embedded in UI.",
+    "Modern Glassmorphic Design: Styled globally in index.css (dark glassmorphism), responsive layout overlays, mobile-friendly grid spacing.",
+    "Performance: Lazy loading components via React.lazy and React.Suspense."
+  ],
+  directoryStructure: {
+    root: "Gram-Suvidha AI project root",
+    backend: "server.js (entrypoint), clear_db.js (wipe utility), routes/ (auth, complaints, schemes, budget, meetings, taxes, chatbot), models/ (User, Complaint, Scheme, Budget, Meeting, PropertyTax), utils/ (Nodemailer sendEmail)",
+    frontend: "package.json (Vite), src/main.jsx (entrypoint), src/App.jsx (lazy routing), components/ (Sidebar, Chatbot), context/ (Language, Auth), layouts/ (dashboard shells), pages/ (CitizenDashboard, AdminDashboard, SignUp)"
+  },
+  apiEndpoints: [
+    "Auth: POST /api/auth/send-otp, POST /api/auth/register, POST /api/auth/login, GET/PUT /api/auth/profile",
+    "Complaints: POST /api/complaints (submit complaint), GET /api/complaints (fetch), PUT /api/complaints/:id/status (update status)",
+    "Schemes: GET /api/schemes (fetch all), POST /api/schemes/apply (apply), GET /api/schemes/applications (fetch submissions)",
+    "Taxes: GET/POST /api/taxes (dues, calculate, pay, receipts)",
+    "Budget: GET/POST /api/budget (annual budget items, sector allocations)",
+    "Meetings: GET/POST /api/meetings (council assembly schedules, publish minutes)"
+  ],
+  setupInstructions: "1. Backend: cd backend, npm install, configure .env, npm start. 2. Frontend: cd frontend, npm install, npm run dev.",
+  authors: [
+    { name: "Shreeraksha R Deshpande", github: "@deshpande-shreeraksha" },
+    { name: "Ashwini Rati", github: "@ashwini-rati" }
+  ]
+};
+
 // @route   POST /api/chatbot/query
 // @desc    Query Panchayat data and return localized AI response via ML Service
 // @access  Public / Optional Protected
@@ -41,6 +78,7 @@ router.post('/query', protectOptional, async (req, res) => {
     }
 
     const context = {
+      project: projectContext,
       schemes: schemes.map(s => ({ title: s.title, description: s.description, eligibility: s.eligibility, benefits: s.benefits, applicationProcess: s.applicationProcess })),
       budget: budget ? { year: budget.year, allocatedAmount: budget.allocatedAmount, items: budget.items } : null,
       meetings: meetings.map(m => ({ title: m.title, date: m.date, venue: m.venue, agenda: m.agenda })),
@@ -336,7 +374,19 @@ function getLocalFallbackResponse(englishQuery, context) {
     }
   }
 
-  // 9. Standard Help guide
+  // 9. GramSuvidha Project details fallback
+  if (query.includes('gramsuvidha') || query.includes('gram suvidha') || query.includes('project') || query.includes('repository') || query.includes('code') || query.includes('stack') || query.includes('technology') || query.includes('author') || query.includes('developer') || query.includes('creator') || query.includes('contributor')) {
+    return `Gram-Suvidha AI is an intelligent, secure, full-stack smart governance web application designed to modernize rural governance. 
+
+Key Project Information:
+- **Technologies**: React 19, Vite 6, Tailwind CSS 3, Node.js, Express, MongoDB Atlas.
+- **Portals**: Citizen Portal (OTP registration, schemes, complaints tracking, tax dues) and Admin Dashboard (worker dispatcher, budgets, tax audits).
+- **Developers**: Shreeraksha R Deshpande and Ashwini Rati.
+- **APIs**: Auth, Complaints, Schemes, Budgets, Taxes, Meetings.
+- **Structure**: \`backend/\` (Express server & Mongoose routes) and \`frontend/\` (Vite React Client).`;
+  }
+
+  // 10. Standard Help guide
   return "I apologize, I couldn't find specific details for your query. Try asking about active government schemes, annual budget allocations, meeting details, property tax records, or check the status of your complaints.";
 }
 
