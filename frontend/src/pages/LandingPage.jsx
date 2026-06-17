@@ -1,19 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, MapPin, Users, Droplets, Lightbulb, Trash2, FileSpreadsheet, Activity, Globe, Lock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import GramSuvidhaAnimatedLogo from '../components/GramSuvidhaAnimatedLogo';
 
-// React wrapper component to animate sections on mount
+// React wrapper component to animate sections on scroll
 const AnimateSection = ({ children, delay = 0, className = "" }) => {
   const [visible, setVisible] = useState(false);
+  const domRef = useRef();
+
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), delay);
-    return () => clearTimeout(t);
-  }, [delay]);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05 });
+    
+    const current = domRef.current;
+    if (current) {
+      observer.observe(current);
+    }
+    return () => {
+      if (current) {
+        observer.unobserve(current);
+      }
+    };
+  }, []);
 
   return (
     <div 
+      ref={domRef}
+      style={{ transitionDelay: `${delay}ms` }}
       className={`transition-all duration-1000 ease-out transform ${
         visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-[0.98]'
       } ${className}`}
@@ -141,8 +161,12 @@ const LandingPage = () => {
           </nav>
 
           <div className="flex items-center gap-4">
-            <span className="hidden lg:inline-flex items-center gap-2 text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 bg-[#C4F8FF]/10 text-[#C4F8FF] rounded-full border border-[#C4F8FF]/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C4F8FF] animate-pulse"></span> {t('activeStatus')}
+            <span className="hidden lg:inline-flex items-center gap-2.5 text-[10px] font-black tracking-wider uppercase px-4 py-2 bg-green-500/10 text-green-400 rounded-full border border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.15)] relative overflow-hidden select-none">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span>{t('activeStatus')}</span>
             </span>
             {token && (
               <button 
@@ -194,98 +218,112 @@ const LandingPage = () => {
 
         {/* Quick Portal Gateway (Citizen vs Admin) */}
         <section className="container mx-auto px-6 py-12 max-w-5xl">
-          <AnimateSection delay={3400} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Citizen Gateway */}
-            <div 
-              onClick={() => handleCategoryClick('scheme')}
-              className="bg-[#0F4B70]/30 p-8 rounded-3xl border border-[#C4F8FF]/20 shadow-lg hover:border-[#C4F8FF]/60 hover:bg-[#0F4B70]/50 hover:-translate-y-1 transform transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md"
-            >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
-                  <Globe size={20} />
+            <AnimateSection delay={0}>
+              <div 
+                onClick={() => handleCategoryClick('scheme')}
+                className="bg-[#0F4B70]/30 p-8 rounded-3xl border border-[#C4F8FF]/20 shadow-lg hover:border-[#C4F8FF]/60 hover:bg-[#0F4B70]/50 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_10px_35px_rgba(196,248,255,0.15)] transform transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md h-full"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
+                    <Globe size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Citizen Services")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
+                    {t("Apply for state welfare schemes, register complaints with maps coordinates, track status timeline, and pay local property taxes online.")}
+                  </p>
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Citizen Services")}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
-                  {t("Apply for state welfare schemes, register complaints with maps coordinates, track status timeline, and pay local property taxes online.")}
-                </p>
+                <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 group hover:text-white transition-colors">
+                  {t("Enter Citizen Portal")} &rarr;
+                </span>
               </div>
-              <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 group hover:text-white transition-colors">
-                {t("Enter Citizen Portal")} &rarr;
-              </span>
-            </div>
+            </AnimateSection>
 
             {/* Admin Gateway */}
-            <div 
-              onClick={() => navigate('/login')}
-              className="bg-[#0F4B70]/30 p-8 rounded-3xl border border-[#C4F8FF]/20 shadow-lg hover:border-[#C4F8FF]/60 hover:bg-[#0F4B70]/50 hover:-translate-y-1 transform transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md"
-            >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
-                  <Lock size={20} />
+            <AnimateSection delay={200}>
+              <div 
+                onClick={() => navigate('/login')}
+                className="bg-[#0F4B70]/30 p-8 rounded-3xl border border-[#C4F8FF]/20 shadow-lg hover:border-[#C4F8FF]/60 hover:bg-[#0F4B70]/50 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_10px_35px_rgba(196,248,255,0.15)] transform transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md h-full"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
+                    <Lock size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Panchayat Administration")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
+                    {t("Log in as Sarpanch or Panchayat Officer to review budgets, monitor community notices, orchestrate field forces, and resolve reports.")}
+                  </p>
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-2">{t("Panchayat Administration")}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">
-                  {t("Log in as Sarpanch or Panchayat Officer to review budgets, monitor community notices, orchestrate field forces, and resolve reports.")}
-                </p>
+                <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 hover:text-white transition-colors">
+                  {t("Officer Login Panel")} &rarr;
+                </span>
               </div>
-              <span className="text-xs font-bold text-[#C4F8FF] flex items-center gap-1.5 mt-6 hover:text-white transition-colors">
-                {t("Officer Login Panel")} &rarr;
-              </span>
-            </div>
-          </AnimateSection>
+            </AnimateSection>
+          </div>
         </section>
 
         {/* Categories Section */}
         <section className="bg-[#0F4B70]/20 py-20 border-t border-[#C4F8FF]/10">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-[#C4F8FF] tracking-tight mb-2">{t("Explore Portal Services")}</h2>
-            <p className="text-[#C4F8FF]/65 max-w-md mx-auto mb-12 text-xs font-semibold uppercase tracking-wider">{t('categoriesDesc')}</p>
+            <AnimateSection>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-[#C4F8FF] tracking-tight mb-2">{t("Explore Portal Services")}</h2>
+              <p className="text-[#C4F8FF]/65 max-w-md mx-auto mb-12 text-xs font-semibold uppercase tracking-wider">{t('categoriesDesc')}</p>
+            </AnimateSection>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Category cards */}
-              <div 
-                onClick={() => handleCategoryClick('water')}
-                className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 hover:shadow-xl transition-all duration-300 text-left cursor-pointer group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
-                  <Droplets size={20} />
+              <AnimateSection delay={0}>
+                <div 
+                  onClick={() => handleCategoryClick('water')}
+                  className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 text-left cursor-pointer group transform h-full"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
+                    <Droplets size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('waterTitle')}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('waterDesc')}</p>
                 </div>
-                <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('waterTitle')}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('waterDesc')}</p>
-              </div>
+              </AnimateSection>
 
-              <div 
-                onClick={() => handleCategoryClick('power')}
-                className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 hover:shadow-xl transition-all duration-300 text-left cursor-pointer group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
-                  <Lightbulb size={20} />
+              <AnimateSection delay={100}>
+                <div 
+                  onClick={() => handleCategoryClick('power')}
+                  className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 text-left cursor-pointer group transform h-full"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
+                    <Lightbulb size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('lightTitle')}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('lightDesc')}</p>
                 </div>
-                <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('lightTitle')}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('lightDesc')}</p>
-              </div>
+              </AnimateSection>
 
-              <div 
-                onClick={() => handleCategoryClick('road')}
-                className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 hover:shadow-xl transition-all duration-300 text-left cursor-pointer group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
-                  <Trash2 size={20} />
+              <AnimateSection delay={200}>
+                <div 
+                  onClick={() => handleCategoryClick('road')}
+                  className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 text-left cursor-pointer group transform h-full"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
+                    <Trash2 size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('roadTitle')}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('roadDesc')}</p>
                 </div>
-                <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('roadTitle')}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('roadDesc')}</p>
-              </div>
+              </AnimateSection>
 
-              <div 
-                onClick={() => handleCategoryClick('scheme')}
-                className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 hover:shadow-xl transition-all duration-300 text-left cursor-pointer group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
-                  <FileSpreadsheet size={20} />
+              <AnimateSection delay={300}>
+                <div 
+                  onClick={() => handleCategoryClick('scheme')}
+                  className="bg-[#0f2a3f] p-8 rounded-2xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 text-left cursor-pointer group transform h-full"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-[#C4F8FF]/10 flex items-center justify-center text-[#C4F8FF] mb-6 group-hover:scale-110 transition-transform">
+                    <FileSpreadsheet size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('schemeTitle')}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('schemeDesc')}</p>
                 </div>
-                <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2 group-hover:text-white transition-colors">{t('schemeTitle')}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t('schemeDesc')}</p>
-              </div>
+              </AnimateSection>
             </div>
           </div>
         </section>
@@ -293,36 +331,42 @@ const LandingPage = () => {
         {/* Detailed Features Section */}
         <section id="features" className="bg-[#0F4B70]/10 py-20 border-t border-[#C4F8FF]/10 relative z-10 scroll-mt-16">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
+            <AnimateSection className="text-center mb-12">
               <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("System Features")}</span>
               <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Panchayat Empowerment Through Innovation")}</h2>
               <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Automated operations for seamless administration.")}</p>
-            </div>
+            </AnimateSection>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 shadow-md hover:shadow-lg transition-all duration-300">
-                <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
-                  <Activity size={20} />
+              <AnimateSection delay={0}>
+                <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
+                    <Activity size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("AI Departmental Routing")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Incoming grievances are analyzed by our local Natural Language Processing (NLP) microservice. The text is parsed to determine category validity, auto-detect severity, and allocate to respective local departments instantly.")}</p>
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("AI Departmental Routing")}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Incoming grievances are analyzed by our local Natural Language Processing (NLP) microservice. The text is parsed to determine category validity, auto-detect severity, and allocate to respective local departments instantly.")}</p>
-              </div>
+              </AnimateSection>
 
-              <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 shadow-md hover:shadow-lg transition-all duration-300">
-                <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
-                  <MapPin size={20} />
+              <AnimateSection delay={150}>
+                <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
+                    <MapPin size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Precision Geocoding Maps")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Integrated with OpenStreetMap and reverse geocoding APIs. Citizens pin issue spots directly on village maps, converting coordinates to verified address strings so workers locate them with zero confusion.")}</p>
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Precision Geocoding Maps")}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Integrated with OpenStreetMap and reverse geocoding APIs. Citizens pin issue spots directly on village maps, converting coordinates to verified address strings so workers locate them with zero confusion.")}</p>
-              </div>
+              </AnimateSection>
 
-              <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 shadow-md hover:shadow-lg transition-all duration-300">
-                <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
-                  <ShieldCheck size={20} />
+              <AnimateSection delay={300}>
+                <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center mb-6">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Secure Digital Tax Portal")}</h3>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Brings local revenue collection into the digital age. Allows self-assessment of properties and implements legal Gram Panchayat tax calculations based on construction types, area, and official cess components.")}</p>
                 </div>
-                <h3 className="font-display font-bold text-lg text-[#C4F8FF] mb-3">{t("Secure Digital Tax Portal")}</h3>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Brings local revenue collection into the digital age. Allows self-assessment of properties and implements legal Gram Panchayat tax calculations based on construction types, area, and official cess components.")}</p>
-              </div>
+              </AnimateSection>
             </div>
           </div>
         </section>
@@ -330,36 +374,44 @@ const LandingPage = () => {
         {/* Detailed How It Works Section */}
         <section id="how-it-works" className="py-20 border-t border-[#C4F8FF]/10 relative z-10 scroll-mt-16 bg-[#0F4B70]/20">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
+            <AnimateSection className="text-center mb-12">
               <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("Operational Flow")}</span>
               <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Simple, Transparent Lifecycle")}</h2>
               <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Four simple steps connecting citizens and sarpanch.")}</p>
-            </div>
+            </AnimateSection>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
-              <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">1</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Onboard Securely")}</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Sign up using your mobile number and email. Authenticate your registration through Nodemailer SMTP OTP verification to prevent fake spam accounts.")}</p>
-              </div>
+              <AnimateSection delay={0}>
+                <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-md hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">1</div>
+                  <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Onboard Securely")}</h4>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Sign up using your mobile number and email. Authenticate your registration through Nodemailer SMTP OTP verification to prevent fake spam accounts.")}</p>
+                </div>
+              </AnimateSection>
 
-              <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">2</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("File or Pay")}</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Submit your complaints with photos, apply for welfare schemes, or calculate and pay annual property taxes instantly through our digital payment simulator.")}</p>
-              </div>
+              <AnimateSection delay={100}>
+                <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-md hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">2</div>
+                  <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("File or Pay")}</h4>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Submit your complaints with photos, apply for welfare schemes, or calculate and pay annual property taxes instantly through our digital payment simulator.")}</p>
+                </div>
+              </AnimateSection>
 
-              <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">3</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Orchestration")}</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Admins review submissions, allocate budgets, and dispatch designated field workers. Real-time notifications keep citizens informed about changes.")}</p>
-              </div>
+              <AnimateSection delay={200}>
+                <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-md hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">3</div>
+                  <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Orchestration")}</h4>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Admins review submissions, allocate budgets, and dispatch designated field workers. Real-time notifications keep citizens informed about changes.")}</p>
+                </div>
+              </AnimateSection>
 
-              <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-sm hover:border-[#C4F8FF]/40 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">4</div>
-                <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Track & Audit")}</h4>
-                <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Use your unique Complaint ID or Scheme ID to track progress stages live on your dashboard and download official receipts for your permanent records.")}</p>
-              </div>
+              <AnimateSection delay={300}>
+                <div className="flex flex-col items-center text-center p-6 bg-[#0f2a3f] rounded-3xl border border-[#C4F8FF]/15 shadow-md hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform h-full">
+                  <div className="w-10 h-10 rounded-full bg-[#C4F8FF] text-[#0F4B70] font-bold text-sm flex items-center justify-center mb-6 shadow-md shadow-[#C4F8FF]/15">4</div>
+                  <h4 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Track & Audit")}</h4>
+                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Use your unique Complaint ID or Scheme ID to track progress stages live on your dashboard and download official receipts for your permanent records.")}</p>
+                </div>
+              </AnimateSection>
             </div>
           </div>
         </section>
@@ -367,32 +419,36 @@ const LandingPage = () => {
         {/* Detailed Community Section */}
         <section id="community" className="bg-[#0F4B70]/10 py-20 border-t border-[#C4F8FF]/10">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
+            <AnimateSection className="text-center mb-12">
               <span className="text-[10px] font-extrabold text-[#C4F8FF] tracking-widest uppercase bg-[#C4F8FF]/10 px-3 py-1 rounded-full border border-[#C4F8FF]/20">{t("Panchayat Community")}</span>
               <h2 className="text-3xl font-display font-bold text-[#C4F8FF] mt-4">{t("Participatory Rural Governance")}</h2>
               <p className="text-[#C4F8FF]/70 max-w-md mx-auto mt-4 text-xs font-semibold uppercase tracking-wider">{t("Fostering collaboration across village lines.")}</p>
-            </div>
+            </AnimateSection>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 transition-colors flex gap-6 items-start">
-                <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center flex-shrink-0">
-                  <Users size={20} />
+              <AnimateSection delay={0}>
+                <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform flex gap-6 items-start h-full">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center flex-shrink-0">
+                    <Users size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Collaborative Action")}</h3>
+                    <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Empower local village committees and youth associations by registering them as authorized field workers. Workers resolve community reports and provide digital photo proof of completed works.")}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Collaborative Action")}</h3>
-                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Empower local village committees and youth associations by registering them as authorized field workers. Workers resolve community reports and provide digital photo proof of completed works.")}</p>
-                </div>
-              </div>
+              </AnimateSection>
 
-              <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/40 transition-colors flex gap-6 items-start">
-                <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center flex-shrink-0">
-                  <FileSpreadsheet size={20} />
+              <AnimateSection delay={200}>
+                <div className="bg-[#0f2a3f] p-8 rounded-3xl border border-[#C4F8FF]/15 hover:border-[#C4F8FF]/50 hover:shadow-2xl hover:shadow-[#C4F8FF]/10 hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 transform flex gap-6 items-start h-full">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C4F8FF]/10 text-[#C4F8FF] flex items-center justify-center flex-shrink-0">
+                    <FileSpreadsheet size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Financial Transparency")}</h3>
+                    <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Tax payments made by citizens directly fund local development. We enable citizens to review the Gram Panchayat's annual budget allocation on demand, assuring public funds are spent correctly.")}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display font-bold text-base text-[#C4F8FF] mb-2">{t("Financial Transparency")}</h3>
-                  <p className="text-[#C4F8FF]/70 text-xs leading-relaxed">{t("Tax payments made by citizens directly fund local development. We enable citizens to review the Gram Panchayat's annual budget allocation on demand, assuring public funds are spent correctly.")}</p>
-                </div>
-              </div>
+              </AnimateSection>
             </div>
           </div>
         </section>
